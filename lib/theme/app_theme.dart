@@ -24,7 +24,7 @@ class AppTheme {
   static const Color white = Color(0xFFFFFFFF);
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Figtree',
     colorScheme: const ColorScheme.light(
       primary: purple900,
       secondary: secondary,
@@ -52,7 +52,7 @@ class AppTheme {
 
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Figtree',
     colorScheme: const ColorScheme.dark(
       primary: purple900,
       secondary: secondary,

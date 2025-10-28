@@ -4,13 +4,13 @@ import 'app_theme.dart';
 
 class AppTextStyles {
   // Button text
-  static final authbuttonLg = GoogleFonts.urbanist(
+  static final authbuttonLg = GoogleFonts.figtree(
     fontSize: 18,
     fontWeight: FontWeight.w700,
     color: Colors.white,
   );
 
-  static final authbuttonMd = GoogleFonts.urbanist(
+  static final authbuttonMd = GoogleFonts.figtree(
     fontSize: 16,
     fontWeight: FontWeight.w700,
     color: Colors.white,
@@ -24,7 +24,7 @@ class AppTextStyles {
   // );
 
   // Body (normal paragraf)
-  static final body = GoogleFonts.urbanist(
+  static final body = GoogleFonts.figtree(
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: AppTheme.zinc700,

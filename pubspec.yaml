@@ -11,7 +11,9 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.2.1
   google_fonts: ^6.3.2
+  intl: ^0.20.2
   lucide_icons: ^0.257.0
+  lucide_icons_flutter: ^3.1.5
   pinput: ^5.0.2
 
 dev_dependencies:
@@ -29,17 +31,19 @@ flutter:
     - assets/images/system/parafoni-icon-logo-dark.svg
     - assets/images/system/google-icon.svg
   fonts:
-    - family: Urbanist
+    - family: Figtree
       fonts:
-        - asset: assets/fonts/Urbanist-Regular.ttf
+        - asset: assets/fonts/Figtree-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Figtree-Regular.ttf
           weight: 400
-        - asset: assets/fonts/Urbanist-Medium.ttf
+        - asset: assets/fonts/Figtree-Medium.ttf
           weight: 500
-        - asset: assets/fonts/Urbanist-SemiBold.ttf
+        - asset: assets/fonts/Figtree-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/Urbanist-Bold.ttf
+        - asset: assets/fonts/Figtree-Bold.ttf
           weight: 700
-        - asset: assets/fonts/Urbanist-ExtraBold.ttf
+        - asset: assets/fonts/Figtree-ExtraBold.ttf
           weight: 800
-        - asset: assets/fonts/Urbanist-Black.ttf
+        - asset: assets/fonts/Figtree-Black.ttf
           weight: 900

@@ -52,7 +52,7 @@ class AuthTextField extends StatelessWidget {
             color: labelColor,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         TextField(
           controller: controller,
           keyboardType: keyboardType,

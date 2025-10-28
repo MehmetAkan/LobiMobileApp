@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lobi_application/auth/authentication_screen.dart';
+import 'package:lobi_application/auth/create_profile_screen.dart';
+import 'package:lobi_application/auth/mail_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
