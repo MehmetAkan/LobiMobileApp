@@ -3,7 +3,7 @@ import 'package:lobi_application/theme/app_theme.dart';
 
 class AuthPrimaryButton extends StatelessWidget {
   final String label;
-  final VoidCallback onTap;
+  final Future<void> Function()? onTap;
 
   // Özelleştirilebilir alanlar:
   final Color? backgroundColor;

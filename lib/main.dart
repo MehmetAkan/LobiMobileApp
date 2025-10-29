@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:lobi_application/screens/auth/authentication_screen.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
-import 'package:lobi_application/screens/auth/mail_screen.dart';
-import 'theme/app_theme.dart';
+import 'core/supabase_client.dart';
+import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/screens/auth/welcome_screen.dart';
 
-void main() {
-  runApp(const ParafoniApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Supabase'i başlat
+  await SupabaseManager().init();
+
+  runApp(const LobiApp());
 }
 
-class ParafoniApp extends StatelessWidget {
-  const ParafoniApp({super.key});
+class LobiApp extends StatelessWidget {
+  const LobiApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Parafoni',
+      title: 'Lobi',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: const AuthenticationScreen(),
+      theme: AppTheme.lightTheme, // senin mevcut theme yapın neyse
+      home: const WelcomeScreen(),
     );
   }
 }

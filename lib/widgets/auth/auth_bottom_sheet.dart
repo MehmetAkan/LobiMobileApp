@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/screens/auth/mail_screen.dart';
 
 Future<void> showAuthBottomSheet(BuildContext context) {
   final theme = Theme.of(context);
@@ -92,8 +93,17 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () {
-                    print('Butona basıldı');
-                  },
+  // önce bottom sheet'i kapat
+  Navigator.of(context).pop();
+
+  // sonra MailScreen'e git
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const MailScreen(),
+    ),
+  );
+},
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 18,

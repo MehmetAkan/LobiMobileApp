@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lobi_application/state/profile_controller.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
@@ -14,9 +15,12 @@ class CreateProfileScreen extends StatefulWidget {
 }
 
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
-  final TextEditingController firstNameCtrl = TextEditingController();
-  final TextEditingController lastNameCtrl = TextEditingController();
+  final firstNameCtrl = TextEditingController();
+  final lastNameCtrl = TextEditingController();
+
   DateTime? birthDate;
+  bool isLoading = false;
+  String? errorText;
 
   @override
   void dispose() {
@@ -24,6 +28,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     lastNameCtrl.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +107,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         controller: firstNameCtrl,
                         hintText: 'Lütfen isminizi giriniz',
                         keyboardType: TextInputType.name,
+                        errorText: null,
                       ),
                       const SizedBox(height: 10),
 
@@ -110,6 +117,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         controller: lastNameCtrl,
                         hintText: 'Lütfen soyisminizi giriniz',
                         keyboardType: TextInputType.name,
+                        errorText: null,
                       ),
                       const SizedBox(height: 10),
 
@@ -126,7 +134,8 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 10),
+
                     ],
                   ),
                 ),
@@ -137,10 +146,32 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                 ),
                 child: AuthPrimaryButton(
                   label: 'Devam Et',
-                  onTap: () {
-                    print('Devam Et tıklandı');
-                    // burada validasyon+next step yaparsın
-                  },
+                  onTap: isLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            isLoading = true;
+                            errorText = null;
+                          });
+
+                          await ProfileController().submitProfileAndGoHome(
+                            context: context,
+                            firstName: firstNameCtrl.text,
+                            lastName: lastNameCtrl.text,
+                            birthDate: birthDate,
+                            onError: (msg) {
+                              setState(() {
+                                errorText = msg;
+                              });
+                            },
+                          );
+
+                          if (mounted) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
                 ),
               ),
             ],

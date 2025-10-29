@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:lobi_application/state/auth_controller.dart';
 import 'package:lobi_application/widgets/auth/auth_text_field.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 
-class MailScreen extends StatelessWidget {
+
+class MailScreen extends StatefulWidget {
   const MailScreen({super.key});
+
+  @override
+  State<MailScreen> createState() => _MailScreenState();
+}
+
+class _MailScreenState extends State<MailScreen> {
+  final emailCtrl = TextEditingController();
+
+  bool isLoading = false; // buton tıklandığında spinner göstermek için
+  String? errorText; // invalid mail vs hata yazısı için
+
+  @override
+  void dispose() {
+    emailCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final text = theme.textTheme;
-    final emailCtrl = TextEditingController();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -22,18 +40,18 @@ class MailScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.only(bottom: 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 30),
-                            child: const AuthBackButton(),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10, bottom: 30),
+                            child: AuthBackButton(),
                           ),
                           Container(
                             width: 55,
                             height: 55,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppTheme.zinc200,
                               shape: BoxShape.circle,
                             ),
@@ -69,12 +87,14 @@ class MailScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 25),
+
+                          // E-MAIL INPUT
                           AuthTextField(
                             label: 'E-posta adresin',
                             controller: emailCtrl,
                             hintText: 'ornek@mail.com',
                             keyboardType: TextInputType.emailAddress,
-                            // errorText: 'Geçerli bir e-posta gir', // validation sonrası gösterebilirsin
+                            errorText: errorText, // <--- HATAYI GÖSTER
                             suffix: Icon(
                               Icons.mail_outline,
                               size: 24,
@@ -82,21 +102,49 @@ class MailScreen extends StatelessWidget {
                               color: AppTheme.zinc600,
                             ),
                           ),
+
                           const SizedBox(height: 25),
                         ],
                       ),
                     ),
                   ),
+
+                  // DEVAM ET BUTONU
                   AuthPrimaryButton(
-                    label: 'Devam Et',
-                    onTap: () {
-                      print('Devam Et tıklandı');
-                    },
+                    label: isLoading ? 'Gönderiliyor...' : 'Devam Et',
+                    onTap: isLoading
+                        ? null
+                        : () async {
+                            setState(() {
+                              isLoading = true;
+                              errorText = null;
+                            });
+
+                            await AuthController()
+                                .requestOtpAndGoToVerification(
+                                  context: context,
+                                  email: emailCtrl.text.trim(),
+                                  onError: (msg) {
+                                    setState(() {
+                                      errorText = msg;
+                                    });
+                                  },
+                                );
+
+                            if (mounted) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          },
                   ),
                 ],
               ),
             ),
           ),
+
+          // istersen üstte hafif bir loading overlay gösterebilirsin
+          // ama şimdilik şart değil
         ],
       ),
     );

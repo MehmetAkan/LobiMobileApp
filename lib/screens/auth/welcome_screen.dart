@@ -3,9 +3,30 @@ import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/gradient_button.dart';
 import 'package:lobi_application/widgets/auth/auth_bottom_sheet.dart';
+import 'package:lobi_application/state/auth_controller.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Uygulama açılır açılmaz kontrol:
+    // Kullanıcı zaten giriş yaptıysa buradan direkt yönlendireceğiz.
+    // Giriş yapmadıysa hiçbir şey olmaz, ekran normal devam eder.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AuthController().checkSessionAndRedirect(
+        context: context,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +101,9 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  // "Hemen Başla" tıklandığında alt sheet açıyoruz.
+                  // Şimdilik Google'ı umursamıyoruz, mail akışını seçecek.
                   GradientButton(
                     label: 'Hemen Başla',
                     onPressed: () => showAuthBottomSheet(context),

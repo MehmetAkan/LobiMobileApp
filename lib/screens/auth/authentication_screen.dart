@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:lobi_application/state/auth_controller.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 import 'package:lobi_application/widgets/auth/auth_verification_input.dart';
 
-class AuthenticationScreen extends StatelessWidget {
-  const AuthenticationScreen({super.key});
+
+class AuthenticationScreen extends StatefulWidget {
+  final String email;
+
+  const AuthenticationScreen({super.key, required this.email});
+
+  @override
+  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
+}
+
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  String _code = '';
+  bool isLoading = false;
+  String? errorText;
+
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final text = theme.textTheme;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -21,18 +36,18 @@ class AuthenticationScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.only(bottom: 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 30),
-                            child: const AuthBackButton(),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10, bottom: 30),
+                            child: AuthBackButton(),
                           ),
                           Container(
                             width: 55,
                             height: 55,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppTheme.zinc200,
                               shape: BoxShape.circle,
                             ),
@@ -68,7 +83,7 @@ class AuthenticationScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'akan.mehmet2700@gmail.com',
+                            widget.email,
                             textAlign: TextAlign.start,
                             style: text.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
@@ -78,22 +93,61 @@ class AuthenticationScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 25),
+
+                          // 6 HANELİ KOD GİRİŞİ
                           AuthVerificationInput(
                             onCompleted: (code) {
-                              print('Girilen doğrulama kodu: $code');
-                              // API isteği vs.
+                              setState(() {
+                                _code = code;
+                                errorText = null;
+                              });
                             },
                           ),
+
+                          const SizedBox(height: 12),
+
+                          // HATA GÖSTERİMİ (ör. yanlış kod)
+                          if (errorText != null)
+                            Text(
+                              errorText!,
+                              style: text.bodySmall?.copyWith(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+
                           const SizedBox(height: 25),
                         ],
                       ),
                     ),
                   ),
                   AuthPrimaryButton(
-                    label: 'Devam Et',
-                    onTap: () {
-                      print('Devam Et tıklandı');
-                    },
+                    label: isLoading ? 'Gönderiliyor...' : 'Devam Et',
+                    onTap: isLoading
+                        ? null
+                        : () async {
+                            setState(() {
+                              isLoading = true;
+                              errorText = null;
+                            });
+
+                            await AuthController().verifyCodeAndRoute(
+                              context: context,
+                              email: widget.email,
+                              code: _code,
+                              onError: (msg) {
+                                setState(() {
+                                  errorText = msg;
+                                });
+                              },
+                            );
+
+                            if (mounted) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          },
                   ),
                 ],
               ),
