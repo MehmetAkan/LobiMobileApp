@@ -4,6 +4,7 @@ import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/screens/auth/authentication_screen.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
 import 'package:lobi_application/screens/home/home_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthController {
   final AuthService _authService;
@@ -13,7 +14,6 @@ class AuthController {
     : _authService = authService ?? AuthService(),
       _profileService = profileService ?? ProfileService();
 
-  /// 1) MailScreen'de kullanacağız: OTP kodu gönder ve AuthenticationScreen'e yönlendir
   Future<void> requestOtpAndGoToVerification({
     required BuildContext context,
     required String email,
@@ -40,8 +40,6 @@ class AuthController {
     }
   }
 
-  /// 2) AuthenticationScreen'de kullanacağız:
-  /// Girilen kodu doğrula -> profil var mı bak -> doğru ekrana yönlendir
   Future<void> verifyCodeAndRoute({
     required BuildContext context,
     required String email,
@@ -82,8 +80,6 @@ class AuthController {
   }
 
   Future<void> checkSessionAndRedirect({required BuildContext context}) async {
-    // aktif kullanıcı var mı?
-    // (eğer yoksa hiç yönlendirme yapmıyoruz, WelcomeScreen normal gösteriliyor)
     final user = AuthService().currentUser;
     if (user == null) {
       return;
@@ -95,17 +91,33 @@ class AuthController {
     if (!context.mounted) return;
 
     if (profile == null) {
-      // profil tamamlanmamış -> CreateProfileScreen'e gönder
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const CreateProfileScreen()),
       );
     } else {
-      // profil tamam -> direkt HomeScreen'e gönder
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
+    }
+  }
+
+  Future<void> signInWithGoogle({
+    required BuildContext context,
+    required void Function(String? errorMessage) onError,
+  }) async {
+    try {
+      final supabase = Supabase.instance.client;
+
+      const redirectUri = 'lobi://auth-callback';
+
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: redirectUri,
+      );
+    } catch (e) {
+      onError('Google ile giriş başarısız. Tekrar dene.');
     }
   }
 }

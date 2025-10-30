@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lobi_application/state/auth_controller.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/screens/auth/mail_screen.dart';
 
@@ -14,7 +15,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
     showDragHandle: true,
     backgroundColor: theme.colorScheme.surface,
     shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (ctx) {
       return Padding(
@@ -93,17 +94,15 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () {
-  // önce bottom sheet'i kapat
-  Navigator.of(context).pop();
+                    // önce bottom sheet'i kapat
+                    Navigator.of(context).pop();
 
-  // sonra MailScreen'e git
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const MailScreen(),
-    ),
-  );
-},
+                    // sonra MailScreen'e git
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MailScreen()),
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 18,
@@ -139,10 +138,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
             const SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: AppTheme.zinc300, 
-                  width: 1,
-                ),
+                border: Border.all(color: AppTheme.zinc300, width: 1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Material(
@@ -150,9 +146,26 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                 borderRadius: BorderRadius.circular(12),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    print('Butona basıldı: GOOGLE');
-                  },
+                  onTap: () async {
+  String? err;
+
+  await AuthController().signInWithGoogle(
+    context: context,
+    onError: (msg) {
+      err = msg;
+    },
+  );
+
+  if (err != null) {
+    // hata durumu → kullanıcıya göster
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(err!)),
+    );
+  } else {
+    // hata yoksa flow başladı, bottom sheet'i kapatabiliriz
+    Navigator.of(ctx).pop();
+  }
+},
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 18,
