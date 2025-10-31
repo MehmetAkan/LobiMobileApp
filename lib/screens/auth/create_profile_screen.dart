@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lobi_application/state/profile_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lobi_application/providers/profile_provider.dart';
+import 'package:lobi_application/screens/home/home_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
@@ -7,14 +9,17 @@ import 'package:lobi_application/widgets/auth/auth_text_field.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/widgets/common/date_picker_field.dart';
 
-class CreateProfileScreen extends StatefulWidget {
+// StatefulWidget → ConsumerStatefulWidget
+class CreateProfileScreen extends ConsumerStatefulWidget {
   const CreateProfileScreen({super.key});
 
   @override
-  State<CreateProfileScreen> createState() => _CreateProfileScreenState();
+  ConsumerState<CreateProfileScreen> createState() =>
+      _CreateProfileScreenState();
 }
 
-class _CreateProfileScreenState extends State<CreateProfileScreen> {
+// State → ConsumerState
+class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
   final firstNameCtrl = TextEditingController();
   final lastNameCtrl = TextEditingController();
 
@@ -28,8 +33,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
     lastNameCtrl.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +49,10 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(bottom: 24),
+                  padding: const EdgeInsets.only(bottom: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Geri butonu
                       const Padding(
                         padding: EdgeInsets.only(top: 10, bottom: 30),
                         child: AuthBackButton(),
@@ -70,10 +72,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 15),
-
-                      // Başlık
                       Text(
                         'Profil Oluşturma',
                         textAlign: TextAlign.start,
@@ -84,10 +83,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           height: 1.2,
                         ),
                       ),
-
                       const SizedBox(height: 15),
-
-                      // Açıklama
                       Text(
                         'Artık son aşamadayız, profilini oluştur hemen etkinlik katıl!',
                         textAlign: TextAlign.start,
@@ -98,10 +94,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           fontSize: 16,
                         ),
                       ),
-
                       const SizedBox(height: 25),
-
-                      // İsim
                       AuthTextField(
                         label: 'İsim',
                         controller: firstNameCtrl,
@@ -110,8 +103,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         errorText: null,
                       ),
                       const SizedBox(height: 10),
-
-                      // Soyisim
                       AuthTextField(
                         label: 'Soyisim',
                         controller: lastNameCtrl,
@@ -120,8 +111,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                         errorText: null,
                       ),
                       const SizedBox(height: 10),
-
-                      // Doğum Tarihi
                       DatePickerField(
                         label: 'Doğum Tarihin',
                         value: birthDate,
@@ -133,38 +122,70 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           });
                         },
                       ),
-
                       const SizedBox(height: 10),
-
+                      if (errorText != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            errorText!,
+                            style: const TextStyle(
+                              color: AppTheme.red900,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  bottom: 20 + bottomInset, // klavye varsa yukarı çıksın
+                  bottom: 20 + bottomInset,
                 ),
                 child: AuthPrimaryButton(
                   label: 'Devam Et',
                   onTap: isLoading
                       ? null
                       : () async {
+                          if (birthDate == null) {
+                            setState(() {
+                              errorText = 'Lütfen doğum tarihini seçin';
+                            });
+                            return;
+                          }
+
                           setState(() {
                             isLoading = true;
                             errorText = null;
                           });
 
-                          await ProfileController().submitProfileAndGoHome(
-                            context: context,
+                          // BURASI DEĞİŞTİ: Controller yerine Provider
+                          final controller = ref.read(profileControllerProvider.notifier);
+                          final result = await controller.saveProfile(
                             firstName: firstNameCtrl.text,
                             lastName: lastNameCtrl.text,
-                            birthDate: birthDate,
-                            onError: (msg) {
-                              setState(() {
-                                errorText = msg;
-                              });
-                            },
+                            birthDate: birthDate!,
                           );
+
+                          if (!mounted) return;
+
+                          if (result?.isSuccess == true) {
+                            // Başarılı -> Home'a git
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const HomeScreen(),
+                              ),
+                              (route) => false,
+                            );
+                          } else {
+                            // Hata var
+                            setState(() {
+                              errorText = result?.errorMessage ??
+                                  'Profil kaydedilemedi. Tekrar deneyin.';
+                            });
+                          }
 
                           if (mounted) {
                             setState(() {

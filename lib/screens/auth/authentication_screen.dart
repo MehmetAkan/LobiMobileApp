@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:lobi_application/state/auth_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lobi_application/data/repositories/auth_repository.dart';
+import 'package:lobi_application/providers/auth_provider.dart';
+import 'package:lobi_application/screens/auth/create_profile_screen.dart';
+import 'package:lobi_application/screens/home/home_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 import 'package:lobi_application/widgets/auth/auth_verification_input.dart';
 
-
-class AuthenticationScreen extends StatefulWidget {
+// StatefulWidget → ConsumerStatefulWidget
+class AuthenticationScreen extends ConsumerStatefulWidget {
   final String email;
 
   const AuthenticationScreen({super.key, required this.email});
 
   @override
-  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
+  ConsumerState<AuthenticationScreen> createState() =>
+      _AuthenticationScreenState();
 }
 
-class _AuthenticationScreenState extends State<AuthenticationScreen> {
+// State → ConsumerState
+class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
   String _code = '';
   bool isLoading = false;
   String? errorText;
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +98,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             ),
                           ),
                           const SizedBox(height: 25),
-
-                          // 6 HANELİ KOD GİRİŞİ
                           AuthVerificationInput(
                             onCompleted: (code) {
                               setState(() {
@@ -103,10 +106,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               });
                             },
                           ),
-
                           const SizedBox(height: 12),
-
-                          // HATA GÖSTERİMİ (ör. yanlış kod)
                           if (errorText != null)
                             Text(
                               errorText!,
@@ -115,7 +115,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-
                           const SizedBox(height: 25),
                         ],
                       ),
@@ -131,16 +130,40 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               errorText = null;
                             });
 
-                            await AuthController().verifyCodeAndRoute(
-                              context: context,
+                            // BURASI DEĞİŞTİ: Controller yerine Provider
+                            final controller = ref.read(authControllerProvider.notifier);
+                            final result = await controller.verifyOtp(
                               email: widget.email,
                               code: _code,
-                              onError: (msg) {
-                                setState(() {
-                                  errorText = msg;
-                                });
-                              },
                             );
+
+                            if (!mounted) return;
+
+                            if (result?.isSuccess == true) {
+                              // Başarılı -> Duruma göre yönlendir
+                              if (result!.status == AuthStatus.needsProfile) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const CreateProfileScreen(),
+                                  ),
+                                );
+                              } else {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const HomeScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            } else {
+                              // Hata var
+                              setState(() {
+                                errorText = result?.errorMessage ??
+                                    'Doğrulama başarısız. Tekrar deneyin.';
+                              });
+                            }
 
                             if (mounted) {
                               setState(() {

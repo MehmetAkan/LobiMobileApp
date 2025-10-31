@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:lobi_application/state/auth_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lobi_application/providers/auth_provider.dart';
+import 'package:lobi_application/screens/auth/authentication_screen.dart';
 import 'package:lobi_application/widgets/auth/auth_text_field.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 
-
-class MailScreen extends StatefulWidget {
+// StatefulWidget → ConsumerStatefulWidget (tek değişiklik)
+class MailScreen extends ConsumerStatefulWidget {
   const MailScreen({super.key});
 
   @override
-  State<MailScreen> createState() => _MailScreenState();
+  ConsumerState<MailScreen> createState() => _MailScreenState();
 }
 
-class _MailScreenState extends State<MailScreen> {
+// State<MailScreen> → ConsumerState<MailScreen> (tek değişiklik)
+class _MailScreenState extends ConsumerState<MailScreen> {
   final emailCtrl = TextEditingController();
 
-  bool isLoading = false; // buton tıklandığında spinner göstermek için
-  String? errorText; // invalid mail vs hata yazısı için
+  bool isLoading = false;
+  String? errorText;
 
   @override
   void dispose() {
@@ -87,29 +90,24 @@ class _MailScreenState extends State<MailScreen> {
                             ),
                           ),
                           const SizedBox(height: 25),
-
-                          // E-MAIL INPUT
                           AuthTextField(
                             label: 'E-posta adresin',
                             controller: emailCtrl,
                             hintText: 'ornek@mail.com',
                             keyboardType: TextInputType.emailAddress,
-                            errorText: errorText, // <--- HATAYI GÖSTER
-                            suffix: Icon(
+                            errorText: errorText,
+                            suffix: const Icon(
                               Icons.mail_outline,
                               size: 24,
                               weight: 1,
                               color: AppTheme.zinc600,
                             ),
                           ),
-
                           const SizedBox(height: 25),
                         ],
                       ),
                     ),
                   ),
-
-                  // DEVAM ET BUTONU
                   AuthPrimaryButton(
                     label: isLoading ? 'Gönderiliyor...' : 'Devam Et',
                     onTap: isLoading
@@ -120,16 +118,30 @@ class _MailScreenState extends State<MailScreen> {
                               errorText = null;
                             });
 
-                            await AuthController()
-                                .requestOtpAndGoToVerification(
-                                  context: context,
-                                  email: emailCtrl.text.trim(),
-                                  onError: (msg) {
-                                    setState(() {
-                                      errorText = msg;
-                                    });
-                                  },
-                                );
+                            // BURASI DEĞİŞTİ: Controller yerine Provider
+                            final controller = ref.read(authControllerProvider.notifier);
+                            final error = await controller.requestOtp(
+                              emailCtrl.text.trim(),
+                            );
+
+                            if (!mounted) return;
+
+                            if (error == null) {
+                              // Başarılı -> Authentication screen'e git
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AuthenticationScreen(
+                                    email: emailCtrl.text.trim(),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // Hata var
+                              setState(() {
+                                errorText = error;
+                              });
+                            }
 
                             if (mounted) {
                               setState(() {
@@ -142,9 +154,6 @@ class _MailScreenState extends State<MailScreen> {
               ),
             ),
           ),
-
-          // istersen üstte hafif bir loading overlay gösterebilirsin
-          // ama şimdilik şart değil
         ],
       ),
     );
