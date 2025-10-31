@@ -30,7 +30,7 @@ class ProfileController {
     }
 
     try {
-      await _profileService.createProfile(
+      await _profileService.upsertMyProfile(
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         birthDate: birthDate,

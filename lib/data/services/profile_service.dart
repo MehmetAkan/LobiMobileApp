@@ -19,7 +19,7 @@ class ProfileService {
     return result;
   }
 
-  Future<void> createProfile({
+  Future<void> upsertMyProfile({
     required String firstName,
     required String lastName,
     required DateTime birthDate,
@@ -29,11 +29,12 @@ class ProfileService {
       throw Exception('Oturum yok');
     }
 
-    await _supabase.from('profiles').insert({
+
+    await _supabase.from('profiles').upsert({
       'user_id': user.id,
       'first_name': firstName,
       'last_name': lastName,
       'birth_date': birthDate.toIso8601String(),
-    });
+    }, onConflict: 'user_id');
   }
 }

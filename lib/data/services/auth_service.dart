@@ -7,21 +7,19 @@ class AuthService {
     try {
       await _supabase.auth.signInWithOtp(
         email: email,
-        emailRedirectTo: null, 
-       
+        emailRedirectTo: null,
       );
     } on AuthException catch (e) {
-      // Supabase spesifik hata
-      throw Exception('OTP gönderilemedi: ${e.message}');
+   
+      throw Exception(e.message);
     } catch (e) {
-      // Diğer hatalar
-      throw Exception('Bilinmeyen hata: $e');
+      throw Exception('OTP isteği sırasında bilinmeyen bir hata oluştu.');
     }
   }
 
   Future<AuthResponse> verifyOtp({
     required String email,
-    required String token, // kullanıcının girdiği 6 haneli kod
+    required String token, 
   }) async {
     try {
       final response = await _supabase.auth.verifyOTP(
@@ -29,14 +27,11 @@ class AuthService {
         token: token,
         type: OtpType.email,
       );
-
-      // response.session içinde accessToken vs var.
-      // response.user içinde Supabase user var.
       return response;
     } on AuthException catch (e) {
-      throw Exception('Kod doğrulanamadı: ${e.message}');
+      throw Exception(e.message);
     } catch (e) {
-      throw Exception('Bilinmeyen hata: $e');
+      throw Exception('Kod doğrulanırken bilinmeyen bir hata oluştu.');
     }
   }
 
@@ -45,6 +40,11 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    await _supabase.auth.signOut();
+    
+    try {
+      await _supabase.auth.signOut();
+    } catch (e) {
+     
+    }
   }
 }

@@ -40,7 +40,10 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).pop(); // modal kapatma
+                    final nav = Navigator.maybeOf(context);
+                    if (nav != null && nav.canPop()) {
+                      nav.pop();
+                    }
                   },
                   child: Container(
                     width: 35,
@@ -147,25 +150,25 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () async {
-  String? err;
+                    String? err;
 
-  await AuthController().signInWithGoogle(
-    context: context,
-    onError: (msg) {
-      err = msg;
-    },
-  );
+                    await AuthController().signInWithGoogle(
+                      context: context,
+                      onError: (msg) {
+                        err = msg;
+                      },
+                    );
 
-  if (err != null) {
-    // hata durumu → kullanıcıya göster
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(err!)),
-    );
-  } else {
-    // hata yoksa flow başladı, bottom sheet'i kapatabiliriz
-    Navigator.of(ctx).pop();
-  }
-},
+                    if (err != null) {
+                      // hata durumu → kullanıcıya göster
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(err!)));
+                    } else {
+                      // hata yoksa flow başladı, bottom sheet'i kapatabiliriz
+                      Navigator.of(ctx).pop();
+                    }
+                  },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 18,
