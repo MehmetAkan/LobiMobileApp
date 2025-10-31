@@ -25,8 +25,7 @@ class AuthService {
     });
   }
 
-  /// Email ile OTP gönder
-  /// @throws AuthenticationException
+
   Future<void> requestOtp({required String email}) async {
     try {
       AppLogger.logAuthEvent('otp_request_started', params: {'email': email});
@@ -78,7 +77,7 @@ class AuthService {
       final result = await _supabase.auth.signInWithOAuth(
         OAuthProvider.google,
         redirectTo: redirectUrl,
-        authScreenLaunchMode: LaunchMode.platformDefault,
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
 
       if (!result) {

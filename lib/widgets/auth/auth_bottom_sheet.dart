@@ -104,9 +104,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                         Navigator.of(context).pop();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const MailScreen(),
-                          ),
+                          MaterialPageRoute(builder: (_) => const MailScreen()),
                         );
                       },
                       child: const Padding(
@@ -153,18 +151,38 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () async {
-                        // BURASI DEĞİŞTİ: Controller yerine Provider
-                        final controller = ref.read(authControllerProvider.notifier);
+                        final controller = ref.read(
+                          authControllerProvider.notifier,
+                        );
                         final error = await controller.signInWithGoogle();
 
+                      
+                        Navigator.of(ctx).pop(); 
+
                         if (error != null && context.mounted) {
+                         
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(error)),
+                            SnackBar(
+                              content: Text(error),
+                              duration: const Duration(seconds: 2),
+                              backgroundColor: AppTheme.zinc800,
+                            ),
                           );
-                        } else {
-                          Navigator.of(ctx).pop();
                         }
                       },
+                      // onTap: () async {
+
+                      //   final controller = ref.read(authControllerProvider.notifier);
+                      //   final error = await controller.signInWithGoogle();
+
+                      //   if (error != null && context.mounted) {
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       SnackBar(content: Text(error)),
+                      //     );
+                      //   } else {
+                      //     Navigator.of(ctx).pop();
+                      //   }
+                      // },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 18,
@@ -205,8 +223,9 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                       'Devam ederek kullanım şartlarını kabul ediyorsun',
                       textAlign: TextAlign.center,
                       style: text.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface
-                            .withValues(alpha: 0.6),
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.6,
+                        ),
                       ),
                     ),
                   ),

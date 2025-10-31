@@ -140,9 +140,7 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                  bottom: 20 + bottomInset,
-                ),
+                padding: EdgeInsets.only(bottom: 20 + bottomInset),
                 child: AuthPrimaryButton(
                   label: 'Devam Et',
                   onTap: isLoading
@@ -160,8 +158,9 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                             errorText = null;
                           });
 
-                          // BURASI DEĞİŞTİ: Controller yerine Provider
-                          final controller = ref.read(profileControllerProvider.notifier);
+                          final controller = ref.read(
+                            profileControllerProvider.notifier,
+                          );
                           final result = await controller.saveProfile(
                             firstName: firstNameCtrl.text,
                             lastName: lastNameCtrl.text,
@@ -171,7 +170,8 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                           if (!mounted) return;
 
                           if (result?.isSuccess == true) {
-                            // Başarılı -> Home'a git
+                            ref.invalidate(currentUserProfileProvider);
+
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -180,9 +180,9 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                               (route) => false,
                             );
                           } else {
-                            // Hata var
                             setState(() {
-                              errorText = result?.errorMessage ??
+                              errorText =
+                                  result?.errorMessage ??
                                   'Profil kaydedilemedi. Tekrar deneyin.';
                             });
                           }

@@ -100,30 +100,45 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
   }
 
   /// Google ile giriş
-  Future<String?> signInWithGoogle() async {
-    state = const AsyncValue.loading();
+  // Future<String?> signInWithGoogle() async {
+  //   state = const AsyncValue.loading();
 
-    try {
-      final result = await _repository.signInWithGoogle();
+  //   try {
+  //     final result = await _repository.signInWithGoogle();
 
-      if (result.isSuccess) {
-        state = const AsyncValue.data(null);
-        AppLogger.info('✅ Google girişi başarılı');
-        return null;
-      } else {
-        state = AsyncValue.error(
-          result.errorMessage!,
-          StackTrace.current,
-        );
-        return result.errorMessage;
-      }
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
-      AppLogger.error('Google giriş hatası', e, stackTrace);
-      return 'Google girişi başarısız. Tekrar deneyin.';
-    }
+  //     if (result.isSuccess) {
+  //       state = const AsyncValue.data(null);
+  //       AppLogger.info('✅ Google girişi başarılı');
+  //       return null;
+  //     } else {
+  //       state = AsyncValue.error(
+  //         result.errorMessage!,
+  //         StackTrace.current,
+  //       );
+  //       return result.errorMessage;
+  //     }
+  //   } catch (e, stackTrace) {
+  //     state = AsyncValue.error(e, stackTrace);
+  //     AppLogger.error('Google giriş hatası', e, stackTrace);
+  //     return 'Google girişi başarısız. Tekrar deneyin.';
+  //   }
+  // }
+Future<String?> signInWithGoogle() async {
+  state = const AsyncValue.loading();
+
+  try {
+    final result = await _repository.signInWithGoogle();
+
+    state = const AsyncValue.data(null);
+    AppLogger.info('✅ Google OAuth flow başlatıldı');
+    return null; // Hata gösterme, auth state dinleyecek
+    
+  } catch (e, stackTrace) {
+    state = AsyncValue.error(e, stackTrace);
+    AppLogger.error('Google giriş hatası', e, stackTrace);
+    return 'Google girişi başarısız. Tekrar deneyin.';
   }
-
+}
   /// Çıkış yap
   Future<void> signOut() async {
     state = const AsyncValue.loading();
