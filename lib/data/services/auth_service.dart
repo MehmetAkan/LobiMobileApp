@@ -3,15 +3,12 @@ import 'package:lobi_application/core/supabase_client.dart';
 class AuthService {
   final SupabaseClient _supabase = SupabaseManager().client;
 
-  /// 1. Kullanıcı e-mailini girdiğinde çağıracağız.
-  /// Bu fonksiyon Supabase'e "bu maile kod gönder" der.
   Future<void> requestOtp({required String email}) async {
     try {
       await _supabase.auth.signInWithOtp(
         email: email,
         emailRedirectTo: null, 
-        // mobile app olduğumuz için redirect linke şimdilik ihtiyacımız yok.
-        // İleride deep link kurarsak bunu doldururuz.
+       
       );
     } on AuthException catch (e) {
       // Supabase spesifik hata
@@ -22,8 +19,6 @@ class AuthService {
     }
   }
 
-  /// 2. Kullanıcı 6 haneli kodu girdiğinde çağıracağız.
-  /// Bu fonksiyon kodu doğrular ve session döner (giriş yapar).
   Future<AuthResponse> verifyOtp({
     required String email,
     required String token, // kullanıcının girdiği 6 haneli kod
@@ -45,12 +40,10 @@ class AuthService {
     }
   }
 
-  /// Aktif kullanıcı bilgisini getir (ör: profile screen vs için)
   User? get currentUser {
     return _supabase.auth.currentUser;
   }
 
-  /// Oturumu kapat
   Future<void> signOut() async {
     await _supabase.auth.signOut();
   }

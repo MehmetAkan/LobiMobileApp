@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lobi_application/state/auth_controller.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -10,7 +11,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final text = theme.textTheme;
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -25,25 +25,37 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Geri butonu
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 30),
-                        child: AuthBackButton(),
-                      ),
-                      Container(
-                        width: 55,
-                        height: 55,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.zinc200,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            LucideIcons.userStar400,
-                            size: 28,
-                            color: AppTheme.zinc800,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10, bottom: 30),
+                            child: AuthBackButton(),
                           ),
-                        ),
+                          TextButton(
+                            onPressed: () async {
+                              await AuthController().signOutAndGoToWelcome(
+                                context,
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              minimumSize: Size.zero,
+                            ),
+                            child: const Text(
+                              'Çıkış Yap',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.black800,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 15),
                       Text(

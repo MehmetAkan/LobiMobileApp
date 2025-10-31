@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/data/services/auth_service.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/screens/auth/authentication_screen.dart';
@@ -28,7 +29,6 @@ class AuthController {
     try {
       await _authService.requestOtp(email: email);
 
-      // başarılıysa doğrulama ekranına git
       if (context.mounted) {
         Navigator.push(
           context,
@@ -52,22 +52,18 @@ class AuthController {
     }
 
     try {
-      // Supabase doğrulama
       await _authService.verifyOtp(email: email, token: code);
 
-      // Profil var mı kontrol et
       final profile = await _profileService.getMyProfile();
 
       if (!context.mounted) return;
 
       if (profile == null) {
-        // profil yok -> profil oluşturma ekranına (replace)
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const CreateProfileScreen()),
         );
       } else {
-        // profil var -> ana sayfaya kadar stack'i temizle
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -107,17 +103,51 @@ class AuthController {
     required BuildContext context,
     required void Function(String? errorMessage) onError,
   }) async {
+    final supabase = Supabase.instance.client;
+
     try {
-      final supabase = Supabase.instance.client;
-
-      const redirectUri = 'lobi://auth-callback';
-
       await supabase.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: redirectUri,
+        redirectTo: 'lobi://auth-callback',
       );
     } catch (e) {
-      onError('Google ile giriş başarısız. Tekrar dene.');
+      debugPrint('Google signIn error (can be harmless on iOS sim): $e');
     }
   }
+
+  Future<void> signOutAndGoToWelcome(BuildContext context) async {
+    try {
+      await Supabase.instance.client.auth.signOut();
+
+      if (!context.mounted) return;
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const AppEntry()),
+        (route) => false,
+      );
+    } catch (e) {
+      debugPrint('Sign out error: $e');
+    }
+  }
+
 }
+
+
+  // Future<void> signInWithGoogle({
+  //   required BuildContext context,
+  //   required void Function(String? errorMessage) onError,
+  // }) async {
+  //   try {
+  //     final supabase = Supabase.instance.client;
+
+  //     const redirectUri = 'lobi://auth-callback';
+
+  //     await supabase.auth.signInWithOAuth(
+  //       OAuthProvider.google,
+  //       redirectTo: redirectUri,
+  //     );
+  //   } catch (e) {
+  //     onError('Google ile giriş başarısız. Tekrar dene.');
+  //   }
+  // }

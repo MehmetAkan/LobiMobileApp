@@ -16,7 +16,6 @@ class ProfileController {
     required DateTime? birthDate,
     required void Function(String? errorMessage) onError,
   }) async {
-    // basic validation
     if (firstName.trim().isEmpty) {
       onError('Lütfen adını gir');
       return;
@@ -31,14 +30,12 @@ class ProfileController {
     }
 
     try {
-      // profili oluştur
       await _profileService.createProfile(
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         birthDate: birthDate,
       );
 
-      // başarılı → ana sayfaya yönlendir
       if (context.mounted) {
         Navigator.pushAndRemoveUntil(
           context,
