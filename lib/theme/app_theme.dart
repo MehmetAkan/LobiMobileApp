@@ -22,6 +22,7 @@ class AppTheme {
   static const Color surfaceLight = Colors.white;
   static const Color surfaceDark = Color(0xFF161618);
   static const Color white = Color(0xFFFFFFFF);
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

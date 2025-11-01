@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lobi_application/core/utils/logger.dart';
-import 'package:lobi_application/data/repositories/auth_repository.dart';
 import 'package:lobi_application/providers/auth_provider.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/screens/auth/welcome_screen.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
-import 'package:lobi_application/screens/home/home_screen.dart';
+import 'package:lobi_application/screens/main/home/home_screen.dart';
 
 /// App Entry Point
 /// Neden ConsumerWidget: Riverpod provider'ları dinlemek için

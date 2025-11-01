@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
@@ -17,22 +18,14 @@ Future<void> main() async {
   try {
     AppLogger.info('🚀 Uygulama başlatılıyor...');
 
-    // Dependency Injection setup
-    // Supabase, Services, Repositories hepsi burada kurulur
     await setupServiceLocator();
 
     AppLogger.info('✅ Uygulama başarıyla başlatıldı');
 
-    // Riverpod ile uygulamayı başlat
-    runApp(
-      const ProviderScope(
-        child: LobiApp(),
-      ),
-    );
+    runApp(const ProviderScope(child: LobiApp()));
   } catch (e, stackTrace) {
     AppLogger.error('❌ Uygulama başlatma hatası', e, stackTrace);
-    
-    // Hata durumunda basit bir error screen göster
+
     runApp(
       MaterialApp(
         home: Scaffold(
@@ -66,11 +59,22 @@ class LobiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Lobi',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      home: const AppEntry(),
+    return ScreenUtilInit(
+      designSize: const Size(
+        390,
+        844,
+      ),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          title: 'Lobi',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          home: const AppEntry(),
+        );
+      },
     );
   }
 }
