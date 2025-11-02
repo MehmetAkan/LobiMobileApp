@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  /*Sabit Renkler*/
+  static const Color white = Color(0xFFFFFFFF);
   static const Color purple900 = Color(0xFF2E00A7);
   static const Color purple800 = Color(0xFF6412C6);
   static const Color zinc100 = Color(0xFFF8F8F8);
@@ -15,24 +17,50 @@ class AppTheme {
   static const Color green900 = Color(0xFF06df73);
   static const Color red100 = Color(0xFFF9E5E5);
   static const Color red900 = Color(0xFFCB0200);
-  static const Color black800 = Color(0xFF161618);
-  static const Color secondary = Color(0xFF0EA5E9);
+  static const Color black800 = Color(0xFF090A0A);
   static const Color backgroundLight = Color(0xFFFCFCFC);
-  static const Color backgroundDark = Color(0xFF161618);
-  static const Color surfaceLight = Colors.white;
-  static const Color surfaceDark = Color(0xFF161618);
-  static const Color white = Color(0xFFFFFFFF);
+  static const Color backgroundDark = Color(0xFF090A0A);
+  static const Color dark_zinc600 = Color(0xFFB2B2B2);
+  static const Color dark_zinc700 = Color(0xFF949293);
+  static const Color dark_zinc800 = Color(0xFF1D1D1F);
+  static const Color navbarLight = Color(0xFFFFFFFF);
+  static const Color navbarDark = Color.fromARGB(255, 0, 0, 0);
+  /*Sabit Renkler*/
 
+  static Color getButtonIconBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc800
+        : white;
+  }
+
+  static Color getButtonIconColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? white : black800;
+  }
+
+  static Color getButtonIconBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc100;
+  }
+
+  static Color getNavbarBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? backgroundDark
+        : backgroundLight;
+  }
+  static Color getTextHeadColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? backgroundLight
+        : backgroundDark;
+  }
+    static Color getTextDescColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc800;
+  }
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',
-    colorScheme: const ColorScheme.light(
-      primary: purple900,
-      secondary: secondary,
-      surface: surfaceLight,
-      onPrimary: Colors.white,
-      onSurface: Colors.black,
-    ),
     scaffoldBackgroundColor: backgroundLight,
     textTheme: const TextTheme(),
     appBarTheme: const AppBarTheme(
@@ -50,17 +78,9 @@ class AppTheme {
       ),
     ),
   );
-
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',
-    colorScheme: const ColorScheme.dark(
-      primary: purple900,
-      secondary: secondary,
-      surface: surfaceDark,
-      onPrimary: Colors.white,
-      onSurface: Colors.white,
-    ),
     scaffoldBackgroundColor: backgroundDark,
     textTheme: const TextTheme(),
     iconTheme: const IconThemeData(size: 22),

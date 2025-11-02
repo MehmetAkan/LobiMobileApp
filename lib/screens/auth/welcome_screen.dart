@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lobi_application/widgets/gradient_button.dart';
+import 'package:lobi_application/widgets/common/buttons/gradient_button.dart';
 import 'package:lobi_application/widgets/auth/auth_bottom_sheet.dart';
 
 class WelcomeScreen extends StatefulWidget {

@@ -49,7 +49,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             });
           },
           type: BottomNavigationBarType.fixed,
-          backgroundColor: isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight,
+          backgroundColor: isDark ? AppTheme.navbarLight : AppTheme.navbarDark,
           selectedItemColor: AppTheme.purple900,
           unselectedItemColor: AppTheme.zinc600,
           selectedFontSize: 12.sp,
