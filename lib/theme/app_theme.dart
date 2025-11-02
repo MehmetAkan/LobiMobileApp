@@ -58,6 +58,11 @@ class AppTheme {
         ? dark_zinc600
         : zinc800;
   }
+      static Color getCardColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc800;
+  }
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

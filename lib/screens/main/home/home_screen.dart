@@ -6,47 +6,22 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
+import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
-
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final ScrollController _scrollController = ScrollController();
-  bool _isLogoSmall = false;
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with ScrollablePageMixin {
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    final offset = _scrollController.offset;
-    final shouldBeSmall = offset > 10;
-
-    if (shouldBeSmall != _isLogoSmall) {
-      setState(() {
-        _isLogoSmall = shouldBeSmall;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final text = theme.textTheme;
+    final text = Theme.of(context).textTheme;
     final profileState = ref.watch(currentUserProfileProvider);
     final profile = profileState.value;
     final statusBarHeight = MediaQuery.of(context).padding.top;
@@ -56,6 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
+          // Arka plan resmi
           Positioned.fill(
             child: Image.asset(
               'assets/images/system/other-page-bg.png',
@@ -64,8 +40,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               alignment: Alignment.bottomCenter,
             ),
           ),
+
+          // İçerik
           SingleChildScrollView(
-            controller: _scrollController, // Direkt controller kullan
+            controller: scrollController, // Mixin'den geliyor
             padding: EdgeInsets.fromLTRB(20.w, navbarHeight + 20.h, 20.w, 24.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,9 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   style: text.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     fontSize: 35.sp,
-                    color: theme.brightness == Brightness.dark
-                        ? Colors.white
-                        : AppTheme.black800,
+                    color: AppTheme.getTextHeadColor(context),
                     height: 1.2,
                   ),
                 ),
@@ -92,22 +68,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     style: text.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 16.sp,
-                      color: AppTheme.zinc600,
+                      color: AppTheme.getTextDescColor(context),
                     ),
                   ),
 
                 SizedBox(height: 30.h),
 
+                // Test kartları
                 ...List.generate(
                   20,
                   (index) => Container(
                     margin: EdgeInsets.only(bottom: 12.h),
                     padding: EdgeInsets.all(16.w),
-                    width: 400,
                     decoration: BoxDecoration(
-                      color: theme.brightness == Brightness.dark
-                          ? AppTheme.dark_zinc800
-                          : AppTheme.green900,
+                      color: AppTheme.getCardColor(context),
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Text(
@@ -115,9 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
-                        color: theme.brightness == Brightness.dark
-                            ? Colors.white
-                            : AppTheme.green900,
+                        color: AppTheme.getTextHeadColor(context),
                       ),
                     ),
                   ),
@@ -125,13 +97,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
             ),
           ),
+
+          // Navbar
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: CustomNavbar(
-              scrollController: _scrollController, 
-              leading: (isScrolled) => Row(
+              scrollController: scrollController, // Mixin'den geliyor
+              leading: (scrolled) => Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
@@ -139,14 +113,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
-                    height: _isLogoSmall ? 35.h : 45.h,
-                    width: _isLogoSmall ? 35.h : 45.h,
+                    height: isScrolled ? 35.h : 45.h, // Mixin'den geliyor
+                    width: isScrolled ? 35.h : 45.h,
                     child: SvgPicture.asset(
                       'assets/images/system/lobi-icon.svg',
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(width: 5),
+                  SizedBox(width: 5.w),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,17 +131,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         style: TextStyle(
                           height: 1,
                           fontWeight: FontWeight.w500,
-                          fontSize: _isLogoSmall ? 14.sp : 15.sp,
+                          fontSize: isScrolled ? 14.sp : 15.sp,
                           color: AppTheme.getTextDescColor(context),
                         ),
-                        child: Text("Hoş Geldin,"),
+                        child: const Text("Hoş Geldin,"),
                       ),
                       AnimatedDefaultTextStyle(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                         style: TextStyle(
                           height: 1.2,
-                          fontSize: _isLogoSmall ? 16.sp : 18.sp,
+                          fontSize: isScrolled ? 16.sp : 18.sp,
                           fontWeight: FontWeight.w600,
                           color: AppTheme.getTextHeadColor(context),
                         ),
@@ -181,7 +155,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ],
               ),
-              actions: (isScrolled) => [
+              actions: (scrolled) => [
                 LiquidGlassLayer(
                   child: LiquidGlass(
                     shape: LiquidRoundedSuperellipse(borderRadius: 60),
