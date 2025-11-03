@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/core/utils/date_extensions.dart'; // ✨ YENİ
 
 /// DateHeader - Tarihe göre gruplanmış listelerde kullanılan başlık
 /// 
@@ -70,7 +71,7 @@ class DateHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  _getMonthName(date.month),
+                  date.monthName, // ✨ Extension kullanımı
                   style: TextStyle(
                     fontSize: 17.sp,
                     fontWeight: FontWeight.w600,
@@ -79,7 +80,7 @@ class DateHeader extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  _getDayName(date.weekday),
+                  date.dayName, // ✨ Extension kullanımı
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
@@ -93,23 +94,5 @@ class DateHeader extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Ay adını döndür
-  String _getMonthName(int month) {
-    const months = [
-      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
-    ];
-    return months[month - 1];
-  }
-
-  /// Gün adını döndür
-  String _getDayName(int weekday) {
-    const days = [
-      'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe',
-      'Cuma', 'Cumartesi', 'Pazar'
-    ];
-    return days[weekday - 1];
   }
 }

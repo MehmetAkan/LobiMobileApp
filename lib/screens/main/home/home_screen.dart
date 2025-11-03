@@ -8,10 +8,12 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+
 import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/widgets/common/lists/grouped_event_list.dart';
+import 'package:lobi_application/core/utils/date_extensions.dart'; // ✨ YENİ
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -52,46 +54,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     },
     {
       'id': '4',
-      'title': 'Açık Hava Sineması',
-      'imageUrl': 'https://picsum.photos/id/232/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '5',
-      'title': 'Açık Hava Sineması',
-      'imageUrl': 'https://picsum.photos/id/232/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '6',
-      'title': 'TEST Açık Hava Sineması',
-      'imageUrl': 'https://picsum.photos/id/232/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '7',
-      'title': 'Açık Hava Sineması',
-      'imageUrl': 'https://picsum.photos/id/232/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-     {
-      'id': '8',
-      'title': 'Açık Hava Sineması',
-      'imageUrl': 'https://picsum.photos/id/232/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-     {
-      'id': '9',
       'title': 'Açık Hava Sineması',
       'imageUrl': 'https://picsum.photos/id/232/300/300',
       'date': '2024-11-07T21:00:00', // ✨ Farklı gün
@@ -143,7 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Image.asset(
               'assets/images/system/other-page-bg.png',
               fit: BoxFit.cover,
-              opacity: const AlwaysStoppedAnimation(0),
+              opacity: const AlwaysStoppedAnimation(0.20),
               alignment: Alignment.bottomCenter,
             ),
           ),
@@ -179,6 +141,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ),
                 
                 SizedBox(height: 20.h),
+                
+                // ✨ YENİ: Tarihe göre gruplanmış dikey liste
                 GroupedEventList(
                   events: _mockNearbyEvents,
                   scrollController: scrollController,
@@ -192,17 +156,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ],
             ),
           ),
+          
+          // Navbar
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: CustomNavbar(
               scrollController: scrollController,
+              
+              // ✨ GÜNCELLEME: Leading kısmı - Logo her zaman görünür, text değişir
               leading: (scrolled) {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     // Logo - HER ZAMAN GÖRÜNÜR
                     AnimatedContainer(
@@ -218,18 +186,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     
                     SizedBox(width: 5.w),
                     
+                    // Text kısmı - DEĞIŞKEN (Hoş Geldin / Tarih)
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       transitionBuilder: (child, animation) {
                         return FadeTransition(
                           opacity: animation,
-                          child: SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(0, 0.3),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: child,
-                          ),
+                          child: child,
+                        );
+                      },
+                      layoutBuilder: (currentChild, previousChildren) {
+                        return Stack(
+                          alignment: Alignment.centerLeft, // ✨ Sol hizalı
+                          children: [
+                            ...previousChildren,
+                            if (currentChild != null) currentChild,
+                          ],
                         );
                       },
                       child: activeDate != null
@@ -279,7 +251,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          _getMonthName(date.month),
+          date.monthName, // ✨ Extension kullanımı
           style: TextStyle(
             fontSize: isScrolled ? 13.sp : 15.sp,
             fontWeight: FontWeight.w600,
@@ -288,7 +260,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
         ),
         Text(
-          _getDayName(date.weekday),
+          date.dayName, // ✨ Extension kullanımı
           style: TextStyle(
             fontSize: isScrolled ? 11.sp : 12.sp,
             fontWeight: FontWeight.w500,
@@ -337,21 +309,4 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  /// Ay adını döndür
-  String _getMonthName(int month) {
-    const months = [
-      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
-    ];
-    return months[month - 1];
-  }
-
-  /// Gün adını döndür
-  String _getDayName(int weekday) {
-    const days = [
-      'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe',
-      'Cuma', 'Cumartesi', 'Pazar'
-    ];
-    return days[weekday - 1];
-  }
 }
