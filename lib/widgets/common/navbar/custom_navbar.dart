@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'dart:ui'; // BackdropFilter için gerekli
+import 'dart:ui';
+
+import 'package:lobi_application/theme/app_theme.dart'; // BackdropFilter için gerekli
 
 class CustomNavbar extends StatefulWidget {
   final Widget Function(bool isScrolled)? leading;
@@ -50,7 +52,7 @@ class CustomNavbarState extends State<CustomNavbar>
     _blurAnimation =
         Tween<double>(
           begin: 0.0,
-          end: 10.0, // BackdropFilter için 10 yeterli
+          end: 20.0, // BackdropFilter için 10 yeterli
         ).animate(
           CurvedAnimation(
             parent: _animationController,
@@ -58,7 +60,7 @@ class CustomNavbarState extends State<CustomNavbar>
           ),
         );
 
-    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(
+    _opacityAnimation = Tween<double>(begin: 5.0, end: 1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -108,6 +110,7 @@ class CustomNavbarState extends State<CustomNavbar>
               sigmaY: _blurAnimation.value,
             ),
             child: Container(
+            
               height: totalHeight,
               decoration: BoxDecoration(
             

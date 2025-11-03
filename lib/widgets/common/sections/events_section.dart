@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
-/// EventsSection - Başlık + Liste (Organism seviyesi)
-/// 
-/// Kullanım alanları:
-/// - Ana Sayfa (Yakındaki Etkinlikler)
-/// - Keşfet Sayfası (Kategorilere göre)
-/// - Profil Sayfası (Katıldığım/Beğendiğim)
-/// 
-/// Bu widget içeriği değil, sadece görünümü yönetir
-/// İçerik child ile dışarıdan verilir (composition pattern)
 class EventsSection extends StatelessWidget {
   final String title;
   final String? subtitle;

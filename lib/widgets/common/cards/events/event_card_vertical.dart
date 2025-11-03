@@ -102,7 +102,6 @@ class EventCardVertical extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Organizatör bilgisi (küçük logo + isim)
                     Row(
                       children: [
                         ClipRRect(
