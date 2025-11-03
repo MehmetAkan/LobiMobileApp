@@ -103,7 +103,6 @@ class CustomNavbarState extends State<CustomNavbar>
       builder: (context, child) {
         return ClipRect(
           child: BackdropFilter(
-            // ARKA PLANDAKİ İÇERİĞİ BLUR YAPAR
             filter: ImageFilter.blur(
               sigmaX: _blurAnimation.value,
               sigmaY: _blurAnimation.value,

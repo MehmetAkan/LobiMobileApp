@@ -48,21 +48,55 @@ class AppTheme {
         ? backgroundDark
         : backgroundLight;
   }
+
   static Color getTextHeadColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? backgroundLight
         : backgroundDark;
   }
-    static Color getTextDescColor(BuildContext context) {
+
+  static Color getTextDescColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc800;
   }
-      static Color getCardColor(BuildContext context) {
+
+  static Color getCardColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc800;
   }
+
+  static Color getHomeButtonBgColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : white;
+  }
+
+  static Color getHomeButtonTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : black800;
+  }
+
+  static Color getHomeButtonBorderColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc200;
+  }
+
+  static Color getEventIconColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc600;
+  }
+
+  static Color getEventIconTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc800;
+  }
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

@@ -5,9 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/cards/events/event_card_vertical.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
+import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
+import 'package:lobi_application/widgets/common/sections/events_section.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -17,8 +22,67 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with ScrollablePageMixin {
+  final List<Map<String, dynamic>> _mockNearbyEvents = [
+    {
+      'id': '1',
+      'title': 'GTC DC: Al Pioneers Cocktai Events',
+      'imageUrl': 'https://picsum.photos/id/220/300/300',
+      'date': '14 Eki - 19:30 ',
+      'location': 'Konya Kültür Merkezi',
+      'attendeeCount': 250,
+    },
+    {
+      'id': '2',
+      'title': 'Stand-up Gösterisi Pioneers Cocktai Salon',
+      'imageUrl': 'https://picsum.photos/id/180/300/300',
+      'date': '18 Kasım',
+      'location': 'Mevlana Kültür Merkezi',
+      'attendeeCount': 180,
+    },
+    {
+      'id': '3',
+      'title': 'Tiyatro Oyunu Pioneers Merkezi ',
+      'imageUrl': 'https://picsum.photos/id/233/300/300',
+      'date': '20 Kasım',
+      'location': 'Konya Şehir Tiyatrosu',
+      'attendeeCount': 150,
+    },
+    {
+      'id': '4',
+      'title': 'Açık Hava Sineması',
+      'imageUrl': 'https://picsum.photos/id/232/300/300',
+      'date': '22 Kasım',
+      'location': 'Alaaddin Tepesi',
+      'attendeeCount': 300,
+    },
+  ];
 
-
+  final List<Map<String, dynamic>> _mockRecommendedEvents = [
+    {
+      'id': '5',
+      'title': 'EDM Festival',
+      'imageUrl': 'https://picsum.photos/id/55/300/300',
+      'date': '25 Kasım',
+      'location': 'Konya Arena',
+      'attendeeCount': 500,
+    },
+    {
+      'id': '6',
+      'title': 'Klasik Müzik Konseri',
+      'imageUrl': 'https://picsum.photos/id/35/300/300',
+      'date': '28 Kasım',
+      'location': 'Konya Kültür Merkezi',
+      'attendeeCount': 200,
+    },
+    {
+      'id': '7',
+      'title': 'Yemek Festivali',
+      'imageUrl': 'https://picsum.photos/id/25/300/300',
+      'date': '30 Kasım',
+      'location': 'Meram Bağları',
+      'attendeeCount': 350,
+    },
+  ];
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
@@ -31,7 +95,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // Arka plan resmi
           Positioned.fill(
             child: Image.asset(
               'assets/images/system/other-page-bg.png',
@@ -40,65 +103,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               alignment: Alignment.bottomCenter,
             ),
           ),
-
-          // İçerik
           SingleChildScrollView(
             controller: scrollController, // Mixin'den geliyor
-            padding: EdgeInsets.fromLTRB(20.w, navbarHeight + 20.h, 20.w, 24.h),
+            padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 0.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  profile != null
-                      ? 'HOŞGELDİN, ${profile.firstName.toUpperCase()}!'
-                      : 'ANA SAYFAYA HOŞGELDİN',
-                  textAlign: TextAlign.start,
-                  style: text.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 35.sp,
-                    color: AppTheme.getTextHeadColor(context),
-                    height: 1.2,
+                EventsSection(
+                  title: 'Yakındaki Etkinlikler',
+                  onSeeAll: () {
+                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
+                  },
+                  child: EventCardList<Map<String, dynamic>>(
+                    items: _mockNearbyEvents,
+                    itemBuilder: (event, index) {
+                      return EventCardHorizontal(
+                        imageUrl: event['imageUrl'],
+                        title: event['title'],
+                        date: event['date'],
+                        location: event['location'],
+                        attendeeCount: event['attendeeCount'],
+                        isLiked: false, // Faz 2'de aktif olacak
+                        showLikeButton: false, // Şimdilik gizle
+                        onTap: () {
+                          debugPrint('Etkinliğe tıklandı: ${event['title']}');
+                        },
+                      );
+                    },
                   ),
                 ),
-                SizedBox(height: 10.h),
-
-                if (profile != null)
-                  Text(
-                    'Yaş: ${profile.age} • ${profile.fullName}',
-                    style: text.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.sp,
-                      color: AppTheme.getTextDescColor(context),
-                    ),
-                  ),
-
-                SizedBox(height: 30.h),
-
-                // Test kartları
-                ...List.generate(
-                  20,
-                  (index) => Container(
-                    margin: EdgeInsets.only(bottom: 12.h),
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: AppTheme.getCardColor(context),
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    child: Text(
-                      'Kart ${index + 1}',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppTheme.getTextHeadColor(context),
-                      ),
-                    ),
-                  ),
+                ListView.separated(
+                  shrinkWrap: true, 
+                  physics:
+                      NeverScrollableScrollPhysics(), // Parent scroll kullanacak
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  itemCount: _mockNearbyEvents.length,
+                  separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                  itemBuilder: (context, index) {
+                    final event = _mockNearbyEvents[index];
+                    return EventCardVertical(
+                      imageUrl: event['imageUrl'],
+                      title: event['title'],
+                      date: event['date'],
+                      location: event['location'],
+                      attendeeCount: event['attendeeCount'],
+                      isLiked: false,
+                      showLikeButton: false,
+                      height: 120.h,
+                      onTap: () => debugPrint('Tıklandı: ${event['title']}'),
+                    );
+                  },
                 ),
               ],
             ),
           ),
-
-          // Navbar
           Positioned(
             top: 0,
             left: 0,

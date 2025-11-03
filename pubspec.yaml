@@ -1,6 +1,6 @@
 name: lobi_application
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -18,9 +18,9 @@ dependencies:
   pinput: ^5.0.2
   supabase_flutter: ^2.10.3
   url_launcher: ^6.3.2
-  flutter_riverpod: ^2.6.1  
-  get_it: ^8.0.2              
-  logger: ^2.5.0             
+  flutter_riverpod: ^2.6.1
+  get_it: ^8.0.2
+  logger: ^2.5.0
   flutter_screenutil: ^5.9.3
   soft_edge_blur: ^0.1.3
   progressive_blur: ^0.0.2
@@ -31,7 +31,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   mockito: ^5.4.4
-  build_runner: ^2.4.13   
+  build_runner: ^2.4.13
 
 flutter:
   uses-material-design: true
@@ -44,6 +44,8 @@ flutter:
     - assets/images/system/other-page-bg.png
     - assets/images/system/parafoni-icon-logo-dark.svg
     - assets/images/system/google-icon.svg
+    - assets/images/system/activity-cover-1.png
+    - assets/images/system/activity-cover-2.png
   fonts:
     - family: Figtree
       fonts:
