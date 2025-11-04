@@ -162,8 +162,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ],
             ),
           ),
-
-          // Navbar
           Positioned(
             top: 0,
             left: 0,
@@ -253,6 +251,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ],
             ),
           ),
+       
         ],
       ),
     );

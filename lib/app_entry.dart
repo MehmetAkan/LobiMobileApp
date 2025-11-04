@@ -6,7 +6,7 @@ import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/screens/auth/welcome_screen.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
 import 'package:lobi_application/screens/main/home/home_screen.dart';
-
+import 'package:lobi_application/screens/main/main_navigation_screen.dart';
 /// App Entry Point
 /// Neden ConsumerWidget: Riverpod provider'ları dinlemek için
 /// Auth state'e göre otomatik ekran yönlendirmesi yapar
@@ -98,7 +98,7 @@ class AppEntry extends ConsumerWidget {
             AppLogger.debug(
               'Profil var: ${profile.fullName} -> Home Screen',
             );
-            return const HomeScreen();
+            return const MainNavigationScreen();
           },
         );
       },

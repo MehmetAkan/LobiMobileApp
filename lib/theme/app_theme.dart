@@ -51,7 +51,12 @@ class AppTheme {
   static Color getNavbarBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : zinc400;
+        : zinc200;
+  }
+    static Color getNavbarBtnBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc300;
   }
   static Color getTextHeadColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
@@ -100,7 +105,16 @@ class AppTheme {
         ? dark_zinc600
         : zinc800;
   }
-
+  static Color getnNavigationBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : white;
+  }
+    static Color getnNavigationBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc100;
+  }
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

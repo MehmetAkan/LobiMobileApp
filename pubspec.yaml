@@ -47,6 +47,14 @@ flutter:
     - assets/images/system/google-icon.svg
     - assets/images/system/activity-cover-1.png
     - assets/images/system/activity-cover-2.png
+    - assets/images/system/navigation/home-icon.svg
+    - assets/images/system/navigation/discovery-icon.svg
+    - assets/images/system/navigation/activity-icon.svg
+    - assets/images/system/navigation/profile-icon.svg
+    - assets/images/system/navigation/home-active-icon.svg
+    - assets/images/system/navigation/discovery-active-icon.svg
+    - assets/images/system/navigation/activity-active-icon.svg
+    - assets/images/system/navigation/profile-active-icon.svg
   fonts:
     - family: Figtree
       fonts:

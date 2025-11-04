@@ -102,9 +102,7 @@ class CustomNavbarState extends State<CustomNavbar>
         )!;
         final bgColor = Color.lerp(
           AppTheme.getNavbarBg(context),
-          AppTheme.getNavbarBg(
-            context,
-          ).withOpacity(0.7), // istediğin tona çekebilirsin
+          AppTheme.white.withOpacity(0.5), // istediğin tona çekebilirsin
           _animationController.value,
         )!;
         return ClipRect(
