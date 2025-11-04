@@ -104,7 +104,7 @@ class CustomNavbarState extends State<CustomNavbar>
           AppTheme.getNavbarBg(context),
           AppTheme.getNavbarBg(
             context,
-          ).withOpacity(0.5), // istediğin tona çekebilirsin
+          ).withOpacity(0.7), // istediğin tona çekebilirsin
           _animationController.value,
         )!;
         return ClipRect(

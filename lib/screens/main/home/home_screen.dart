@@ -53,12 +53,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     },
     {
       'id': '4',
-      'title': 'Açık Hava Sineması',
+      'title': 'Açık Hava Sineması ',
       'imageUrl': 'https://picsum.photos/id/232/300/300',
       'date': '2024-11-07T21:00:00', // ✨ Farklı gün
       'location': 'Alaaddin Tepesi',
       'attendeeCount': 300,
     },
+     {
+      'id': '5',
+      'title': 'Açık Hava Sineması Pioneers Merkezi',
+      'imageUrl': 'https://picsum.photos/id/50/300/300',
+      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
+      'location': 'Alaaddin Tepesi',
+      'attendeeCount': 300,
+    },
+    {
+      'id': '6',
+      'title': 'Açık Hava Sineması Pioneers Merkezi',
+      'imageUrl': 'https://picsum.photos/id/30/300/300',
+      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
+      'location': 'Alaaddin Tepesi',
+      'attendeeCount': 300,
+    },
+
   ];
 
   final List<Map<String, dynamic>> _mockRecommendedEvents = [
@@ -113,7 +130,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     debugPrint('Tümünü gör: Yakındaki Etkinlikler');
                   },
                   child: EventCardList<Map<String, dynamic>>(
-                    items: _mockNearbyEvents,
+                    items: _mockRecommendedEvents,
                     itemBuilder: (event, index) {
                       return EventCardHorizontal(
                         imageUrl: event['imageUrl'],

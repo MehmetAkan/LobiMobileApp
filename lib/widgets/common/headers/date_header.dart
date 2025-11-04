@@ -36,8 +36,7 @@ class DateHeader extends StatelessWidget {
       opacity: opacity,
       child: Container(
         width: double.infinity,
-        padding:
-            padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 15),
         child: Row(
           children: [
             Text(

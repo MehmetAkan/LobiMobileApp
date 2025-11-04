@@ -49,6 +49,8 @@ class EventCardVertical extends StatelessWidget {
       onTap: onTap,
       child: Container(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Sol taraf - Resim
             Stack(
@@ -57,13 +59,13 @@ class EventCardVertical extends StatelessWidget {
                   borderRadius: BorderRadius.circular(borderRadius.r),
                   child: Image.network(
                     imageUrl,
-                    width: 130.w,
-                    height: 130.h,
+                    width: 120.w,
+                    height: 120.h,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        width: 130.w,
-                        height: 130.h,
+                        width: 120.w,
+                        height: 120.h,
                         color: AppTheme.zinc300,
                         child: Icon(
                           LucideIcons.image,
@@ -93,11 +95,9 @@ class EventCardVertical extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Sağ taraf - İçerik
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(15.w),
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,10 +136,7 @@ class EventCardVertical extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 5.h),
-
-                    // Başlık
                     Text(
                       title,
                       style: TextStyle(
@@ -151,10 +148,7 @@ class EventCardVertical extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-
                     SizedBox(height: 5.h),
-
-                    // Alt bilgiler
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -210,8 +204,9 @@ class EventCardVertical extends StatelessWidget {
                         // Katılımcı sayısı
                       ],
                     ),
-
-                    SizedBox(height: 5.h),
+                    SizedBox(height: 10.h),
+                 
+                  
                   ],
                 ),
               ),
