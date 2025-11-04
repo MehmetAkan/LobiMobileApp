@@ -42,6 +42,7 @@ flutter:
     - assets/images/parafoni-login-img.png
     - assets/images/system/background-auth.png
     - assets/images/system/other-page-bg.png
+    - assets/images/system/lobitext.svg
     - assets/images/system/parafoni-icon-logo-dark.svg
     - assets/images/system/google-icon.svg
     - assets/images/system/activity-cover-1.png

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
-import 'package:lobi_application/theme/app_theme.dart'; // BackdropFilter için gerekli
+import 'package:lobi_application/theme/app_theme.dart';
 
 class CustomNavbar extends StatefulWidget {
   final Widget Function(bool isScrolled)? leading;
@@ -33,7 +33,6 @@ class CustomNavbarState extends State<CustomNavbar>
   late ScrollController _internalScrollController;
   late AnimationController _animationController;
   late Animation<double> _blurAnimation;
-  late Animation<double> _opacityAnimation;
 
   bool _isScrolled = false;
 
@@ -49,18 +48,7 @@ class CustomNavbarState extends State<CustomNavbar>
       vsync: this,
     );
 
-    _blurAnimation =
-        Tween<double>(
-          begin: 0.0,
-          end: 20.0, // BackdropFilter için 10 yeterli
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeInOut,
-          ),
-        );
-
-    _opacityAnimation = Tween<double>(begin: 5.0, end: 1).animate(
+    _blurAnimation = Tween<double>(begin: 0.0, end: 20.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -100,9 +88,25 @@ class CustomNavbarState extends State<CustomNavbar>
         widget.padding ?? EdgeInsets.symmetric(horizontal: 15.w);
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final totalHeight = defaultHeight + statusBarHeight;
+
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
+        // 0 → transparan, 1 → görünür border
+        final borderColor = Color.lerp(
+          AppTheme.getNavbarBorder(context).withOpacity(0),
+          AppTheme.getNavbarBorder(
+            context,
+          ), // istediğin tona çekebilirsin
+          _animationController.value,
+        )!;
+        final bgColor = Color.lerp(
+          AppTheme.getNavbarBg(context),
+          AppTheme.getNavbarBg(
+            context,
+          ).withOpacity(0.5), // istediğin tona çekebilirsin
+          _animationController.value,
+        )!;
         return ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(
@@ -110,10 +114,16 @@ class CustomNavbarState extends State<CustomNavbar>
               sigmaY: _blurAnimation.value,
             ),
             child: Container(
-            
               height: totalHeight,
               decoration: BoxDecoration(
-            
+                // Arka plan istersen buraya da hafif renk verebilirsin
+                color: bgColor,
+                border: Border(
+                  bottom: BorderSide(
+                    color: borderColor,
+                    width: 0.7, // kalınlığı buradan ayarla
+                  ),
+                ),
               ),
               padding: EdgeInsets.only(top: statusBarHeight),
               child: _buildContent(defaultPadding),

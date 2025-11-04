@@ -165,7 +165,6 @@ class _GroupedEventListState extends State<GroupedEventList> {
       ..sort((a, b) => a.compareTo(b));
 
     return ListView.builder(
-      // ❌ controller: widget.scrollController, - KALDIRILDI
       padding: widget.padding ?? EdgeInsets.zero,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(), // Parent scroll kullanacak
@@ -179,15 +178,11 @@ class _GroupedEventListState extends State<GroupedEventList> {
           key: _headerKeys[date],
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // DateHeader
             DateHeader(
               date: date,
               opacity: opacity,
             ),
-            
             SizedBox(height: 8.h),
-            
-            // Events for this date
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),

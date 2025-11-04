@@ -4,12 +4,12 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart'; // ✨ YENİ
 
 /// DateHeader - Tarihe göre gruplanmış listelerde kullanılan başlık
-/// 
+///
 /// Özellikler:
 /// - Tarih gösterimi: "5 Kasım / Çarşamba"
 /// - Fade out animasyonu için opacity desteği
 /// - Herhangi bir sayfada kullanılabilir (reusable)
-/// 
+///
 /// Kullanım:
 /// ```dart
 /// DateHeader(
@@ -36,59 +36,28 @@ class DateHeader extends StatelessWidget {
       opacity: opacity,
       child: Container(
         width: double.infinity,
-        padding: padding ?? EdgeInsets.symmetric(
-          horizontal: 20.w,
-          vertical: 12.h,
-        ),
+        padding:
+            padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
         child: Row(
           children: [
-            // Tarih numarası (kutucuk içinde)
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.w,
-                vertical: 6.h,
-              ),
-              decoration: BoxDecoration(
-                color: AppTheme.purple900,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                '${date.day}',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                  height: 1,
-                ),
+            Text(
+              '${date.day} ${date.monthName}',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.getTextHeadColor(context),
+                height: 1,
               ),
             ),
-            
-            SizedBox(width: 10.w),
-            
-            // Ay ve gün adı
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  date.monthName, // ✨ Extension kullanımı
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.getTextHeadColor(context),
-                    height: 1,
-                  ),
-                ),
-                Text(
-                  date.dayName, // ✨ Extension kullanımı
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.getTextDescColor(context),
-                    height: 1.2,
-                  ),
-                ),
-              ],
+            SizedBox(width: 5.w),
+            Text(
+              '/ ${date.dayName}',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
+                color: AppTheme.getTextDescColor(context),
+                height: 1,
+              ),
             ),
           ],
         ),

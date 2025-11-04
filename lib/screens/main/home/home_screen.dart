@@ -23,7 +23,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with ScrollablePageMixin {
-  
   // ✨ YENİ: Aktif tarih state'i (navbar için)
   DateTime? activeDate;
 
@@ -67,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       'id': '5',
       'title': 'EDM Festival',
       'imageUrl': 'https://picsum.photos/id/55/300/300',
-      'date': '2024-11-25T22:00:00',
+      'date': '5 Kas - 14:30',
       'location': 'Konya Arena',
       'attendeeCount': 500,
     },
@@ -75,7 +74,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       'id': '6',
       'title': 'Klasik Müzik Konseri',
       'imageUrl': 'https://picsum.photos/id/35/300/300',
-      'date': '2024-11-28T19:00:00',
+      'date': '5 Kas - 14:30',
       'location': 'Konya Kültür Merkezi',
       'attendeeCount': 200,
     },
@@ -83,7 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       'id': '7',
       'title': 'Yemek Festivali',
       'imageUrl': 'https://picsum.photos/id/25/300/300',
-      'date': '2024-11-30T12:00:00',
+      'date': '5 Kas - 14:30',
       'location': 'Meram Bağları',
       'attendeeCount': 350,
     },
@@ -101,14 +100,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/system/other-page-bg.png',
-              fit: BoxFit.cover,
-              opacity: const AlwaysStoppedAnimation(0.20),
-              alignment: Alignment.bottomCenter,
-            ),
-          ),
           SingleChildScrollView(
             controller: scrollController, // Mixin'den geliyor
             padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 0.h),
@@ -139,10 +130,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     },
                   ),
                 ),
-                
+
                 SizedBox(height: 20.h),
-                
-                // ✨ YENİ: Tarihe göre gruplanmış dikey liste
                 GroupedEventList(
                   events: _mockNearbyEvents,
                   scrollController: scrollController,
@@ -156,7 +145,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ],
             ),
           ),
-          
+
           // Navbar
           Positioned(
             top: 0,
@@ -164,54 +153,63 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             right: 0,
             child: CustomNavbar(
               scrollController: scrollController,
-              
-              // ✨ GÜNCELLEME: Leading kısmı - Logo her zaman görünür, text değişir
               leading: (scrolled) {
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Logo - HER ZAMAN GÖRÜNÜR
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
-                      height: isScrolled ? 35.h : 45.h,
-                      width: isScrolled ? 35.h : 45.h,
+                      height: isScrolled ? 40.h : 40.h,
+                      width: isScrolled ? 40.h : 40.h,
+
                       child: SvgPicture.asset(
                         'assets/images/system/lobi-icon.svg',
                         fit: BoxFit.contain,
                       ),
                     ),
-                    
-                    SizedBox(width: 5.w),
-                    
-                    // Text kısmı - DEĞIŞKEN (Hoş Geldin / Tarih)
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      transitionBuilder: (child, animation) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                      layoutBuilder: (currentChild, previousChildren) {
-                        return Stack(
-                          alignment: Alignment.centerLeft, // ✨ Sol hizalı
-                          children: [
-                            ...previousChildren,
-                            if (currentChild != null) currentChild,
-                          ],
-                        );
-                      },
-                      child: activeDate != null
-                          ? _buildDateContent(context, activeDate!)
-                          : _buildWelcomeContent(context, profile),
+                    SizedBox(width: 7.w),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.linear,
+                          width: activeDate != null ? 30.w : 45.w,
+                          height: activeDate != null ? 25.h : 30.h,
+                          child: SvgPicture.asset(
+                            'assets/images/system/lobitext.svg',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          layoutBuilder: (currentChild, previousChildren) {
+                            return Stack(
+                              alignment: Alignment.centerLeft,
+                              children: [
+                                ...previousChildren,
+                                if (currentChild != null) currentChild,
+                              ],
+                            );
+                          },
+                          child: activeDate == null
+                              ? const SizedBox.shrink() // hiçbir şey gösterme
+                              : _buildDateContent(context, activeDate!),
+                        ),
+                      ],
                     ),
                   ],
                 );
               },
-              
               actions: (scrolled) => [
                 LiquidGlassLayer(
                   child: LiquidGlass(
@@ -245,27 +243,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// Tarih içeriği (activeDate != null iken)
   Widget _buildDateContent(BuildContext context, DateTime date) {
-    return Column(
-      key: ValueKey('date_${date.day}_${date.month}'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Row(
       children: [
         Text(
-          date.monthName, // ✨ Extension kullanımı
+          '${date.day} ${date.monthName}',
           style: TextStyle(
-            fontSize: isScrolled ? 13.sp : 15.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: AppTheme.getTextHeadColor(context),
             height: 1,
           ),
         ),
+        SizedBox(width: 3.w),
         Text(
-          date.dayName, // ✨ Extension kullanımı
+          '/ ${date.dayName}',
           style: TextStyle(
-            fontSize: isScrolled ? 11.sp : 12.sp,
-            fontWeight: FontWeight.w500,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
             color: AppTheme.getTextDescColor(context),
-            height: 1.2,
+
+            height: 1,
           ),
         ),
       ],
@@ -278,35 +275,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       key: const ValueKey('welcome'),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          style: TextStyle(
-            height: 1,
-            fontWeight: FontWeight.w500,
-            fontSize: isScrolled ? 14.sp : 15.sp,
-            color: AppTheme.getTextDescColor(context),
-          ),
-          child: const Text("Hoş Geldin,"),
-        ),
-        AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          style: TextStyle(
-            height: 1.2,
-            fontSize: isScrolled ? 16.sp : 18.sp,
-            fontWeight: FontWeight.w600,
-            color: AppTheme.getTextHeadColor(context),
-          ),
-          child: Text(
-            profile != null
-                ? '${profile.firstName.toUpperCase()} ${profile.lastName.toUpperCase()}'
-                : 'OHH İSMİNİ BULAMADIK',
-          ),
-        ),
-      ],
+      children: [],
     );
   }
-
 }

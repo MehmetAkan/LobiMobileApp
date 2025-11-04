@@ -46,9 +46,13 @@ class AppTheme {
   static Color getNavbarBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? backgroundDark
-        : backgroundLight;
+        : white;
   }
-
+  static Color getNavbarBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc400;
+  }
   static Color getTextHeadColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? backgroundLight
