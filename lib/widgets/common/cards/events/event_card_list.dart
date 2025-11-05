@@ -20,7 +20,7 @@ class EventCardList<T> extends StatelessWidget {
     super.key,
     required this.items,
     required this.itemBuilder,
-    this.height = 265,
+    this.height = 240,
     this.spacing = 20,
     this.padding,
     this.physics,
@@ -37,7 +37,7 @@ class EventCardList<T> extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: physics ?? const BouncingScrollPhysics(),
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
+        padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
         itemCount: items.length,
         separatorBuilder: (context, index) => SizedBox(width: spacing.w),
         itemBuilder: (context, index) {

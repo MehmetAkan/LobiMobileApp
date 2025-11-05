@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
-
 import 'package:lobi_application/theme/app_theme.dart';
 
 class CustomNavbar extends StatefulWidget {
@@ -21,7 +20,7 @@ class CustomNavbar extends StatefulWidget {
     this.scrollController,
     this.height,
     this.padding,
-    this.blurThreshold = 10.0,
+    this.blurThreshold = 3.0,
   });
 
   @override
@@ -48,8 +47,8 @@ class CustomNavbarState extends State<CustomNavbar>
       vsync: this,
     );
 
-    _blurAnimation = Tween<double>(begin: 0.0, end: 20.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    _blurAnimation = Tween<double>(begin: 3.0, end: 3.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.linear),
     );
   }
 
@@ -92,19 +91,16 @@ class CustomNavbarState extends State<CustomNavbar>
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
-        // 0 → transparan, 1 → görünür border
         final borderColor = Color.lerp(
           AppTheme.getNavbarBorder(context).withOpacity(0),
-          AppTheme.getNavbarBorder(
-            context,
-          ), // istediğin tona çekebilirsin
+          AppTheme.getNavbarBorder(context), // istediğin tona çekebilirsin
           _animationController.value,
         )!;
-        final bgColor = Color.lerp(
-          AppTheme.getNavbarBg(context),
-          AppTheme.white.withOpacity(0.5), // istediğin tona çekebilirsin
-          _animationController.value,
-        )!;
+        // final bgColor = Color.lerp(
+        //   AppTheme.getNavbarBg(context),
+        //   AppTheme.white.withOpacity(0.5), // istediğin tona çekebilirsin
+        //   _animationController.value,
+        // )!;
         return ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(
@@ -114,11 +110,18 @@ class CustomNavbarState extends State<CustomNavbar>
             child: Container(
               height: totalHeight,
               decoration: BoxDecoration(
-                // Arka plan istersen buraya da hafif renk verebilirsin
-                color: bgColor,
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    AppTheme.getNavbarBg(context).withOpacity(0.2),
+                    AppTheme.getNavbarBg(context).withOpacity(0.5),
+                    AppTheme.getNavbarBg(context).withOpacity(1),
+                  ],
+                ),
                 border: Border(
                   bottom: BorderSide(
-                    color: borderColor,
+                    color:  AppTheme.getNavbarBorder(context).withOpacity(0.2),
                     width: 0.7, // kalınlığı buradan ayarla
                   ),
                 ),

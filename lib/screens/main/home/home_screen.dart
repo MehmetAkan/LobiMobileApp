@@ -23,22 +23,23 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with ScrollablePageMixin {
-  // ✨ YENİ: Aktif tarih state'i (navbar için)
   DateTime? activeDate;
 
   final List<Map<String, dynamic>> _mockNearbyEvents = [
     {
       'id': '1',
-      'title': 'GTC DC: Al Pioneers Cocktai Events',
-      'imageUrl': 'https://picsum.photos/id/220/300/300',
+      'title': 'Sillyon Kazıları Gezisi - Antalya Kültür Yolu Festivali',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/sillyon-kazilari-gezisi-antalya-kultur-yolu-festivali-20251017153951c3bb66506bec4586a1c7e94ad06a6949.jpeg',
       'date': '2024-11-05T19:30:00', // ✨ DateTime formatında
       'location': 'Konya Kültür Merkezi',
       'attendeeCount': 250,
     },
     {
       'id': '2',
-      'title': 'Stand-up Gösterisi Pioneers Cocktai Salon',
-      'imageUrl': 'https://picsum.photos/id/180/300/300',
+      'title': 'Hayal Satıcısı',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/hayal-saticisi-20259916283672ff27d844264416927c8c68d1fcd571.jpg',
       'date': '2024-11-05T20:00:00', // ✨ Aynı gün
       'location': 'Mevlana Kültür Merkezi',
       'attendeeCount': 180,
@@ -46,7 +47,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     {
       'id': '3',
       'title': 'Tiyatro Oyunu Pioneers Merkezi ',
-      'imageUrl': 'https://picsum.photos/id/233/300/300',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/merhaba-nietzsche-2025102214543473993bb0f194fecad9ea8f7a73f2d22.jpg',
       'date': '2024-11-06T19:00:00', // ✨ Farklı gün
       'location': 'Konya Şehir Tiyatrosu',
       'attendeeCount': 150,
@@ -54,12 +56,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     {
       'id': '4',
       'title': 'Açık Hava Sineması ',
-      'imageUrl': 'https://picsum.photos/id/232/300/300',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/b94518d8b24145bfb3b5c41420674c9d.jpg',
       'date': '2024-11-07T21:00:00', // ✨ Farklı gün
       'location': 'Alaaddin Tepesi',
       'attendeeCount': 300,
     },
-     {
+    {
       'id': '5',
       'title': 'Açık Hava Sineması Pioneers Merkezi',
       'imageUrl': 'https://picsum.photos/id/50/300/300',
@@ -69,36 +72,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     },
     {
       'id': '6',
-      'title': 'Açık Hava Sineması Pioneers Merkezi',
-      'imageUrl': 'https://picsum.photos/id/30/300/300',
+      'title': 'Vitray Cam Boyama Atölyesi',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/vitray-cam-boyama-atolyesi-20251118495902c6a1c22014400a963e54fa24d2aadd.jpg',
       'date': '2024-11-07T21:00:00', // ✨ Farklı gün
       'location': 'Alaaddin Tepesi',
       'attendeeCount': 300,
     },
-
   ];
 
   final List<Map<String, dynamic>> _mockRecommendedEvents = [
     {
       'id': '5',
-      'title': 'EDM Festival',
-      'imageUrl': 'https://picsum.photos/id/55/300/300',
+      'title': 'Morkomedyen Stand Up',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/morkomedyen-stand-up-202492493058dda84e1ba75b43399c3fd34102f70702.jpg',
       'date': '5 Kas - 14:30',
-      'location': 'Konya Arena',
+      'location': 'Antalya Açık Hava Tiyartosu',
       'attendeeCount': 500,
     },
     {
       'id': '6',
-      'title': 'Klasik Müzik Konseri',
-      'imageUrl': 'https://picsum.photos/id/35/300/300',
+      'title': 'Ali Congun - Adliye Çayı Stand Up',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/ali-congun-adliye-cayi-stand-up-202581920245282b8a52c40c74b86866b06a02b15a866.jpg',
       'date': '5 Kas - 14:30',
       'location': 'Konya Kültür Merkezi',
       'attendeeCount': 200,
     },
     {
       'id': '7',
-      'title': 'Yemek Festivali',
-      'imageUrl': 'https://picsum.photos/id/25/300/300',
+      'title': 'Türk rock müziğinin efsane grubu Mor ve Ötesi',
+      'imageUrl':
+          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/mor-ve-otesi-20259281120578730a00788d4ca0863f88153d521be2.png',
       'date': '5 Kas - 14:30',
       'location': 'Meram Bağları',
       'attendeeCount': 350,
@@ -123,7 +129,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Yatay scroll olan etkinlikler (değişiklik yok)
                 EventsSection(
                   title: 'Yakındaki Etkinlikler',
                   onSeeAll: () {
@@ -147,17 +152,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     },
                   ),
                 ),
-
                 SizedBox(height: 20.h),
-                GroupedEventList(
-                  events: _mockNearbyEvents,
-                  scrollController: scrollController,
-                  navbarHeight: navbarHeight,
-                  onActiveDateChanged: (date) {
-                    setState(() {
-                      activeDate = date;
-                    });
+                EventsSection(
+                  title: 'Yakındaki Etkinlikler',
+                  onSeeAll: () {
+                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
                   },
+                  child: GroupedEventList(
+                    events: _mockNearbyEvents,
+                    scrollController: scrollController,
+                    navbarHeight: navbarHeight,
+                    onActiveDateChanged: (date) {
+                      setState(() {
+                        activeDate = date;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -233,7 +243,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       width: 40.w,
                       height: 40.w,
                       child: Material(
-                        color: Colors.transparent,
+                        color: Colors.white.withOpacity(0.1),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(60.r),
                           child: Center(
@@ -251,7 +261,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ],
             ),
           ),
-       
         ],
       ),
     );
