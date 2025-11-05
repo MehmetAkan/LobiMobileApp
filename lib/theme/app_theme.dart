@@ -18,7 +18,7 @@ class AppTheme {
   static const Color red100 = Color(0xFFF9E5E5);
   static const Color red900 = Color(0xFFCB0200);
   static const Color black800 = Color(0xFF090A0A);
-  static const Color backgroundLight = Color(0xFFFCFCFC);
+  static const Color backgroundLight = Color(0xFFF8F8F8);
   static const Color backgroundDark = Color(0xFF090A0A);
   static const Color dark_zinc600 = Color(0xFFB2B2B2);
   static const Color dark_zinc700 = Color(0xFF949293);
@@ -48,16 +48,31 @@ class AppTheme {
         ? backgroundDark
         : backgroundLight;
   }
+
   static Color getNavbarBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc200;
   }
-    static Color getNavbarBtnBorder(BuildContext context) {
+
+  static Color getNavigationBtnBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc300;
   }
+
+  static Color getNavbarBtnBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc200;
+  }
+
+  static Color getNavbarBtnBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : white;
+  }
+
   static Color getTextHeadColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? backgroundLight
@@ -105,16 +120,19 @@ class AppTheme {
         ? dark_zinc600
         : zinc800;
   }
+
   static Color getnNavigationBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : white;
   }
-    static Color getnNavigationBorder(BuildContext context) {
+
+  static Color getnNavigationBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc100;
   }
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

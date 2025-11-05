@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-
 import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
@@ -236,27 +234,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 );
               },
               actions: (scrolled) => [
-                LiquidGlassLayer(
-                  child: LiquidGlass(
-                    shape: LiquidRoundedSuperellipse(borderRadius: 60),
-                    child: SizedBox(
-                      width: 40.w,
-                      height: 40.w,
-                      child: Material(
-                        color: Colors.white.withOpacity(0.1),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(60.r),
-                          child: Center(
-                            child: Icon(
-                              LucideIcons.bell400,
-                              size: 22.sp,
-                              color: AppTheme.getButtonIconColor(context),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                NavbarNotificationButton(
+                  onTap: () {
+                  
+                  },
                 ),
               ],
             ),
