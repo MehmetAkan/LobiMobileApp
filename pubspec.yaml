@@ -55,6 +55,16 @@ flutter:
     - assets/images/system/navigation/discovery-active-icon.svg
     - assets/images/system/navigation/activity-active-icon.svg
     - assets/images/system/navigation/profile-active-icon.svg
+    - assets/images/system/category/art-category-icon.svg
+    - assets/images/system/category/concert-category-icon.svg
+    - assets/images/system/category/film-category-icon.svg
+    - assets/images/system/category/heart-category-icon.svg
+    - assets/images/system/category/sport-category-icon.svg
+    - assets/images/system/category/theater-category-icon.svg
+    - assets/images/system/category/travel-category-icon.svg
+    - assets/images/system/category/tech-category-icon.svg
+    - assets/images/system/category/education-category-icon.svg
+    - assets/images/system/category/food-category-icon.svg
   fonts:
     - family: Figtree
       fonts:

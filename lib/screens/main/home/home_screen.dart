@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 EventsSection(
-                  title: 'Yakındaki Etkinlikler',
+                  title: 'Beğenebileceğin ve fazlası',
                   onSeeAll: () {
                     debugPrint('Tümünü gör: Yakındaki Etkinlikler');
                   },
@@ -152,7 +152,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 ),
                 SizedBox(height: 20.h),
                 EventsSection(
-                  title: 'Yakındaki Etkinlikler',
+                  title: 'Bu haftakiler',
                   onSeeAll: () {
                     debugPrint('Tümünü gör: Yakındaki Etkinlikler');
                   },

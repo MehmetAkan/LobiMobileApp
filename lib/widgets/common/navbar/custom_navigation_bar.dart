@@ -55,7 +55,7 @@ class CustomNavigationBar extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.zinc800.withOpacity(0.2),
+                  color: AppTheme.zinc800.withOpacity(0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 5),
                 ),
@@ -148,7 +148,7 @@ class CustomNavigationBar extends StatelessWidget {
                             context: context,
                             index: 2,
                             activeIcon:
-                                'assets/images/system/navigation/activity-active-icon.svg',
+                                'assets/images/system/navigation/activty-active-icon.svg',
                             inactiveIcon:
                                 'assets/images/system/navigation/activity-icon.svg',
                             label: 'Etkinlik',

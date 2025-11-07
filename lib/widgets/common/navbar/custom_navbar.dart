@@ -84,7 +84,7 @@ class CustomNavbarState extends State<CustomNavbar>
   Widget build(BuildContext context) {
     final defaultHeight = widget.height ?? 60.h;
     final defaultPadding =
-        widget.padding ?? EdgeInsets.symmetric(horizontal: 15.w);
+        widget.padding ?? EdgeInsets.symmetric(horizontal: 20.w);
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final totalHeight = defaultHeight + statusBarHeight;
 

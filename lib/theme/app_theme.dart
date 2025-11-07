@@ -133,6 +133,18 @@ class AppTheme {
         : zinc100;
   }
 
+  static Color getCategoryCardBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc800
+        : zinc200;
+  }
+
+  static Color getCategoryCardBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : white;
+  }
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

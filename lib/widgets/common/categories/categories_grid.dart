@@ -25,17 +25,18 @@ class CategoriesGrid extends StatelessWidget {
     final secondRow = categories.sublist(midPoint);
 
     return SizedBox(
-      height: height ?? 120.h,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: firstRow.map((category) {
                 return Padding(
-                  padding: EdgeInsets.only(right: 20.w),
+                  padding: EdgeInsets.only(right: 5.w),
                   child: _CategoryChip(
                     category: category,
                     onTap: onCategoryTap != null
@@ -45,11 +46,11 @@ class CategoriesGrid extends StatelessWidget {
                 );
               }).toList(),
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 5.h),
             Row(
               children: secondRow.map((category) {
                 return Padding(
-                  padding: EdgeInsets.only(right: 20.w),
+                  padding: EdgeInsets.only(right: 5.w),
                   child: _CategoryChip(
                     category: category,
                     onTap: onCategoryTap != null
@@ -77,33 +78,25 @@ class _CategoryChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: AppTheme.getHomeButtonBgColor(context),
-          borderRadius: BorderRadius.circular(12.r),
+          color: AppTheme.getCategoryCardBg(context),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: AppTheme.getHomeButtonBorderColor(context),
+            color: AppTheme.getCategoryCardBorder(context),
             width: 1,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset(
-              category.svgPath,
-              width: 20.w,
-              height: 20.h,
-              colorFilter: ColorFilter.mode(
-                AppTheme.getTextHeadColor(context),
-                BlendMode.srcIn,
-              ),
-            ),
-            SizedBox(width: 8.w),
+            SvgPicture.asset(category.svgPath, width: 22.w, height: 22.h),
+            SizedBox(width: 6.w),
             Text(
               category.name,
               style: TextStyle(
                 fontSize: 15.sp,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 color: AppTheme.getTextHeadColor(context),
               ),
             ),
