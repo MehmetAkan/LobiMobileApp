@@ -11,7 +11,7 @@ import 'package:lobi_application/widgets/common/cards/events/event_card_horizont
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/widgets/common/lists/grouped_event_list.dart';
-import 'package:lobi_application/core/utils/date_extensions.dart'; // ✨ YENİ
+import 'package:lobi_application/core/utils/date_extensions.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

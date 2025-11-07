@@ -31,7 +31,7 @@ class LobiSegmentedSwitch extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(999.r),
       child: Container(
-        height: height ?? 48.h,
+        height: height ?? 45.h,
         padding: EdgeInsets.all(5.r),
         decoration: BoxDecoration(
           color: AppTheme.getSwitchBg(context),

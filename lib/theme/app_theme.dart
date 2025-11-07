@@ -73,6 +73,24 @@ class AppTheme {
         : white;
   }
 
+  static Color getNavbarBtnActiveBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : purple900;
+  }
+
+  static Color getNavbarBtnActiveBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : black800;
+  }
+
+  static Color getNavbarBtnActiveText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : white;
+  }
+
   static Color getTextHeadColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? backgroundLight
@@ -144,25 +162,39 @@ class AppTheme {
         ? dark_zinc600
         : white;
   }
-   static Color getSwitchText(BuildContext context) {
+
+  static Color getSwitchText(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : black800;
   }
- static Color getSwitchBg(BuildContext context) {
+
+  static Color getSwitchBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : white;
   }
-   static Color getSwitchBorder(BuildContext context) {
+
+  static Color getSwitchBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc200;
   }
-     static Color getSwitchActive(BuildContext context) {
+
+  static Color getSwitchActive(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : zinc300;
+  }
+   static Color getFilterText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : black800;
+  }
+ static Color getFilterActiveText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : purple900;
   }
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,

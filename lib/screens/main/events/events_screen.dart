@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/buttons/gradient_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_filter_button.dart';
+import 'package:lobi_application/widgets/common/buttons/navbar_new_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/switches/lobi_segmented_switch.dart';
+import 'package:lobi_application/widgets/common/filters/filter_bottom_sheet.dart';
+import 'package:lobi_application/widgets/common/filters/filter_option.dart';
+import 'package:lobi_application/widgets/common/filters/configs/events_filter_config.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
@@ -20,11 +27,44 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   DateTime? activeDate;
   bool _showUpcoming = true; // true = Yaklaşan, false = Geçmiş
 
+  // Filter state
+  late FilterOption _selectedFilter;
+  late List<FilterOption> _filterOptions;
+
+  @override
+  void initState() {
+    super.initState();
+    // Filter seçeneklerini yükle
+    _filterOptions = EventsFilterConfig.getOptions();
+    // Varsayılan olarak "Tüm Etkinlikler" seçili
+    _selectedFilter = _filterOptions.firstWhere((option) => option.isDefault);
+  }
+
+  // Filter seçildiğinde
+  void _onFilterSelected(FilterOption option) {
+    setState(() {
+      _selectedFilter = option;
+    });
+
+    // TODO: Burada servis çağrısı yapılacak
+    debugPrint('Filter selected: ${option.id} - ${option.label}');
+  }
+
+  // Filter bottom sheet'i aç
+  void _openFilterSheet() {
+    FilterBottomSheet.show(
+      context: context,
+      options: _filterOptions,
+      selectedOption: _selectedFilter,
+      onOptionSelected: _onFilterSelected,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final navbarHeight = 60.h + statusBarHeight;
-
+    final isFilterActive = !_selectedFilter.isDefault;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -37,15 +77,46 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: LobiSegmentedSwitch(
-                    isFirstSelected: _showUpcoming,
-                    firstLabel: 'Yaklaşan',
-                    secondLabel: 'Geçmiş',
-                    onChanged: (isFirst) {
-                      setState(() {
-                        _showUpcoming = isFirst;
-                      });
-                    },
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: LobiSegmentedSwitch(
+                              isFirstSelected: _showUpcoming,
+                              firstLabel: 'Yaklaşan',
+                              secondLabel: 'Geçmiş',
+                              onChanged: (isFirst) {
+                                setState(() {
+                                  _showUpcoming = isFirst;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          NavbarFilterButton(
+                            isActive: isFilterActive,
+                            onTap: _openFilterSheet,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        'Seçili Filter: ${_selectedFilter.label}',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: AppTheme.getTextHeadColor(context),
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      Text(
+                        'Gösterilen: ${_showUpcoming ? 'Yaklaşan' : 'Geçmiş'} Etkinlikler',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppTheme.getTextDescColor(context),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -97,9 +168,9 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               actions: (scrolled) => [
                 Row(
                   children: [
-                    NavbarFilterButton(
+                    NavbarNewButton(
                       onTap: () {
-                        debugPrint('Arama');
+                        debugPrint('Yeni Ekle');
                       },
                     ),
                     SizedBox(width: 10.w),
@@ -113,6 +184,23 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               ],
             ),
           ),
+          // Positioned(
+          //   bottom: 120,
+          //   left: 20,
+          //   right: 20,
+          //   child: GradientButton(
+          //     icon: const Icon(
+          //       LucideIcons.circlePlus400,
+          //       color: Colors.white,
+          //       size: 20,
+          //     ),
+          //     label: 'Etkinlik Oluştur',
+          //     onPressed: () {},
+          //     begin: Alignment.topLeft,
+          //     end: Alignment.bottomRight,
+          //     textStyle: AppTextStyles.authbuttonLg,
+          //   ),
+          // ),
         ],
       ),
     );

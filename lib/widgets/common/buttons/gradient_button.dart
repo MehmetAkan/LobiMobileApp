@@ -14,8 +14,12 @@ class GradientButton extends StatelessWidget {
     this.borderRadius = 100,
     this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
     this.textStyle,
-  }) : assert(onPressed != null || routeName != null,
-          'onPressed veya routeName parametresinden en az biri verilmelidir.');
+    this.icon, // 🔹 opsiyonel icon
+    this.iconGap = 8, // 🔹 icon ile yazı arası boşluk
+  }) : assert(
+         onPressed != null || routeName != null,
+         'onPressed veya routeName parametresinden en az biri verilmelidir.',
+       );
 
   final String label;
   final VoidCallback? onPressed;
@@ -40,32 +44,52 @@ class GradientButton extends StatelessWidget {
   /// Yazı stilini ezmek istersen
   final TextStyle? textStyle;
 
+  /// Opsiyonel ikon (solda)
+  final Widget? icon;
+
+  /// Icon ile yazı arasındaki boşluk
+  final double iconGap;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isEnabled = (onPressed != null) || (routeName != null);
 
-    final gradientColors = colors ??
-        const [AppTheme.purple800, AppTheme.purple900];
+    final gradientColors =
+        colors ?? const [AppTheme.purple800, AppTheme.purple900];
 
     // Disabled durumunda biraz soluklaştır
     final effectiveColors = isEnabled
         ? gradientColors
         : gradientColors.map((c) => c.withOpacity(0.5)).toList();
 
+    // 🔹 Label widget
+    final labelWidget = Text(
+      label,
+      style:
+          (textStyle ??
+          const TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 17,
+            color: Colors.white,
+          )),
+    );
+
+    final childContent = icon == null
+        ? labelWidget
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon!,
+              SizedBox(width: iconGap),
+              labelWidget,
+            ],
+          );
+
     final buttonChild = Padding(
       padding: padding,
-      child: Center(
-        child: Text(
-          label,
-          style: (textStyle ??
-              TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 17,
-                color: Colors.white,
-              )),
-        ),
-      ),
+      child: Center(child: childContent),
     );
 
     void handleTap() {
@@ -99,9 +123,6 @@ class GradientButton extends StatelessWidget {
       ),
     );
 
-    return SizedBox(
-      width: expand ? double.infinity : null,
-      child: content,
-    );
+    return SizedBox(width: expand ? double.infinity : null, child: content);
   }
 }

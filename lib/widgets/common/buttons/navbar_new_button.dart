@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class NavbarNotificationButton extends StatelessWidget {
+class NavbarNewButton extends StatelessWidget {
   final VoidCallback? onTap;
 
-  const NavbarNotificationButton({
+  const NavbarNewButton({
     super.key,
     this.onTap,
   });
@@ -33,7 +33,7 @@ class NavbarNotificationButton extends StatelessWidget {
             ),
             child: Center(
               child: Icon(
-                LucideIcons.bell, // senin ikonun
+                LucideIcons.plus400, // senin ikonun
                 size: 22.sp,
                 color: AppTheme.getButtonIconColor(context),
               ),

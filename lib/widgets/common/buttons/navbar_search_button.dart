@@ -14,8 +14,8 @@ class NavbarSearchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 40.w,   // 40px tasarıma göre
-      height: 40.w,
+      width: 45.w,   // 40px tasarıma göre
+      height: 45.w,
       child: Material(
         color: Colors.transparent,
         shape: const CircleBorder(),
