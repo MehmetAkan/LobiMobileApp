@@ -148,7 +148,7 @@ class CustomNavigationBar extends StatelessWidget {
                             context: context,
                             index: 2,
                             activeIcon:
-                                'assets/images/system/navigation/activty-active-icon.svg',
+                                'assets/images/system/navigation/activity-active-icon.svg',
                             inactiveIcon:
                                 'assets/images/system/navigation/activity-icon.svg',
                             label: 'Etkinlik',
