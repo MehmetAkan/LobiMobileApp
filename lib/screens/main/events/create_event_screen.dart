@@ -142,7 +142,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       width: 45.w,
       height: 45.w,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        color: AppTheme.getAppBarButtonBg(context),
+        border: Border.all(
+          color: AppTheme.getAppBarButtonBorder(context),
+          width: 1,
+        ),
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
@@ -156,7 +160,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // TODO: Galeri modal açılacak
             debugPrint('Galeri açılıyor...');
           },
           customBorder: const CircleBorder(),
@@ -164,7 +167,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             child: Icon(
               Icons.image_outlined,
               size: 22.sp,
-              color: AppTheme.black800,
+              color: AppTheme.getAppBarButtonColor(context),
             ),
           ),
         ),

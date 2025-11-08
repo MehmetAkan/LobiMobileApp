@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // ✨ Status bar için
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 import 'package:lobi_application/theme/app_theme.dart';
@@ -68,6 +69,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   void initState() {
     super.initState();
 
+    // ✨ Status bar rengini style'a göre ayarla
+    _setStatusBarStyle();
+
     _internalScrollController = widget.scrollController ?? ScrollController();
     _internalScrollController.addListener(_onScroll);
 
@@ -77,13 +81,12 @@ class _FullPageAppBarState extends State<FullPageAppBar>
     );
 
     // Blur animation (custom_navbar'dan alındı)
-    _blurAnimation =
-        Tween<double>(
-          begin: _getBlurAmount(false),
-          end: _getBlurAmount(true),
-        ).animate(
-          CurvedAnimation(parent: _animationController, curve: Curves.linear),
-        );
+    _blurAnimation = Tween<double>(
+      begin: _getBlurAmount(false),
+      end: _getBlurAmount(true),
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.linear),
+    );
 
     // Title opacity animation
     _titleOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -93,6 +96,15 @@ class _FullPageAppBarState extends State<FullPageAppBar>
 
   @override
   void dispose() {
+    // ✨ Varsayılan status bar'a geri dön
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark, // Varsayılan: Siyah
+        statusBarBrightness: Brightness.light, // iOS için
+      ),
+    );
+
     _animationController.dispose();
     if (widget.scrollController == null) {
       _internalScrollController.dispose();
@@ -100,6 +112,32 @@ class _FullPageAppBarState extends State<FullPageAppBar>
       _internalScrollController.removeListener(_onScroll);
     }
     super.dispose();
+  }
+
+  /// ✨ Style'a göre status bar rengini ayarla
+  void _setStatusBarStyle() {
+    switch (widget.style) {
+      case AppBarStyle.dark:
+        // Dark style → Beyaz status bar ikonları
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light, // ✨ Beyaz
+            statusBarBrightness: Brightness.dark, // iOS için
+          ),
+        );
+        break;
+      case AppBarStyle.secondary:
+        // Secondary style → Siyah status bar ikonları
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark, // ✨ Siyah
+            statusBarBrightness: Brightness.light, // iOS için
+          ),
+        );
+        break;
+    }
   }
 
   double _getBlurAmount(bool isScrolled) {
