@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lobi_application/theme/app_text_styles.dart';
+import 'package:lobi_application/screens/main/events/create_event_screen.dart';
+import 'package:lobi_application/screens/main/events/create_event_screen_ex.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lobi_application/widgets/common/buttons/gradient_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_filter_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_new_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
@@ -14,7 +14,6 @@ import 'package:lobi_application/widgets/common/switches/lobi_segmented_switch.d
 import 'package:lobi_application/widgets/common/filters/filter_bottom_sheet.dart';
 import 'package:lobi_application/widgets/common/filters/filter_option.dart';
 import 'package:lobi_application/widgets/common/filters/configs/events_filter_config.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
@@ -170,7 +169,13 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                   children: [
                     NavbarNewButton(
                       onTap: () {
-                        debugPrint('Yeni Ekle');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateEventScreen(),
+                            fullscreenDialog: true, // ✨ iOS modal görünümü
+                          ),
+                        );
                       },
                     ),
                     SizedBox(width: 10.w),

@@ -65,6 +65,9 @@ flutter:
     - assets/images/system/category/tech-category-icon.svg
     - assets/images/system/category/education-category-icon.svg
     - assets/images/system/category/food-category-icon.svg
+    - assets/images/system/event-example.png
+    - assets/images/system/event-example-white.png
+    - assets/images/system/event-example-black.png
   fonts:
     - family: Figtree
       fonts:

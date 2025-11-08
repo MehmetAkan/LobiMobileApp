@@ -186,15 +186,48 @@ class AppTheme {
         ? dark_zinc600
         : zinc300;
   }
-   static Color getFilterText(BuildContext context) {
+
+  static Color getFilterText(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : black800;
   }
- static Color getFilterActiveText(BuildContext context) {
+
+  static Color getFilterActiveText(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : purple900;
+  }
+
+  static Color getAppBarBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : black800;
+  }
+  static Color getAppBarButtonBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : black800.withOpacity(0.2);
+  }
+ static Color getAppBarButtonBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? zinc400
+        : dark_zinc600.withOpacity(0.5);
+  }
+  static Color getCreateEventBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : dark_zinc700;
+  }
+ static Color getAppBarTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? black800
+        : white;
+  }
+   static Color getAppBarButtonColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? black800
+        : white;
   }
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
