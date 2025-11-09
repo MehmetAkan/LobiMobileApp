@@ -204,31 +204,55 @@ class AppTheme {
         ? dark_zinc600
         : black800;
   }
+
   static Color getAppBarButtonBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : black800.withOpacity(0.2);
   }
- static Color getAppBarButtonBorder(BuildContext context) {
+
+  static Color getAppBarButtonBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? zinc400
         : dark_zinc600.withOpacity(0.5);
   }
+
   static Color getCreateEventBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
         : dark_zinc700;
   }
- static Color getAppBarTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
-        ? black800
-        : white;
+
+  static Color getAppBarTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? black800 : white;
   }
-   static Color getAppBarButtonColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
-        ? black800
-        : white;
+
+  static Color getAppBarButtonColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? black800 : white;
   }
+
+  static Color getEventFieldBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? white
+        : black800.withOpacity(0.5);
+  }
+
+  static Color getEventFieldBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? white
+        : dark_zinc800.withOpacity(0.2);
+  }
+
+  static Color getEventFieldPlaceholder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? white
+        : white.withOpacity(0.6);
+  }
+
+  static Color getEventFieldText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? white : white;
+  }
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: 'Figtree',

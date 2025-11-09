@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
+import 'package:lobi_application/widgets/common/forms/events/event_text_field.dart';
+import 'package:lobi_application/widgets/common/forms/events/event_datetime_field.dart';
+import 'package:lobi_application/widgets/common/forms/events/event_location_field.dart';
+import 'package:lobi_application/widgets/common/forms/events/event_description_field.dart';
+import 'package:lobi_application/widgets/common/forms/events/event_settings_box.dart';
+import 'package:lobi_application/widgets/common/forms/events/event_settings_item.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'dart:ui';
-
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class CreateEventScreen extends StatefulWidget {
@@ -15,10 +20,22 @@ class CreateEventScreen extends StatefulWidget {
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _titleController = TextEditingController();
+
+  DateTime? _startDate;
+  DateTime? _endDate;
+
+  String? _selectedLocation;
+  String? _description;
+
+  bool _isApprovalRequired = false;
+  String? _approvalRequirements;
+  int? _capacity;
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -27,16 +44,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final appBarHeight = 60.h + statusBarHeight;
     final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: SizedBox(
-        height: screenHeight, // ✨ Tam yükseklik
+        height: screenHeight,
         child: Stack(
           children: [
-            // ✨ Background Image + Blur
             _buildBackground(),
-
-            // ✨ Scrollable Content
             SingleChildScrollView(
               controller: _scrollController,
               padding: EdgeInsets.fromLTRB(
@@ -50,21 +63,176 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 children: [
                   _buildCoverImage(),
                   SizedBox(height: 20.h),
+                  EventTextField(
+                    controller: _titleController,
+                    placeholder: 'Etkinlik başlığını girin',
+                    maxLength: 100,
+                  ),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: EventDateTimeField(
+                          value: _startDate,
+                          placeholder: 'Başlangıç',
+                          onChanged: (date) {
+                            setState(() {
+                              _startDate = date;
+                              if (_endDate == null ||
+                                  _endDate!.isBefore(date)) {
+                                _endDate = date.add(const Duration(hours: 1));
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: EventDateTimeField(
+                          value: _endDate,
+                          placeholder: 'Bitiş',
+                          firstDate: _startDate,
+                          onChanged: (date) {
+                            setState(() => _endDate = date);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  EventLocationField(
+                    value: _selectedLocation,
+                    onTap: () {
+                      debugPrint('Konum modal açılıyor...');
+                      setState(() {
+                        _selectedLocation = 'Konya Kültür Merkezi';
+                      });
+                    },
+                  ),
+
+                  SizedBox(height: 10.h),
+
+                  EventDescriptionField(
+                    value: _description,
+                    onTap: () {
+                      // TODO: Açıklama modal açılacak
+                      debugPrint('Açıklama modal açılıyor...');
+                      // Test için:
+                      setState(() {
+                        _description =
+                            'Bu etkinlik hakkında kısa bir açıklama...';
+                      });
+                    },
+                  ),
+
+                  SizedBox(height: 20.h),
+
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: AppTheme.white.withOpacity(0.2),
+                  ),
+
+                  SizedBox(height: 20.h),
+
+                  // ✨ Başlık: Katılımcı Yönetimi
+                  Padding(
+                    padding: EdgeInsets.only(left: 4.w, bottom: 0.h),
+                    child: Text(
+                      'Biletlendirme',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.white.withOpacity(0.8),
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  EventSettingsBox(
+                    children: [
+                      EventSettingsItem.switchType(
+                        icon: LucideIcons.lock400,
+                        label: 'Onay gerekli',
+                        value: _isApprovalRequired,
+                        showDivider: false, // Son item
+                        onChanged: (value) {
+                          setState(() => _isApprovalRequired = value);
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 15.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 4.w, bottom: 0.h),
+                    child: Text(
+                      'Seçenekler',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.white.withOpacity(0.8),
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  EventSettingsBox(
+                    children: [
+                      EventSettingsItem.action(
+                        icon: LucideIcons.globe400,
+                        label: 'Görünürlük',
+                        placeholder: 'Herkese Açık',
+                        value: _approvalRequirements,
+
+                        onTap: () {
+                          debugPrint('Onay gerekliliği modal açılıyor...');
+                          setState(() {
+                            _approvalRequirements = '18 yaş üzeri';
+                          });
+                        },
+                      ),
+                      EventSettingsItem.action(
+                        icon: LucideIcons.users400,
+                        label: 'Kontenjan',
+                        placeholder: 'Sınırsız',
+                        value: _capacity != null ? '$_capacity kişi' : null,
+                        onTap: () {
+                          debugPrint('Kontenjan modal açılıyor...');
+                          setState(() {
+                            _capacity = 100;
+                          });
+                        },
+                        showDivider: false, // Son item
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 15.h),
+
                   ...List.generate(
-                    10,
+                    8,
                     (i) => Container(
                       height: 60.h,
-                      margin: EdgeInsets.only(bottom: 10.h),
+                      margin: EdgeInsets.only(bottom: 15.h),
                       decoration: BoxDecoration(
+                        color: AppTheme.zinc200.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: AppTheme.zinc300, width: 1),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Input ${i + 2}',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: AppTheme.zinc600,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // ✨ AppBar
             Positioned(
               top: 0,
               left: 0,
@@ -82,7 +250,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  /// Background image + blur overlay
   Widget _buildBackground() {
     return Positioned.fill(
       child: Stack(
@@ -90,19 +257,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           // Image
           Positioned.fill(
             child: Transform.scale(
-              scale: 1.4, // 1.0 = normal boyut, 1.2 = %20 büyütülmüş
+              scale: 1.4,
               child: Image.asset(
                 'assets/images/system/event-example-white.png',
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // Image.asset(
-          //   'assets/images/system/event-example-white.png',
-          //   fit: BoxFit.cover,
-          //   width: double.infinity,
-          //   height: double.infinity,
-          // ),
           // Blur overlay
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
@@ -115,7 +276,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  /// Kapak fotoğrafı + galeri butonu
   Widget _buildCoverImage() {
     return Stack(
       children: [
@@ -123,7 +283,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
           child: AspectRatio(
-            aspectRatio: 1, // ✨ KARE
+            aspectRatio: 1,
             child: Image.asset(
               'assets/images/system/event-example-white.png',
               fit: BoxFit.cover,
@@ -136,18 +296,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  /// Galeri butonu
   Widget _buildGalleryButton() {
     return Container(
       width: 45.w,
       height: 45.w,
       decoration: BoxDecoration(
         color: AppTheme.getAppBarButtonBg(context),
+        shape: BoxShape.circle,
         border: Border.all(
           color: AppTheme.getAppBarButtonBorder(context),
           width: 1,
         ),
-        shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -165,7 +324,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           customBorder: const CircleBorder(),
           child: Center(
             child: Icon(
-              Icons.image_outlined,
+              LucideIcons.image400,
               size: 22.sp,
               color: AppTheme.getAppBarButtonColor(context),
             ),
@@ -186,7 +345,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           shape: const CircleBorder(),
           child: InkWell(
             onTap: () {
-              debugPrint('Etkinlik kaydediliyor...');
+              debugPrint('Başlık: ${_titleController.text}');
+              debugPrint('Başlangıç: $_startDate');
+              debugPrint('Bitiş: $_endDate');
+              debugPrint('Konum: $_selectedLocation');
+              debugPrint('Açıklama: $_description');
               Navigator.of(context).pop();
             },
             customBorder: const CircleBorder(),
