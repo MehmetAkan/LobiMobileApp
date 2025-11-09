@@ -7,6 +7,7 @@ import 'package:lobi_application/widgets/common/forms/events/event_location_fiel
 import 'package:lobi_application/widgets/common/forms/events/event_description_field.dart';
 import 'package:lobi_application/widgets/common/forms/events/event_settings_box.dart';
 import 'package:lobi_application/widgets/common/forms/events/event_settings_item.dart';
+import 'package:lobi_application/widgets/common/modals/event_visibility_modal.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'dart:ui';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -29,7 +30,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   String? _description;
 
   bool _isApprovalRequired = false;
-  String? _approvalRequirements;
+  EventVisibility _visibility = EventVisibility.public; // ✨ YENİ
   int? _capacity;
 
   @override
@@ -37,6 +38,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     _scrollController.dispose();
     _titleController.dispose();
     super.dispose();
+  }
+
+  /// ✨ Görünürlük modal'ını aç
+  Future<void> _openVisibilityModal() async {
+    final result = await EventVisibilityModal.show(
+      context: context,
+      currentValue: _visibility,
+    );
+
+    if (result != null) {
+      setState(() {
+        _visibility = result;
+      });
+    }
   }
 
   @override
@@ -115,9 +130,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   EventDescriptionField(
                     value: _description,
                     onTap: () {
-                      // TODO: Açıklama modal açılacak
                       debugPrint('Açıklama modal açılıyor...');
-                      // Test için:
                       setState(() {
                         _description =
                             'Bu etkinlik hakkında kısa bir açıklama...';
@@ -155,7 +168,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         icon: LucideIcons.lock400,
                         label: 'Onay gerekli',
                         value: _isApprovalRequired,
-                        showDivider: false, // Son item
+                        showDivider: false,
                         onChanged: (value) {
                           setState(() => _isApprovalRequired = value);
                         },
@@ -178,18 +191,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBox(height: 10.h),
                   EventSettingsBox(
                     children: [
+                      // ✨ Görünürlük - Modal ile güncellendi
                       EventSettingsItem.action(
                         icon: LucideIcons.globe400,
                         label: 'Görünürlük',
                         placeholder: 'Herkese Açık',
-                        value: _approvalRequirements,
-
-                        onTap: () {
-                          debugPrint('Onay gerekliliği modal açılıyor...');
-                          setState(() {
-                            _approvalRequirements = '18 yaş üzeri';
-                          });
-                        },
+                        value: EventVisibilityModal.getDisplayText(_visibility),
+                        onTap: _openVisibilityModal,
                       ),
                       EventSettingsItem.action(
                         icon: LucideIcons.users400,
@@ -202,7 +210,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             _capacity = 100;
                           });
                         },
-                        showDivider: false, // Son item
+                        showDivider: false,
                       ),
                     ],
                   ),
@@ -254,7 +262,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return Positioned.fill(
       child: Stack(
         children: [
-          // Image
           Positioned.fill(
             child: Transform.scale(
               scale: 1.4,
@@ -264,7 +271,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               ),
             ),
           ),
-          // Blur overlay
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
             child: Container(
@@ -279,7 +285,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   Widget _buildCoverImage() {
     return Stack(
       children: [
-        // Cover image - KARE (1:1)
         ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
           child: AspectRatio(
@@ -290,7 +295,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             ),
           ),
         ),
-        // Galeri butonu (sağ alt)
         Positioned(right: 12.w, bottom: 12.h, child: _buildGalleryButton()),
       ],
     );
@@ -350,6 +354,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               debugPrint('Bitiş: $_endDate');
               debugPrint('Konum: $_selectedLocation');
               debugPrint('Açıklama: $_description');
+              debugPrint('Görünürlük: $_visibility'); // ✨ YENİ
               Navigator.of(context).pop();
             },
             customBorder: const CircleBorder(),
