@@ -61,7 +61,7 @@ class GradientButton extends StatelessWidget {
     // Disabled durumunda biraz soluklaştır
     final effectiveColors = isEnabled
         ? gradientColors
-        : gradientColors.map((c) => c.withOpacity(0.5)).toList();
+        : gradientColors.map((c) => c.withValues(alpha: 0.50)).toList();
 
     // 🔹 Label widget
     final labelWidget = Text(

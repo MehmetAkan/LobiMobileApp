@@ -130,7 +130,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
             child: Container(
-              color: AppTheme.getCreateEventBg(context).withOpacity(0.30),
+              color: AppTheme.getCreateEventBg(context).withValues(alpha: 0.30),
             ),
           ),
         ],
@@ -221,7 +221,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
         data: Theme.of(context).copyWith(
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: AppTheme.white,
-            selectionColor: AppTheme.white.withOpacity(0.3),
+            selectionColor: AppTheme.white.withValues(alpha: 0.30),
             selectionHandleColor: AppTheme.white,
           ),
         ),
@@ -255,7 +255,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
             filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.black800.withOpacity(0.60),
+                color: AppTheme.black800.withValues(alpha: 0.60),
                 borderRadius: BorderRadius.circular(15.r),
               ),
               child: SafeArea(
@@ -350,7 +350,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
         height: 40.w,
         decoration: BoxDecoration(
           color: isToggled
-              ? AppTheme.white.withOpacity(0.2)
+              ? AppTheme.white.withValues(alpha: .20)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8.r),
         ),
@@ -363,7 +363,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
                     fontWeight: FontWeight.w600,
                     color: isToggled
                         ? AppTheme.white
-                        : AppTheme.white.withOpacity(0.6),
+                        : AppTheme.white.withValues(alpha: 0.60),
                   ),
                 )
               : Icon(

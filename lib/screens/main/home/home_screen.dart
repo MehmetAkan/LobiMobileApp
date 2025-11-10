@@ -275,13 +275,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  /// Hoş geldin içeriği (activeDate == null iken)
-  Widget _buildWelcomeContent(BuildContext context, dynamic profile) {
-    return Column(
-      key: const ValueKey('welcome'),
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [],
-    );
-  }
+ 
 }

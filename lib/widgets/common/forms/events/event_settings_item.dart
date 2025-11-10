@@ -85,7 +85,7 @@ class EventSettingsItem extends StatelessWidget {
             child: Divider(
               height: 1,
               thickness: 1,
-              color: AppTheme.white.withOpacity(0.1),
+              color: AppTheme.white.withValues(alpha: .10),
             ),
           ),
       ],

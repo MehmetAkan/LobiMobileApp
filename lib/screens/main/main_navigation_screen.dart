@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/screens/main/home/home_screen.dart';
 import 'package:lobi_application/screens/main/explore/explore_screen.dart';
 import 'package:lobi_application/screens/main/events/events_screen.dart';
