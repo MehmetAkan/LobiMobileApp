@@ -9,6 +9,7 @@ import 'package:lobi_application/widgets/common/forms/events/event_settings_box.
 import 'package:lobi_application/widgets/common/forms/events/event_settings_item.dart';
 import 'package:lobi_application/widgets/common/modals/event_visibility_modal.dart';
 import 'package:lobi_application/widgets/common/modals/event_capacity_modal.dart';
+import 'package:lobi_application/widgets/common/modals/cover_photo_picker_modal.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'dart:ui';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -333,8 +334,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            debugPrint('Galeri açılıyor...');
+          onTap: () async {
+            // ✨ Kapak fotoğrafı picker modal'ını aç
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const CoverPhotoPickerModal(),
+                fullscreenDialog: true,
+              ),
+            );
+            
+            if (result != null) {
+              debugPrint('Seçilen fotoğraf: $result');
+              // TODO: setState ile coverPhotoUrl güncelle
+            }
           },
           customBorder: const CircleBorder(),
           child: Center(

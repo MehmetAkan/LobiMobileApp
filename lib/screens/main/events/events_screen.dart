@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/screens/main/events/create_event_screen.dart';
-import 'package:lobi_application/screens/main/events/create_event_screen_ex.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_filter_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_new_button.dart';
