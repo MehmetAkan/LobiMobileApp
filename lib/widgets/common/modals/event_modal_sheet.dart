@@ -5,25 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// EventModalSheet - Etkinlik ayarları için genel modal tasarımı
-/// 
-/// Kullanım:
-/// ```dart
-/// showModalBottomSheet(
-///   context: context,
-///   backgroundColor: Colors.transparent,
-///   isScrollControlled: true,
-///   builder: (context) => EventModalSheet(
-///     icon: LucideIcons.globe400,
-///     title: 'Görünürlük',
-///     description: 'Etkinliğinizi kimler görebilir?',
-///     children: [
-///       EventModalOption(...),
-///       EventModalOption(...),
-///     ],
-///   ),
-/// );
-/// ```
+
 class EventModalSheet extends StatelessWidget {
   final IconData icon;
   final String title;

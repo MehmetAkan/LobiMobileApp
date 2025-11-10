@@ -8,6 +8,7 @@ import 'package:lobi_application/widgets/common/forms/events/event_description_f
 import 'package:lobi_application/widgets/common/forms/events/event_settings_box.dart';
 import 'package:lobi_application/widgets/common/forms/events/event_settings_item.dart';
 import 'package:lobi_application/widgets/common/modals/event_visibility_modal.dart';
+import 'package:lobi_application/widgets/common/modals/event_capacity_modal.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'dart:ui';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -52,6 +53,19 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         _visibility = result;
       });
     }
+  }
+
+  /// ✨ Kontenjan modal'ını aç
+  Future<void> _openCapacityModal() async {
+    final result = await EventCapacityModal.show(
+      context: context,
+      currentValue: _capacity,
+    );
+
+    // result == null ise "Kaldır" tuşuna basıldı (sınırsız)
+    setState(() {
+      _capacity = result;
+    });
   }
 
   @override
@@ -203,13 +217,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         icon: LucideIcons.users400,
                         label: 'Kontenjan',
                         placeholder: 'Sınırsız',
-                        value: _capacity != null ? '$_capacity kişi' : null,
-                        onTap: () {
-                          debugPrint('Kontenjan modal açılıyor...');
-                          setState(() {
-                            _capacity = 100;
-                          });
-                        },
+                        value: _capacity != null 
+                            ? EventCapacityModal.getDisplayText(_capacity)
+                            : null,
+                        onTap: _openCapacityModal,
                         showDivider: false,
                       ),
                     ],
