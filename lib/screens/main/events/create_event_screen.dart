@@ -10,6 +10,8 @@ import 'package:lobi_application/widgets/common/forms/events/event_settings_item
 import 'package:lobi_application/widgets/common/modals/event_visibility_modal.dart';
 import 'package:lobi_application/widgets/common/modals/event_capacity_modal.dart';
 import 'package:lobi_application/widgets/common/modals/cover_photo_picker_modal.dart';
+import 'package:lobi_application/widgets/common/modals/event_description_modal.dart';
+import 'package:lobi_application/utils/event_description_helper.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'dart:ui';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -67,6 +69,25 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     setState(() {
       _capacity = result;
     });
+  }
+
+  /// ✨ Açıklama modal'ını aç
+  Future<void> _openDescriptionModal() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventDescriptionModal(
+          initialText: _description,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _description = result; // JSON formatında
+      });
+    }
   }
 
   @override
@@ -143,14 +164,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   SizedBox(height: 10.h),
 
                   EventDescriptionField(
-                    value: _description,
-                    onTap: () {
-                      debugPrint('Açıklama modal açılıyor...');
-                      setState(() {
-                        _description =
-                            'Bu etkinlik hakkında kısa bir açıklama...';
-                      });
-                    },
+                    value: _description != null 
+                        ? EventDescriptionHelper.getPlainText(_description) 
+                        : null,
+                    onTap: _openDescriptionModal, // ✨ Modal'ı aç
                   ),
 
                   SizedBox(height: 20.h),
