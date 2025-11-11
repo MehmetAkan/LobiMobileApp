@@ -34,7 +34,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   LocationModel? _selectedLocationModel; // ✨ DEĞİŞTİ
   String? _description;
-
+  String? _coverPhotoUrl;
   bool _isApprovalRequired = false;
   EventVisibility _visibility = EventVisibility.public;
   int? _capacity;
@@ -125,7 +125,14 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-            CreateEventCoverSection(),
+                  CreateEventCoverSection(
+                    coverPhotoUrl: _coverPhotoUrl,
+                    onPhotoSelected: (url) {
+                      setState(() {
+                        _coverPhotoUrl = url;
+                      });
+                    },
+                  ),
                   SizedBox(height: 20.h),
                   EventTextField(
                     controller: _titleController,

@@ -4,12 +4,17 @@ import 'package:lobi_application/screens/main/events/widgets/create/modals/cover
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+/// CreateEventCoverSection - Kapak fotoğrafı bölümü
+/// 
+/// ✨ GÜNCEL: Seçilen fotoğrafı parent'a callback ile gönderir
 class CreateEventCoverSection extends StatelessWidget {
   final String? coverPhotoUrl;
+  final Function(String url)? onPhotoSelected; // ✨ YENİ - Callback
 
   const CreateEventCoverSection({
     super.key,
     this.coverPhotoUrl,
+    this.onPhotoSelected, // ✨ YENİ
   });
 
   @override
@@ -24,6 +29,13 @@ class CreateEventCoverSection extends StatelessWidget {
                 ? Image.network(
                     coverPhotoUrl!,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Hata durumunda default göster
+                      return Image.asset(
+                        'assets/images/system/event-example-white.png',
+                        fit: BoxFit.cover,
+                      );
+                    },
                   )
                 : Image.asset(
                     'assets/images/system/event-example-white.png',
@@ -71,10 +83,10 @@ class CreateEventCoverSection extends StatelessWidget {
               ),
             );
 
-            if (result != null) {
-              debugPrint('Seçilen fotoğraf: $result');
-              // İleride parent'a geri bildirim vermek istersen
-              // burada callback çağırabilirsin.
+            // ✨ YENİ - Seçilen fotoğrafı parent'a gönder
+            if (result != null && result is String) {
+              onPhotoSelected?.call(result);
+              debugPrint('✅ Seçilen fotoğraf: $result');
             }
           },
           customBorder: const CircleBorder(),
