@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import '../services/location_service.dart';
-import '../services/places_service.dart';
+import '../data/services/location_service.dart';
+import '../data/services/places_service.dart';
 
 /// LocationService Provider
 final locationServiceProvider = Provider<LocationService>((ref) {

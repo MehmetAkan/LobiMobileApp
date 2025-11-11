@@ -8,9 +8,8 @@ import GoogleMaps  // 🗺️ EKLENDI
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // 🗺️ Google Maps API Key - EKLENDI
-    // ⚠️ BURAYA .env DOSYASINDAKI iOS KEY'İ YAPIŞTIRACAKSINIZ
-    GMSServices.provideAPIKey("AIzaSyCz4eqLYEtEYbHjwd8rcRZVJmL0AHiPtNc")
+
+    GMSServices.provideAPIKey("test")
     
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
