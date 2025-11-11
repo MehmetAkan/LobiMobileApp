@@ -50,6 +50,17 @@
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
 
+  <!-- Konum izinleri -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>
+    
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>
+    
+    <!-- Google Maps için gerekli -->
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

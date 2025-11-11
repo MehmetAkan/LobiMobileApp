@@ -27,7 +27,9 @@ migrate_working_dir/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
@@ -44,3 +46,13 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 ios/build/ios
+
+# ⚠️ CRITICAL: Environment variables - ASLA GIT'E EKLEMEYİN
+.env
+.env.*
+*.env
+!.env.example
+
+# API Keys (ekstra güvenlik)
+**/google_maps_api_key.txt
+**/api_keys.txt
