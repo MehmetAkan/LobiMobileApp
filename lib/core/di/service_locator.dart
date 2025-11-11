@@ -3,11 +3,14 @@ import 'package:lobi_application/core/supabase_client.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/data/services/auth_service.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
+import 'package:lobi_application/data/services/event_image_service.dart';
+import 'package:lobi_application/data/services/category_service.dart'; // ✨ YENİ
 import 'package:lobi_application/data/repositories/auth_repository.dart';
 import 'package:lobi_application/data/repositories/profile_repository.dart';
+import 'package:lobi_application/data/repositories/event_image_repository.dart';
+import 'package:lobi_application/data/repositories/category_repository.dart'; // ✨ YENİ
 
 final getIt = GetIt.instance;
-
 
 Future<void> setupServiceLocator() async {
   try {
@@ -26,6 +29,15 @@ Future<void> setupServiceLocator() async {
       () => ProfileService(),
     );
 
+    getIt.registerLazySingleton<EventImageService>(
+      () => EventImageService(),
+    );
+
+    // ✨ YENİ - CategoryService
+    getIt.registerLazySingleton<CategoryService>(
+      () => CategoryService(),
+    );
+
     // 3. Repositories (Business logic katmanı)
     getIt.registerLazySingleton<AuthRepository>(
       () => AuthRepository(
@@ -38,6 +50,19 @@ Future<void> setupServiceLocator() async {
       () => ProfileRepository(
         getIt<ProfileService>(),
         getIt<AuthService>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<EventImageRepository>(
+      () => EventImageRepository(
+        getIt<EventImageService>(),
+      ),
+    );
+
+    // ✨ YENİ - CategoryRepository
+    getIt.registerLazySingleton<CategoryRepository>(
+      () => CategoryRepository(
+        getIt<CategoryService>(),
       ),
     );
 

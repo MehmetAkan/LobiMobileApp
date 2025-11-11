@@ -1,83 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/data/models/category_model.dart';
+import 'package:lobi_application/data/models/event_image_model.dart';
+import 'package:lobi_application/providers/event_image_provider.dart';
+import 'package:lobi_application/providers/category_provider.dart'; // ✨ YENİ
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'dart:ui';
 
 /// CoverPhotoPickerModal - Kapak fotoğrafı seçme modal'ı
 ///
-/// Kullanım:
-/// ```dart
-/// final result = await Navigator.push(
-///   context,
-///   MaterialPageRoute(
-///     builder: (context) => const CoverPhotoPickerModal(),
-///     fullscreenDialog: true,
-///   ),
-/// );
-/// if (result != null) {
-///   setState(() => coverPhotoUrl = result);
-/// }
-/// ```
-class CoverPhotoPickerModal extends StatefulWidget {
+/// ✨ GÜNCEL: Kategorileri ve resimleri Supabase'den çeker
+class CoverPhotoPickerModal extends ConsumerStatefulWidget {
   const CoverPhotoPickerModal({super.key});
 
   @override
-  State<CoverPhotoPickerModal> createState() => _CoverPhotoPickerModalState();
+  ConsumerState<CoverPhotoPickerModal> createState() => _CoverPhotoPickerModalState();
 }
 
-class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
+class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final List<CategoryModel> _categories = CategoryModel.getMockCategories();
-  int _currentTabIndex = 0; // ✨ Aktif tab index'ini takip et
-
-  // Mock fotoğraflar (geçici)
-  final Map<String, List<String>> _mockPhotos = {
-    'featured': [
-      'https://picsum.photos/seed/f1/400/400',
-      'https://picsum.photos/seed/f2/400/400',
-      'https://picsum.photos/seed/f3/400/400',
-      'https://picsum.photos/seed/f4/400/400',
-    ],
-    '1': [
-      // Konser
-      'https://picsum.photos/seed/k1/400/400',
-      'https://picsum.photos/seed/k2/400/400',
-      'https://picsum.photos/seed/k3/400/400',
-      'https://picsum.photos/seed/k4/400/400',
-      'https://picsum.photos/seed/k5/400/400',
-      'https://picsum.photos/seed/k6/400/400',
-    ],
-    '2': [
-      // Tiyatro
-      'https://picsum.photos/seed/t1/400/400',
-      'https://picsum.photos/seed/t2/400/400',
-      'https://picsum.photos/seed/t3/400/400',
-    ],
-    // Her kategori için mock data eklenebilir
-  };
-
-  @override
-  void initState() {
-    super.initState();
-    // +1 çünkü ilk tab "Önerilen"
-    _tabController = TabController(length: _categories.length + 1, vsync: this);
-
-    // ✨ Tab değişikliklerini dinle
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          _currentTabIndex = _tabController.index;
-        });
-      }
-    });
-  }
+  TabController? _tabController;
+  int _currentTabIndex = 0;
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -93,30 +42,58 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
+    
+    // ✨ Kategorileri Riverpod'dan çek
+    final categoriesAsync = ref.watch(allCategoriesProvider);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          _buildBackground(),
-          Column(
+    return categoriesAsync.when(
+      data: (categories) {
+        // TabController'ı ilk data geldiğinde oluştur
+        if (_tabController == null) {
+          _tabController = TabController(
+            length: categories.length + 1,
+            vsync: this,
+          );
+
+          _tabController!.addListener(() {
+            if (_tabController!.indexIsChanging) {
+              setState(() {
+                _currentTabIndex = _tabController!.index;
+              });
+            }
+          });
+        }
+
+        return Scaffold(
+          body: Stack(
             children: [
-              // Header
-              _buildHeader(statusBarHeight),
-
-              // Tab Bar
-              _buildTabBar(),
-
-              // Content Area (TabBarView)
-              Expanded(child: _buildContent()),
+              _buildBackground(),
+              Column(
+                children: [
+                  _buildHeader(statusBarHeight),
+                  _buildTabBar(categories),
+                  Expanded(child: _buildContent(categories)),
+                ],
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _buildBottomButton(),
+              ),
             ],
           ),
-          Positioned(left: 0, right: 0, bottom: 0, child: _buildBottomButton()),
-        ],
+        );
+      },
+      loading: () => Scaffold(
+        body: _buildFullScreenLoading(),
+      ),
+      error: (error, stack) => Scaffold(
+        body: _buildFullScreenError(error.toString()),
       ),
     );
   }
 
-  /// Background (blur)
   Widget _buildBackground() {
     return Positioned.fill(
       child: Stack(
@@ -141,7 +118,6 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
     );
   }
 
-  /// Header: [X] Kapak Görseli Ekle [🔍]
   Widget _buildHeader(double statusBarHeight) {
     return Container(
       padding: EdgeInsets.only(
@@ -152,13 +128,10 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
       ),
       child: Row(
         children: [
-          // Kapat butonu
           _buildIconButton(
             icon: LucideIcons.x400,
             onTap: () => Navigator.of(context).pop(),
           ),
-
-          // Başlık
           Expanded(
             child: Center(
               child: Text(
@@ -172,13 +145,11 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
               ),
             ),
           ),
-
-          // Arama butonu (disabled)
           Opacity(
             opacity: 0.5,
             child: _buildIconButton(
               icon: LucideIcons.search400,
-              onTap: null, // Şimdilik disabled
+              onTap: null,
             ),
           ),
         ],
@@ -186,7 +157,6 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
     );
   }
 
-  /// Icon Button
   Widget _buildIconButton({required IconData icon, VoidCallback? onTap}) {
     return SizedBox(
       width: 45.w,
@@ -219,31 +189,25 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
     );
   }
 
-  /// Tab Bar (Icon + Text)
-  Widget _buildTabBar() {
+  Widget _buildTabBar(List<CategoryModel> categories) {
     return Container(
       height: 60.h,
-      margin: EdgeInsets.only(bottom: 0), // ✨ Alt margin kaldırıldı
+      margin: EdgeInsets.only(bottom: 0),
       child: TabBar(
         tabAlignment: TabAlignment.start,
         controller: _tabController,
         isScrollable: true,
         indicatorColor: Colors.transparent,
         dividerColor: Colors.transparent,
-        padding: EdgeInsets.only(
-          left: 20.w,
-          right: 10.w,
-        ), // ✨ Sol padding 20w olarak ayarlandı
+        padding: EdgeInsets.only(left: 20.w, right: 10.w),
         labelPadding: EdgeInsets.symmetric(horizontal: 8.w),
         tabs: [
-          // İlk tab: Önerilen
           _buildTab(
             icon: LucideIcons.star400,
             label: 'Önerilen',
             isActive: _currentTabIndex == 0,
           ),
-          // Kategori tabları
-          ..._categories.asMap().entries.map((entry) {
+          ...categories.asMap().entries.map((entry) {
             final index = entry.key + 1;
             final category = entry.value;
             return _buildTab(
@@ -257,7 +221,6 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
     );
   }
 
-  /// Tek bir tab
   Widget _buildTab({
     required IconData icon,
     required String label,
@@ -278,9 +241,7 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w600,
-              color: isActive
-                  ? AppTheme.white
-                  : AppTheme.white.withOpacity(0.5),
+              color: isActive ? AppTheme.white : AppTheme.white.withOpacity(0.5),
               height: 1.2,
             ),
           ),
@@ -289,76 +250,80 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
     );
   }
 
-  /// Content Area
-  Widget _buildContent() {
+  Widget _buildContent(List<CategoryModel> categories) {
     return TabBarView(
       controller: _tabController,
       children: [
-        // Önerilen tab
         _buildRecommendedTab(),
-
-        // Kategori tabları
-        ..._categories.map((category) {
+        ...categories.map((category) {
           return _buildCategoryTab(category);
         }).toList(),
       ],
     );
   }
 
-  /// Önerilen Tab (2 sütun grid)
   Widget _buildRecommendedTab() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        20.w,
-        0,
-        20.w,
-        60.h,
-      ), // ✨ Üst padding tamamen kaldırıldı
-      child: GridView.builder(
-        padding: EdgeInsets.only(top: 10.h), // ✨ Grid'in kendi padding'i
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 15.w,
-          mainAxisSpacing: 15.h,
-          childAspectRatio: 1,
-        ),
-        itemCount: _categories.length,
-        itemBuilder: (context, index) {
-          final category = _categories[index];
-          return _buildCategoryCard(category);
-        },
-      ),
+    final featuredImagesAsync = ref.watch(featuredEventImagesProvider);
+
+    return featuredImagesAsync.when(
+      data: (images) {
+        if (images.isEmpty) {
+          return _buildEmptyState('Henüz önerilen resim yok');
+        }
+
+        // Kategorileri de al (label için)
+        final categoriesAsync = ref.watch(allCategoriesProvider);
+        
+        return categoriesAsync.maybeWhen(
+          data: (categories) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 60.h),
+              child: GridView.builder(
+                padding: EdgeInsets.only(top: 10.h),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 15.w,
+                  mainAxisSpacing: 15.h,
+                  childAspectRatio: 1,
+                ),
+                itemCount: images.length,
+                itemBuilder: (context, index) {
+                  final image = images[index];
+                  final category = categories.firstWhere(
+                    (cat) => cat.id == image.categoryId,
+                    orElse: () => categories.first,
+                  );
+                  return _buildFeaturedImageCard(image, category);
+                },
+              ),
+            );
+          },
+          orElse: () => _buildLoadingState(),
+        );
+      },
+      loading: () => _buildLoadingState(),
+      error: (error, stack) => _buildErrorState(error.toString()),
     );
   }
 
-  /// Kategori Card (Önerilen tab için)
-  Widget _buildCategoryCard(CategoryModel category) {
-    // Her kategori için featured fotoğrafı al (geçici)
-    final photoUrl =
-        _mockPhotos[category.id]?.first ??
-        'https://picsum.photos/seed/${category.id}/400/400';
-
+  Widget _buildFeaturedImageCard(EventImageModel image, CategoryModel category) {
     return GestureDetector(
-      onTap: () {
-        // Kategoriye tıklanınca o kategorinin tab'ına geç
-        final index = _categories.indexOf(category) + 1;
-        _tabController.animateTo(index);
-      },
+      onTap: () => _onPhotoSelected(image.url),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Fotoğraf
             Image.network(
-              photoUrl,
+              image.url,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return Container(color: AppTheme.zinc300);
+                return Container(
+                  color: AppTheme.zinc300,
+                  child: Icon(LucideIcons.image400, color: AppTheme.zinc500),
+                );
               },
             ),
-
-            // Blur backdrop + Text
             Positioned(
               left: 0,
               right: 0,
@@ -367,10 +332,7 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.h,
-                      horizontal: 12.w,
-                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
                     decoration: BoxDecoration(
                       color: AppTheme.black800.withOpacity(0.3),
                     ),
@@ -394,99 +356,206 @@ class _CoverPhotoPickerModalState extends State<CoverPhotoPickerModal>
     );
   }
 
-  /// Kategori Tab (3 sütun grid)
   Widget _buildCategoryTab(CategoryModel category) {
-    final photos = _mockPhotos[category.id] ?? [];
+    final categoryImagesAsync = ref.watch(
+      eventImagesByCategoryProvider(category.id),
+    );
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        20.w,
-        0,
-        20.w,
-        100.h,
-      ), // ✨ Üst padding tamamen kaldırıldı
-      child: GridView.builder(
-        padding: EdgeInsets.only(top: 10.h), // ✨ Grid'in kendi padding'i
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 10.w,
-          mainAxisSpacing: 10.h,
-          childAspectRatio: 1,
-        ),
-        itemCount: photos.length,
-        itemBuilder: (context, index) {
-          return _buildPhotoCard(photos[index]);
-        },
-      ),
+    return categoryImagesAsync.when(
+      data: (images) {
+        if (images.isEmpty) {
+          return _buildEmptyState('Bu kategoride henüz resim yok');
+        }
+
+        return Padding(
+          padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 60.h),
+          child: GridView.builder(
+            padding: EdgeInsets.only(top: 10.h),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10.w,
+              mainAxisSpacing: 10.h,
+              childAspectRatio: 1,
+            ),
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              final image = images[index];
+              return _buildImageTile(image);
+            },
+          ),
+        );
+      },
+      loading: () => _buildLoadingState(),
+      error: (error, stack) => _buildErrorState(error.toString()),
     );
   }
 
-  /// Fotoğraf Card
-  Widget _buildPhotoCard(String photoUrl) {
+  Widget _buildImageTile(EventImageModel image) {
     return GestureDetector(
-      onTap: () => _onPhotoSelected(photoUrl),
+      onTap: () => _onPhotoSelected(image.url),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12.r),
         child: Image.network(
-          photoUrl,
+          image.url,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            return Container(color: AppTheme.zinc300);
+            return Container(
+              color: AppTheme.zinc300,
+              child: Icon(LucideIcons.image400, color: AppTheme.zinc500, size: 20.sp),
+            );
           },
         ),
       ),
     );
   }
 
-  /// Bottom Button (Kütüphaneden Seç)
-  Widget _buildBottomButton() {
-    return ClipRRect(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(0),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppTheme.black800.withOpacity(0),
-              AppTheme.black800.withOpacity(0.1),
-              AppTheme.black800.withOpacity(0.7),
+  Widget _buildFullScreenLoading() {
+    return Stack(
+      children: [
+        _buildBackground(),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: AppTheme.white),
+              SizedBox(height: 16.h),
+              Text(
+                'Kategoriler yükleniyor...',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppTheme.white.withOpacity(0.7),
+                ),
+              ),
             ],
           ),
         ),
-        padding: EdgeInsets.only(bottom: 30, top: 0, left: 20, right: 20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-          child: GestureDetector(
-            onTap: _onPickFromGallery,
-            child: Container(
-              height: 50.h,
-              decoration: BoxDecoration(
-                color: AppTheme.white,
-                borderRadius: BorderRadius.circular(25.r),
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.images400,
-                      size: 22.sp,
-                      color: AppTheme.black800,
-                    ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      'Galeriden Seç',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.black800,
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
+      ],
+    );
+  }
+
+  Widget _buildFullScreenError(String error) {
+    return Stack(
+      children: [
+        _buildBackground(),
+        Center(
+          child: Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(LucideIcons.badgeAlert400, color: AppTheme.white, size: 48.sp),
+                SizedBox(height: 16.h),
+                Text(
+                  'Kategoriler yüklenemedi',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.white,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
+                SizedBox(height: 8.h),
+                Text(
+                  error,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: AppTheme.white.withOpacity(0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: CircularProgressIndicator(color: AppTheme.white),
+    );
+  }
+
+  Widget _buildErrorState(String error) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(LucideIcons.badgeAlert400, color: AppTheme.white, size: 48.sp),
+            SizedBox(height: 16.h),
+            Text(
+              'Resimler yüklenemedi',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.white,
               ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              error,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppTheme.white.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(String message) {
+    return Center(
+      child: Text(
+        message,
+        style: TextStyle(
+          fontSize: 16.sp,
+          color: AppTheme.white.withOpacity(0.7),
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _buildBottomButton() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20.w, 15.h, 20.w, 30.h),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppTheme.getCreateEventBg(context).withOpacity(0),
+            AppTheme.getCreateEventBg(context).withOpacity(0.9),
+            AppTheme.getCreateEventBg(context),
+          ],
+        ),
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50.h,
+        child: ElevatedButton.icon(
+          onPressed: _onPickFromGallery,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.white,
+            foregroundColor: AppTheme.black800,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            elevation: 0,
+          ),
+          icon: Icon(LucideIcons.upload400, size: 20.sp),
+          label: Text(
+            'Galeriden Seç',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

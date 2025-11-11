@@ -10,6 +10,8 @@ class AppConstants {
   
   // Database Tables
   static const String profilesTable = 'profiles';
+    static const String eventCategoriesTable = 'event_categories'; // ✨ YENİ
+  static const String eventImagesTable = 'event_images'; 
   
   // App Info
   static const String appName = 'Lobi';
