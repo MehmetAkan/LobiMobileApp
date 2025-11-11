@@ -13,6 +13,8 @@ class AppTheme {
   static const Color zinc600 = Color(0xFF909090);
   static const Color zinc700 = Color(0xFF727272);
   static const Color zinc800 = Color(0xFF5F5F60);
+  static const Color zinc900 = Color(0xFF3E3E3E);
+  static const Color zinc1000 = Color(0xFF292929);
   static const Color green100 = Color(0xFFE5F7E8);
   static const Color green900 = Color(0xFF06df73);
   static const Color red100 = Color(0xFFF9E5E5);

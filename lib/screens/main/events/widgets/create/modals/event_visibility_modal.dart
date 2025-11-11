@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lobi_application/widgets/common/modals/event_modal_sheet.dart';
+import 'package:lobi_application/screens/main/events/widgets/create/modals/event_modal_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Görünürlük seçenekleri

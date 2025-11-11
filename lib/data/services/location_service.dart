@@ -121,6 +121,13 @@ class LocationService {
     return await Geolocator.isLocationServiceEnabled();
   }
 
+  /// ✨ Kullanıcının mevcut konumunu al (Position)
+  /// 
+  /// Modal'da kullanılacak - Position döndürür
+  Future<Position> getCurrentLocation() async {
+    return await getCurrentPosition();
+  }
+
   /// Kullanıcının mevcut konumunu al
   /// 
   /// Throws: Exception - Konum servisi kapalı veya izin yok
@@ -149,10 +156,10 @@ class LocationService {
   /// Koordinatları adrese çevir (Reverse Geocoding)
   /// 
   /// İlçe ve mahalle bilgisini de alır
-  Future<LocationModel?> getAddressFromCoordinates({
-    required double latitude,
-    required double longitude,
-  }) async {
+  Future<LocationModel?> getAddressFromCoordinates(
+    double latitude,
+    double longitude,
+  ) async {
     try {
       final placemarks = await placemarkFromCoordinates(latitude, longitude);
 
