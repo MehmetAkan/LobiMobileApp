@@ -7,7 +7,7 @@ import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 import 'package:lobi_application/widgets/auth/auth_text_field.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:lobi_application/widgets/common/forms/date_picker_field.dart';
+import 'package:lobi_application/widgets/auth/date_picker_field.dart';
 
 // StatefulWidget → ConsumerStatefulWidget
 class CreateProfileScreen extends ConsumerStatefulWidget {
