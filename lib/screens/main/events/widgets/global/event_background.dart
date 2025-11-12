@@ -1,15 +1,55 @@
+import 'dart:io'; // ✨ YENİ
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
 class EventBackground extends StatelessWidget {
   final String? coverPhotoUrl;
-  
+
   const EventBackground({
     super.key,
     this.coverPhotoUrl,
   });
-  
+
+  /// ✨ YENİ: Varsayılan arka plan görselini oluşturan helper method
+  Widget _buildDefaultImage() {
+    return Image.asset(
+      'assets/images/system/event-example-black.png',
+      fit: BoxFit.cover,
+    );
+  }
+
+  /// ✨ YENİ: URL tipine göre dinamik arka plan görseli oluşturan helper method
+  Widget _buildBackgroundImage(String? url) {
+    if (url == null) {
+      return _buildDefaultImage();
+    }
+
+    // 1. Network URL'si (Kütüphaneden)
+    if (url.startsWith('http')) {
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildDefaultImage();
+        },
+      );
+    }
+
+    // 2. Dosya Yolu (Galeriden)
+    try {
+      return Image.file(
+        File(url),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildDefaultImage();
+        },
+      );
+    } catch (e) {
+      return _buildDefaultImage();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
@@ -18,10 +58,8 @@ class EventBackground extends StatelessWidget {
           Positioned.fill(
             child: Transform.scale(
               scale: 1.4,
-              child: Image.asset(
-                'assets/images/system/event-example-white.png',
-                fit: BoxFit.cover,
-              ),
+              // ✨ DEĞİŞTİ: Statik Image.asset yerine dinamik helper methodu kullan
+              child: _buildBackgroundImage(coverPhotoUrl),
             ),
           ),
           BackdropFilter(

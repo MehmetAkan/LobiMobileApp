@@ -113,7 +113,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         height: screenHeight,
         child: Stack(
           children: [
-            EventBackground(),
+          EventBackground(coverPhotoUrl: _coverPhotoUrl),
             SingleChildScrollView(
               controller: _scrollController,
               padding: EdgeInsets.fromLTRB(

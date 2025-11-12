@@ -3,18 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/cover_photo_picker_modal.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'dart:io';
 
-/// CreateEventCoverSection - Kapak fotoğrafı bölümü
-/// 
-/// ✨ GÜNCEL: Seçilen fotoğrafı parent'a callback ile gönderir
 class CreateEventCoverSection extends StatelessWidget {
   final String? coverPhotoUrl;
-  final Function(String url)? onPhotoSelected; // ✨ YENİ - Callback
+  final Function(String url)? onPhotoSelected; 
 
   const CreateEventCoverSection({
     super.key,
     this.coverPhotoUrl,
-    this.onPhotoSelected, // ✨ YENİ
+    this.onPhotoSelected, 
   });
 
   @override
@@ -25,22 +23,8 @@ class CreateEventCoverSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           child: AspectRatio(
             aspectRatio: 1,
-            child: coverPhotoUrl != null
-                ? Image.network(
-                    coverPhotoUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Hata durumunda default göster
-                      return Image.asset(
-                        'assets/images/system/event-example-white.png',
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  )
-                : Image.asset(
-                    'assets/images/system/event-example-white.png',
-                    fit: BoxFit.cover,
-                  ),
+       child: _buildCoverImage(coverPhotoUrl),
+             
           ),
         ),
         Positioned(
@@ -100,5 +84,36 @@ class CreateEventCoverSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildCoverImage(String? url) {
+    final defaultImage = Image.asset(
+      'assets/images/system/event-example-white.png',
+      fit: BoxFit.cover,
+    );
+
+    if (url == null) {
+      return defaultImage;
+    }
+    if (url.startsWith('http')) {
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return defaultImage;
+        },
+      );
+    }
+    try {
+      return Image.file(
+        File(url), // File objesi oluştur
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return defaultImage;
+        },
+      );
+    } catch (e) {
+      return defaultImage;
+    }
   }
 }
