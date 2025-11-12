@@ -19,7 +19,8 @@ class CoverPhotoPickerModal extends ConsumerStatefulWidget {
   const CoverPhotoPickerModal({super.key});
 
   @override
-  ConsumerState<CoverPhotoPickerModal> createState() => _CoverPhotoPickerModalState();
+  ConsumerState<CoverPhotoPickerModal> createState() =>
+      _CoverPhotoPickerModalState();
 }
 
 class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
@@ -74,7 +75,10 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
-  void _navigateToCategory(CategoryModel category, List<CategoryModel> allCategories) {
+  void _navigateToCategory(
+    CategoryModel category,
+    List<CategoryModel> allCategories,
+  ) {
     final categoryIndex = allCategories.indexOf(category);
     if (categoryIndex != -1) {
       _tabController?.animateTo(categoryIndex + 1);
@@ -84,7 +88,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
-    
+
     final categoriesAsync = ref.watch(allCategoriesProvider);
 
     return categoriesAsync.when(
@@ -125,12 +129,9 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           ),
         );
       },
-      loading: () => Scaffold(
-        body: _buildFullScreenLoading(),
-      ),
-      error: (error, stack) => Scaffold(
-        body: _buildFullScreenError(error.toString()),
-      ),
+      loading: () => Scaffold(body: _buildFullScreenLoading()),
+      error: (error, stack) =>
+          Scaffold(body: _buildFullScreenError(error.toString())),
     );
   }
 
@@ -187,10 +188,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           ),
           Opacity(
             opacity: 0.5,
-            child: _buildIconButton(
-              icon: LucideIcons.search400,
-              onTap: null,
-            ),
+            child: _buildIconButton(icon: LucideIcons.search400, onTap: null),
           ),
         ],
       ),
@@ -251,7 +249,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
             final index = entry.key + 1;
             final category = entry.value;
             return _buildTab(
-              icon: LucideIcons.image400,
+              icon: _getCategoryIcon(category),
               label: category.name,
               isActive: _currentTabIndex == index,
             );
@@ -281,7 +279,9 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w600,
-              color: isActive ? AppTheme.white : AppTheme.white.withOpacity(0.5),
+              color: isActive
+                  ? AppTheme.white
+                  : AppTheme.white.withOpacity(0.5),
               height: 1.2,
             ),
           ),
@@ -368,7 +368,10 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.h,
+                      horizontal: 12.w,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.black800.withOpacity(0.3),
                     ),
@@ -378,18 +381,12 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
                         Text(
                           category.name,
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w600,
                             color: AppTheme.white,
-                            height: 1.2,
+                            height: 1.1,
                           ),
                           textAlign: TextAlign.center,
-                        ),
-                        SizedBox(width: 6.w),
-                        Icon(
-                          LucideIcons.chevronRight400,
-                          size: 18.sp,
-                          color: AppTheme.white,
                         ),
                       ],
                     ),
@@ -448,7 +445,11 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           errorBuilder: (context, error, stackTrace) {
             return Container(
               color: AppTheme.zinc300,
-              child: Icon(LucideIcons.image400, color: AppTheme.zinc500, size: 20.sp),
+              child: Icon(
+                LucideIcons.image400,
+                color: AppTheme.zinc500,
+                size: 20.sp,
+              ),
             );
           },
         ),
@@ -519,9 +520,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
   }
 
   Widget _buildLoadingState() {
-    return Center(
-      child: CircularProgressIndicator(color: AppTheme.white),
-    );
+    return Center(child: CircularProgressIndicator(color: AppTheme.white));
   }
 
   Widget _buildErrorState(String error) {
@@ -570,7 +569,6 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
-  /// ✨ GÜNCEL - Galeriden Seç butonu (direkt galeri aç)
   Widget _buildBottomButton() {
     return Container(
       padding: EdgeInsets.fromLTRB(20.w, 15.h, 20.w, 30.h),
@@ -606,19 +604,57 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
                   height: 20.sp,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(AppTheme.black800.withOpacity(0.5)),
+                    valueColor: AlwaysStoppedAnimation(
+                      AppTheme.black800.withOpacity(0.5),
+                    ),
                   ),
                 )
               : Icon(LucideIcons.upload400, size: 20.sp),
           label: Text(
             _isPickingImage ? 'Yükleniyor...' : 'Galeriden Seç',
-            style: TextStyle(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
           ),
         ),
       ),
     );
+  }
+
+  IconData _getCategoryIcon(CategoryModel category) {
+    final name = category.name.toLowerCase();
+
+    if (name.contains('spor')) {
+      // Spor & Aktivite
+      return LucideIcons.dumbbell400;
+    } else if (name.contains('sanat')) {
+      // Sanat & Kültür
+      return LucideIcons.palette400;
+    } else if (name.contains('eğitim') || name.contains('workshop')) {
+      // Eğitim & Workshop
+      return LucideIcons.graduationCap400;
+    } else if (name.contains('müzik') || name.contains('konser')) {
+      // Müzik & Konser
+      return LucideIcons.music400;
+    } else if (name.contains('yemek') || name.contains('içecek')) {
+      // Yemek & İçecek
+      return LucideIcons.utensils400;
+    } else if (name.contains('oyun') || name.contains('eğlence')) {
+      // Oyun & Eğlence
+      return LucideIcons.gamepad2400;
+    } else if (name.contains('sağlık') || name.contains('wellness')) {
+      // Sağlık & Wellness
+      return LucideIcons.heartPulse400;
+    } else if (name.contains('iş') || name.contains('networking')) {
+      // İş & Networking
+      return LucideIcons.briefcaseBusiness400;
+    } else if (name.contains('doğa') || name.contains('açık hava')) {
+      // Doğa & Açık Hava
+      return LucideIcons.mountain400;
+    } else if (name.contains('tiyatro') || name.contains('gösteri')) {
+      // Tiyatro & Gösteri
+      return LucideIcons.clapperboard400;
+    }
+
+    // Default / eşleşmeyen
+    return LucideIcons.image400;
   }
 }
