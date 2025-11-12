@@ -49,7 +49,15 @@
 	<!-- BURAYI true YAPMANIZ GEREKIYOR -->
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
+		<!-- Galeri Izinleri -->
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Etkinlik kapak fotoğrafı seçmek için galeri erişimi gerekiyor</string>
 
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>Seçilen fotoğrafları kaydetmek için galeri erişimi gerekiyor</string>
+
+<key>NSCameraUsageDescription</key>
+<string>Etkinlik kapak fotoğrafı çekmek için kamera erişimi gerekiyor</string>
   <!-- Konum izinleri -->
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>

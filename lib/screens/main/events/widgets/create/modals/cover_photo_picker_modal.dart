@@ -1,29 +1,33 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/data/models/category_model.dart';
 import 'package:lobi_application/data/models/event_image_model.dart';
+import 'package:lobi_application/data/services/image_picker_service.dart';
 import 'package:lobi_application/providers/event_image_provider.dart';
 import 'package:lobi_application/providers/category_provider.dart';
+import 'package:lobi_application/utils/image_picker_helper.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'dart:ui';
 
 /// CoverPhotoPickerModal - Kapak fotoğrafı seçme modal'ı
 ///
-/// ✨ GÜNCEL: Featured resimlerde kategoriye geçiş yapılır
+/// ✨ FINAL: Direkt galeri açma + crop özelliği
 class CoverPhotoPickerModal extends ConsumerStatefulWidget {
   const CoverPhotoPickerModal({super.key});
 
   @override
-  ConsumerState<CoverPhotoPickerModal> createState() =>
-      _CoverPhotoPickerModalState();
+  ConsumerState<CoverPhotoPickerModal> createState() => _CoverPhotoPickerModalState();
 }
 
 class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _currentTabIndex = 0;
+  bool _isPickingImage = false;
 
   @override
   void dispose() {
@@ -35,19 +39,45 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     Navigator.of(context).pop(photoUrl);
   }
 
-  void _onPickFromGallery() {
-    // TODO: Image Picker entegrasyonu
-    debugPrint('Galeriden seç');
+  /// ✨ GÜNCEL - Direkt galeri aç ve kırp
+  Future<void> _onPickFromGallery() async {
+    setState(() => _isPickingImage = true);
+
+    try {
+      final pickerHelper = ImagePickerHelper(getIt<ImagePickerService>());
+      final result = await pickerHelper.pickAndCropImage();
+
+      if (!mounted) return;
+
+      if (result.isSuccess && result.imageFile != null) {
+        // Başarılı - kırpılmış resmi döndür
+        Navigator.of(context).pop(result.imageFile?.path);
+      } else if (result.errorMessage != null) {
+        // Hata mesajı göster
+        _showErrorSnackBar(result.errorMessage!);
+      }
+      // Cancelled durumunda hiçbir şey yapma
+    } finally {
+      if (mounted) {
+        setState(() => _isPickingImage = false);
+      }
+    }
   }
 
-  /// ✨ YENİ - Kategoriye geçiş yap
-  void _navigateToCategory(
-    CategoryModel category,
-    List<CategoryModel> allCategories,
-  ) {
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade600,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16.w),
+      ),
+    );
+  }
+
+  void _navigateToCategory(CategoryModel category, List<CategoryModel> allCategories) {
     final categoryIndex = allCategories.indexOf(category);
     if (categoryIndex != -1) {
-      // +1 çünkü ilk tab "Önerilen"
       _tabController?.animateTo(categoryIndex + 1);
     }
   }
@@ -55,7 +85,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
-
+    
     final categoriesAsync = ref.watch(allCategoriesProvider);
 
     return categoriesAsync.when(
@@ -96,9 +126,12 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           ),
         );
       },
-      loading: () => Scaffold(body: _buildFullScreenLoading()),
-      error: (error, stack) =>
-          Scaffold(body: _buildFullScreenError(error.toString())),
+      loading: () => Scaffold(
+        body: _buildFullScreenLoading(),
+      ),
+      error: (error, stack) => Scaffold(
+        body: _buildFullScreenError(error.toString()),
+      ),
     );
   }
 
@@ -155,7 +188,10 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           ),
           Opacity(
             opacity: 0.5,
-            child: _buildIconButton(icon: LucideIcons.search400, onTap: null),
+            child: _buildIconButton(
+              icon: LucideIcons.search400,
+              onTap: null,
+            ),
           ),
         ],
       ),
@@ -194,45 +230,6 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
-  IconData _getCategoryIcon(CategoryModel category) {
-    final name = category.name.toLowerCase();
-
-    if (name.contains('spor')) {
-      // Spor & Aktivite
-      return LucideIcons.dumbbell400;
-    } else if (name.contains('sanat')) {
-      // Sanat & Kültür
-      return LucideIcons.palette400;
-    } else if (name.contains('eğitim') || name.contains('workshop')) {
-      // Eğitim & Workshop
-      return LucideIcons.graduationCap400;
-    } else if (name.contains('müzik') || name.contains('konser')) {
-      // Müzik & Konser
-      return LucideIcons.music400;
-    } else if (name.contains('yemek') || name.contains('içecek')) {
-      // Yemek & İçecek
-      return LucideIcons.utensils400;
-    } else if (name.contains('oyun') || name.contains('eğlence')) {
-      // Oyun & Eğlence
-      return LucideIcons.gamepad2400;
-    } else if (name.contains('sağlık') || name.contains('wellness')) {
-      // Sağlık & Wellness
-      return LucideIcons.heartPulse400;
-    } else if (name.contains('iş') || name.contains('networking')) {
-      // İş & Networking
-      return LucideIcons.briefcaseBusiness400;
-    } else if (name.contains('doğa') || name.contains('açık hava')) {
-      // Doğa & Açık Hava
-      return LucideIcons.mountain400;
-    } else if (name.contains('tiyatro') || name.contains('gösteri')) {
-      // Tiyatro & Gösteri
-      return LucideIcons.clapperboard400;
-    }
-
-    // Default / eşleşmeyen
-    return LucideIcons.image400;
-  }
-
   Widget _buildTabBar(List<CategoryModel> categories) {
     return Container(
       height: 60.h,
@@ -255,7 +252,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
             final index = entry.key + 1;
             final category = entry.value;
             return _buildTab(
-              icon: _getCategoryIcon(category),
+              icon: LucideIcons.image400,
               label: category.name,
               isActive: _currentTabIndex == index,
             );
@@ -285,9 +282,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
             style: TextStyle(
               fontSize: 13.sp,
               fontWeight: FontWeight.w600,
-              color: isActive
-                  ? AppTheme.white
-                  : AppTheme.white.withOpacity(0.5),
+              color: isActive ? AppTheme.white : AppTheme.white.withOpacity(0.5),
               height: 1.2,
             ),
           ),
@@ -300,7 +295,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     return TabBarView(
       controller: _tabController,
       children: [
-        _buildRecommendedTab(categories), // ✨ Kategorileri geç
+        _buildRecommendedTab(categories),
         ...categories.map((category) {
           return _buildCategoryTab(category);
         }).toList(),
@@ -308,7 +303,6 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
-  /// ✨ GÜNCEL - Kategorileri parametre olarak al
   Widget _buildRecommendedTab(List<CategoryModel> categories) {
     final featuredImagesAsync = ref.watch(featuredEventImagesProvider);
 
@@ -345,14 +339,13 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
-  /// ✨ GÜNCEL - Kategoriye geçiş yap
   Widget _buildFeaturedImageCard(
     EventImageModel image,
     CategoryModel category,
     List<CategoryModel> allCategories,
   ) {
     return GestureDetector(
-      onTap: () => _navigateToCategory(category, allCategories), // ✨ DEĞİŞTİ
+      onTap: () => _navigateToCategory(category, allCategories),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16.r),
         child: Stack(
@@ -364,10 +357,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   color: AppTheme.zinc300,
-                  child: Icon(
-                    LucideIcons.aArrowDown300,
-                    color: AppTheme.zinc500,
-                  ),
+                  child: Icon(LucideIcons.image400, color: AppTheme.zinc500),
                 );
               },
             ),
@@ -379,10 +369,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.h,
-                      horizontal: 12.w,
-                    ),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
                     decoration: BoxDecoration(
                       color: AppTheme.black800.withOpacity(0.3),
                     ),
@@ -392,12 +379,18 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
                         Text(
                           category.name,
                           style: TextStyle(
-                            fontSize: 15.sp,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
                             color: AppTheme.white,
                             height: 1.2,
                           ),
                           textAlign: TextAlign.center,
+                        ),
+                        SizedBox(width: 6.w),
+                        Icon(
+                          LucideIcons.chevronRight400,
+                          size: 18.sp,
+                          color: AppTheme.white,
                         ),
                       ],
                     ),
@@ -447,8 +440,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
 
   Widget _buildImageTile(EventImageModel image) {
     return GestureDetector(
-      onTap: () =>
-          _onPhotoSelected(image.url), // ✅ Kategori tab'larında resim seçilir
+      onTap: () => _onPhotoSelected(image.url),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12.r),
         child: Image.network(
@@ -457,11 +449,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           errorBuilder: (context, error, stackTrace) {
             return Container(
               color: AppTheme.zinc300,
-              child: Icon(
-                LucideIcons.aArrowDown400,
-                color: AppTheme.zinc500,
-                size: 20.sp,
-              ),
+              child: Icon(LucideIcons.image400, color: AppTheme.zinc500, size: 20.sp),
             );
           },
         ),
@@ -503,11 +491,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  LucideIcons.badgeAlert400,
-                  color: AppTheme.white,
-                  size: 48.sp,
-                ),
+                Icon(LucideIcons.badge400, color: AppTheme.white, size: 48.sp),
                 SizedBox(height: 16.h),
                 Text(
                   'Kategoriler yüklenemedi',
@@ -536,7 +520,9 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
   }
 
   Widget _buildLoadingState() {
-    return Center(child: CircularProgressIndicator(color: AppTheme.white));
+    return Center(
+      child: CircularProgressIndicator(color: AppTheme.white),
+    );
   }
 
   Widget _buildErrorState(String error) {
@@ -546,7 +532,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(LucideIcons.badgeAlert400, color: AppTheme.white, size: 48.sp),
+            Icon(LucideIcons.badge400, color: AppTheme.white, size: 48.sp),
             SizedBox(height: 16.h),
             Text(
               'Resimler yüklenemedi',
@@ -585,6 +571,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
+  /// ✨ GÜNCEL - Galeriden Seç butonu (direkt galeri aç)
   Widget _buildBottomButton() {
     return Container(
       padding: EdgeInsets.fromLTRB(20.w, 15.h, 20.w, 30.h),
@@ -603,19 +590,33 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
         width: double.infinity,
         height: 50.h,
         child: ElevatedButton.icon(
-          onPressed: _onPickFromGallery,
+          onPressed: _isPickingImage ? null : _onPickFromGallery,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.white,
             foregroundColor: AppTheme.black800,
+            disabledBackgroundColor: AppTheme.white.withOpacity(0.5),
+            disabledForegroundColor: AppTheme.black800.withOpacity(0.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.r),
             ),
             elevation: 0,
           ),
-          icon: Icon(LucideIcons.upload400, size: 20.sp),
+          icon: _isPickingImage
+              ? SizedBox(
+                  width: 20.sp,
+                  height: 20.sp,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation(AppTheme.black800.withOpacity(0.5)),
+                  ),
+                )
+              : Icon(LucideIcons.upload400, size: 20.sp),
           label: Text(
-            'Galeriden Seç',
-            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+            _isPickingImage ? 'Yükleniyor...' : 'Galeriden Seç',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
