@@ -6,7 +6,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 enum EventVisibility {
   public,
   private,
-  friendsOnly,
 }
 
 /// EventVisibilityModal - Görünürlük seçimi
@@ -41,8 +40,7 @@ class EventVisibilityModal {
         return 'Herkese Açık';
       case EventVisibility.private:
         return 'Özel';
-      case EventVisibility.friendsOnly:
-        return 'Arkadaşlarım';
+    
     }
   }
 }
@@ -91,13 +89,7 @@ class _VisibilityContentState extends State<_VisibilityContent> {
           description: 'Sadece davet edilenler görebilir',
           onTap: () => _onSelect(EventVisibility.private),
         ),
-        EventModalOption(
-          isSelected: _selected == EventVisibility.friendsOnly,
-          title: 'Arkadaşlarım',
-          description: 'Sadece arkadaşların görebilir',
-          onTap: () => _onSelect(EventVisibility.friendsOnly),
-          showDivider: false, // Son item
-        ),
+        
       ],
     );
   }

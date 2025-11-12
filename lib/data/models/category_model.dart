@@ -2,12 +2,15 @@
 /// 
 /// Supabase'deki event_categories tablosundan gelen verileri temsil eder.
 /// Icon ve renk bilgileri kod tarafında yönetilir.
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:flutter/material.dart';
 class CategoryModel {
   final String id;
   final String name;
   final int displayOrder;
   final bool isActive;
   final DateTime? createdAt;
+  final String? iconName;
 
   CategoryModel({
     required this.id,
@@ -15,6 +18,7 @@ class CategoryModel {
     required this.displayOrder,
     this.isActive = true,
     this.createdAt,
+    this.iconName,
   });
 
   /// Supabase'den gelen JSON'u model'e çevir
@@ -27,6 +31,7 @@ class CategoryModel {
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
+          iconName: json['icon_name'] as String?,
     );
   }
 
@@ -37,10 +42,53 @@ class CategoryModel {
       'name': name,
       'display_order': displayOrder,
       'is_active': isActive,
+      'icon_name': iconName,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
     };
   }
-
+IconData get iconData {
+    switch (iconName) {
+      case 'LucideIcons.dumbbell400':
+        return LucideIcons.dumbbell400; // Spor & Aktivite
+      case 'LucideIcons.palette400':
+        return LucideIcons.palette400; // Sanat & Kültür
+      case 'LucideIcons.graduationCap400':
+        return LucideIcons.graduationCap400; // Eğitim & Workshop
+      case 'LucideIcons.music400':
+        return LucideIcons.music400; // Müzik & Konser
+      case 'LucideIcons.utensils400':
+        return LucideIcons.utensils400; // Yemek & İçecek
+      case 'LucideIcons.gamepad2400':
+        return LucideIcons.gamepad2400; // Oyun & Eğlence
+      case 'LucideIcons.heartPulse400':
+        return LucideIcons.heartPulse400; // Sağlık & Wellness
+      case 'LucideIcons.briefcaseBusiness400':
+        return LucideIcons.briefcaseBusiness400; // İş & Networking
+      case 'LucideIcons.mountain400':
+        return LucideIcons.mountain400; // Doğa & Açık Hava
+      case 'LucideIcons.clapperboard400':
+        return LucideIcons.clapperboard400; // Tiyatro & Gösteri
+      default:
+        return LucideIcons.tag400; // Varsayılan icon
+    }
+  }
+  CategoryModel copyWith({
+    String? id,
+    String? name,
+    int? displayOrder,
+    bool? isActive,
+    DateTime? createdAt,
+    String? iconName,
+  }) {
+    return CategoryModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      displayOrder: displayOrder ?? this.displayOrder,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      iconName: iconName ?? this.iconName,
+    );
+  }
   /// Kategori icon path'i (kod tarafında mapping)
   String get svgPath {
     switch (name) {

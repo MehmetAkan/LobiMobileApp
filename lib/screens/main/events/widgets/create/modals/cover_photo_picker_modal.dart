@@ -249,7 +249,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
             final index = entry.key + 1;
             final category = entry.value;
             return _buildTab(
-              icon: _getCategoryIcon(category),
+              icon: category.iconData,
               label: category.name,
               isActive: _currentTabIndex == index,
             );
@@ -619,42 +619,5 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     );
   }
 
-  IconData _getCategoryIcon(CategoryModel category) {
-    final name = category.name.toLowerCase();
-
-    if (name.contains('spor')) {
-      // Spor & Aktivite
-      return LucideIcons.dumbbell400;
-    } else if (name.contains('sanat')) {
-      // Sanat & Kültür
-      return LucideIcons.palette400;
-    } else if (name.contains('eğitim') || name.contains('workshop')) {
-      // Eğitim & Workshop
-      return LucideIcons.graduationCap400;
-    } else if (name.contains('müzik') || name.contains('konser')) {
-      // Müzik & Konser
-      return LucideIcons.music400;
-    } else if (name.contains('yemek') || name.contains('içecek')) {
-      // Yemek & İçecek
-      return LucideIcons.utensils400;
-    } else if (name.contains('oyun') || name.contains('eğlence')) {
-      // Oyun & Eğlence
-      return LucideIcons.gamepad2400;
-    } else if (name.contains('sağlık') || name.contains('wellness')) {
-      // Sağlık & Wellness
-      return LucideIcons.heartPulse400;
-    } else if (name.contains('iş') || name.contains('networking')) {
-      // İş & Networking
-      return LucideIcons.briefcaseBusiness400;
-    } else if (name.contains('doğa') || name.contains('açık hava')) {
-      // Doğa & Açık Hava
-      return LucideIcons.mountain400;
-    } else if (name.contains('tiyatro') || name.contains('gösteri')) {
-      // Tiyatro & Gösteri
-      return LucideIcons.clapperboard400;
-    }
-
-    // Default / eşleşmeyen
-    return LucideIcons.image400;
-  }
+ 
 }

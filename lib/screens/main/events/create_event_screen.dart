@@ -12,11 +12,14 @@ import 'package:lobi_application/screens/main/events/widgets/create/forms/event_
 import 'package:lobi_application/screens/main/events/widgets/create/modals/event_visibility_modal.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/event_capacity_modal.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/event_description_modal.dart';
-import 'package:lobi_application/screens/main/events/widgets/create/modals/location_picker_modal.dart'; // ✨ YENİ
+import 'package:lobi_application/screens/main/events/widgets/create/modals/location_picker_modal.dart';
 import 'package:lobi_application/utils/event_description_helper.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lobi_application/data/services/location_service.dart'; // ✨ YENİ
+import 'package:lobi_application/data/services/location_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:lobi_application/data/models/category_model.dart';
+import 'package:lobi_application/screens/main/events/widgets/create/forms/event_category_field.dart'; // ✨ YENİ
+import 'package:lobi_application/screens/main/events/widgets/create/modals/event_category_modal.dart'; // ✨ YENİ
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({super.key});
@@ -33,6 +36,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   DateTime? _endDate;
 
   LocationModel? _selectedLocationModel; // ✨ DEĞİŞTİ
+  CategoryModel? _selectedCategory;
   String? _description;
   String? _coverPhotoUrl;
   bool _isApprovalRequired = false;
@@ -103,6 +107,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }
   }
 
+  /// ✨ YENİ - Kategori modal'ını aç
+  Future<void> _openCategoryModal() async {
+    final category = await EventCategoryModal.show(
+      context: context,
+      currentValue: _selectedCategory,
+    );
+
+    if (category != null) {
+      setState(() {
+        _selectedCategory = category;
+      });
+      debugPrint('🎨 Kategori seçildi: ${category.name}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
@@ -113,7 +132,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         height: screenHeight,
         child: Stack(
           children: [
-          EventBackground(coverPhotoUrl: _coverPhotoUrl),
+            EventBackground(coverPhotoUrl: _coverPhotoUrl),
             SingleChildScrollView(
               controller: _scrollController,
               padding: EdgeInsets.fromLTRB(
@@ -181,6 +200,23 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         ? EventDescriptionHelper.getPlainText(_description)
                         : null,
                     onTap: _openDescriptionModal,
+                  ),
+                  SizedBox(height: 10.h),
+                  EventSettingsBox(
+                    children: [
+                      EventSettingsItem.action(
+                        icon: LucideIcons.layoutGrid400,
+                        label: 'Kategori',
+                        placeholder: 'Kategori Seç',
+                        value: _selectedCategory != null
+                            ? EventCategoryModal.getDisplayText(
+                                _selectedCategory!,
+                              )
+                            : null,
+                        onTap: _openCategoryModal,
+                        showDivider: false,
+                      ),
+                    ],
                   ),
                   SizedBox(height: 20.h),
                   Divider(

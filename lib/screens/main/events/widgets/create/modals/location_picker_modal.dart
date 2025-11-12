@@ -98,7 +98,7 @@ class _LocationPickerContentState
     return Container(
       height: screenHeight * 0.9,
       decoration: BoxDecoration(
-        color: AppTheme.black800,
+        color: AppTheme.zinc1000,
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.r)),
       ),
       child: Column(
@@ -162,17 +162,21 @@ class _LocationPickerContentState
           GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             child: Container(
-              width: 32.w,
-              height: 32.w,
+              width: 45.w,
+              height: 45.w,
               decoration: BoxDecoration(
-                color: AppTheme.getEventFieldBg(context),
+                color: AppTheme.getAppBarButtonBg(context),
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppTheme.getAppBarButtonBorder(context),
+                  width: 1,
+                ),
               ),
               child: Center(
                 child: Icon(
                   LucideIcons.x400,
                   size: 18.sp,
-                  color: AppTheme.getEventFieldText(context),
+                  color: AppTheme.getAppBarButtonColor(context),
                 ),
               ),
             ),
@@ -189,7 +193,7 @@ class _LocationPickerContentState
       child: Container(
         height: 50.h,
         decoration: BoxDecoration(
-          color: AppTheme.getEventFieldBg(context),
+          color: AppTheme.black800,
           borderRadius: BorderRadius.circular(25.r),
         ),
         child: Row(
