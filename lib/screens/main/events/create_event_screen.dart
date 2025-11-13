@@ -127,7 +127,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     }
   }
 
-  /// ✨ YENİ: Kaydetme işlemini tetikleyen ve provider'ı çağıran fonksiyon
   Future<void> _submitCreateEvent() async {
     // Provider'ı çağırmadan önce 'ref.read' kullanarak
     // 'CreateEventController'ın 'notifier'ına (kendisine) erişiyoruz.
@@ -154,7 +153,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     // Hata durumu 'ref.listen' tarafından otomatik olarak ele alınacak
   }
 
-  /// ✨ YENİ: Hata veya başarı mesajları için SnackBar gösterici
   void _showSnackBar(String message, {bool isError = true}) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -174,16 +172,11 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       createEventControllerProvider,
       (previous, next) {
         next.whenOrNull(
-          // Sadece hata durumunda SnackBar göster
           error: (error, stackTrace) {
-            // ✨ YENİ: Hatayı ve stack trace'i terminale yazdır
             debugPrint('==== ETKİNLİK OLUŞTURMA HATASI ====');
             debugPrint('HATA: $error');
             debugPrint('STACK TRACE: $stackTrace');
             debugPrint('====================================');
-
-            // Provider'daki validasyon hatası veya diğer hatalar
-            // Not: 'Exception: ' metnini kaldırarak daha temiz bir mesaj göster
             final errorMessage = error.toString().startsWith('Exception: ')
                 ? error.toString().substring(11) // "Exception: " kısmını (11 karakter) atla
                 : error.toString();
@@ -376,9 +369,8 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     );
   }
 
-  // ✨ DEĞİŞTİ: Metod imzası 'WidgetRef ref' alıyor ve tüm mantık güncellendi
   Widget _buildSaveButton(WidgetRef ref) {
-    // ✨ YENİ: Provider'ın mevcut durumunu izle (sadece isLoading bilgisi için)
+  
     final createEventState = ref.watch(createEventControllerProvider);
     final bool isLoading = createEventState is AsyncLoading;
 
@@ -396,7 +388,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
             customBorder: const CircleBorder(),
             child: Container(
               decoration: BoxDecoration(
-                // ✨ DEĞİŞTİ: Yüklenirken butonu yarı saydam yap
                 color: AppTheme.getAppBarButtonBg(context).withOpacity(
                   isLoading ? 0.5 : 1.0,
                 ),
@@ -407,7 +398,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                 ),
               ),
               child: Center(
-                // ✨ DEĞİŞTİ: Yüklenirken icon yerine progress indicator göster
                 child: isLoading
                     ? SizedBox(
                         width: 22.sp,

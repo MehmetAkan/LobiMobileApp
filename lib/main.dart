@@ -5,8 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart'; // 🗺️ EKLENDI
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
-import 'package:lobi_application/screens/test/google_maps_test_screen.dart';
-import 'package:lobi_application/screens/test/location_test_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
 /// Ana giriş noktası

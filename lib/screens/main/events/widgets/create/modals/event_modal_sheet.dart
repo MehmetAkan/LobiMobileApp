@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-
 class EventModalSheet extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -20,97 +19,108 @@ class EventModalSheet extends StatelessWidget {
     required this.children,
   });
 
-@override
-Widget build(BuildContext context) {
-  return ClipRRect(
-    borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-    child: BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: 20,
-        sigmaY: 20,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.white.withOpacity(0.10),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            
-            children: [
-              // Header
-              Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 15.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildIconButton(context, icon, onTap: null),
-                    _buildIconButton(
-                      context,
-                      LucideIcons.x400,
-                      onTap: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
+  @override
+  Widget build(BuildContext context) {
+    // Klavye yüksekliği
+    final viewInsets = MediaQuery.of(context).viewInsets;
 
-              // Title + Description
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
+    return AnimatedPadding(
+      padding: EdgeInsets.only(bottom: viewInsets.bottom),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.decelerate,
+      child: ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 20,
+            sigmaY: 20,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.white.withOpacity(0.10),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                // Klavye açılınca içerik kayabilsin
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.white,
-                        height: 1.2,
+                    // Header
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 15.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildIconButton(context, icon, onTap: null),
+                          _buildIconButton(
+                            context,
+                            LucideIcons.x400,
+                            onTap: () => Navigator.of(context).pop(),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w500,
-                         color: AppTheme.white.withOpacity(0.7),
-                        height: 1.3,
+
+                    // Title + Description
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.white,
+                              height: 1.2,
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                          Text(
+                            description,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppTheme.white.withOpacity(0.7),
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+
+                    SizedBox(height: 20.h),
+
+                    // Content
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppTheme.getEventFieldBg(context),
+                          borderRadius: BorderRadius.circular(25.r),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: children,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 30.h),
                   ],
                 ),
               ),
-
-              SizedBox(height: 20.h),
-
-              // Content
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.getEventFieldBg(context),
-                    borderRadius: BorderRadius.circular(25.r),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: children,
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 30.h),
-            ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+
   Widget _buildIconButton(
     BuildContext context,
     IconData iconData, {
@@ -129,7 +139,6 @@ Widget build(BuildContext context) {
             decoration: BoxDecoration(
               color: AppTheme.getAppBarButtonBg(context),
               shape: BoxShape.circle,
-              
             ),
             child: Center(
               child: Icon(
@@ -212,8 +221,7 @@ class EventModalOption extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: isSelected
                               ? AppTheme.white
-                              : AppTheme.white
-                                  .withOpacity(0.9),
+                              : AppTheme.white.withOpacity(0.9),
                           height: 1.2,
                         ),
                       ),
