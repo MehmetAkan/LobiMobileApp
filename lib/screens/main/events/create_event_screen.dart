@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✨ YENİ
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lobi_application/providers/event_provider.dart'; // ✨ YENİ
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
+import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/sections/create_event_cover_section.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
@@ -15,31 +18,25 @@ import 'package:lobi_application/screens/main/events/widgets/create/modals/event
 import 'package:lobi_application/screens/main/events/widgets/create/modals/event_capacity_modal.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/event_description_modal.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/location_picker_modal.dart';
+import 'package:lobi_application/screens/main/events/widgets/create/modals/event_category_modal.dart';
 import 'package:lobi_application/utils/event_description_helper.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/services/location_service.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/data/models/category_model.dart';
-// ✨ SİLİNDİ: import 'package:lobi_application/screens/main/events/widgets/create/forms/event_category_field.dart';
-import 'package:lobi_application/screens/main/events/widgets/create/modals/event_category_modal.dart';
 
-// ✨ DEĞİŞTİ: StatefulWidget -> ConsumerStatefulWidget
 class CreateEventScreen extends ConsumerStatefulWidget {
   const CreateEventScreen({super.key});
 
   @override
-  // ✨ DEĞİŞTİ: State -> ConsumerState
   ConsumerState<CreateEventScreen> createState() => _CreateEventScreenState();
 }
 
-// ✨ DEĞİŞTİ: State -> ConsumerState
 class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _titleController = TextEditingController();
 
   DateTime? _startDate;
   DateTime? _endDate;
-
   LocationModel? _selectedLocationModel;
   CategoryModel? _selectedCategory;
   String? _description;
@@ -55,7 +52,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     super.dispose();
   }
 
-  /// ✨ Görünürlük modal'ını aç
+  /// Görünürlük modal'ını aç
   Future<void> _openVisibilityModal() async {
     final result = await EventVisibilityModal.show(
       context: context,
@@ -69,7 +66,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     }
   }
 
-  /// ✨ Kontenjan modal'ını aç
+  /// Kontenjan modal'ını aç
   Future<void> _openCapacityModal() async {
     final result = await EventCapacityModal.show(
       context: context,
@@ -81,9 +78,9 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     });
   }
 
-  /// ✨ Açıklama modal'ını aç
+  /// Açıklama modal'ını aç
   Future<void> _openDescriptionModal() async {
-    final result = await Navigator.push(
+    final result = await Navigator.push<String?>(
       context,
       MaterialPageRoute(
         builder: (context) => EventDescriptionModal(initialText: _description),
@@ -98,7 +95,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     }
   }
 
-  /// ✨ Konum modal'ını aç
+  /// Konum modal'ını aç
   Future<void> _openLocationModal() async {
     final location = await LocationPickerModal.show(context: context);
 
@@ -107,12 +104,12 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         _selectedLocationModel = location;
       });
 
-      debugPrint('📍 Konum seçildi: ${location.placeName}');
-      debugPrint('🗺️ ${location.latitude}, ${location.longitude}');
+      debugPrint(' Konum seçildi: ${location.placeName}');
+      debugPrint('️ ${location.latitude}, ${location.longitude}');
     }
   }
 
-  /// ✨ Kategori modal'ını aç
+  /// Kategori modal'ını aç
   Future<void> _openCategoryModal() async {
     final category = await EventCategoryModal.show(
       context: context,
@@ -123,13 +120,14 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       setState(() {
         _selectedCategory = category;
       });
-      debugPrint('🎨 Kategori seçildi: ${category.name}');
+
+      debugPrint(' Kategori seçildi: ${category.name}');
     }
   }
 
   Future<void> _submitCreateEvent() async {
     // Provider'ı çağırmadan önce 'ref.read' kullanarak
-    // 'CreateEventController'ın 'notifier'ına (kendisine) erişiyoruz.
+    // CreateEventController'ın notifier'ına erişiyoruz.
     final bool success = await ref
         .read(createEventControllerProvider.notifier)
         .createEvent(
@@ -146,28 +144,17 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         );
 
     if (success && mounted) {
-      // Başarılı olursa ekranı kapat
-      _showSnackBar('Etkinlik başarıyla oluşturuldu!', isError: false);
+      // ✅ Artık burada global feedback servisini kullanıyoruz
+      getIt<AppFeedbackService>()
+          .showSuccess('Etkinlik başarıyla oluşturuldu!');
       Navigator.of(context).pop();
     }
-    // Hata durumu 'ref.listen' tarafından otomatik olarak ele alınacak
-  }
-
-  void _showSnackBar(String message, {bool isError = true}) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red.shade600 : Colors.green.shade600,
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(16.w),
-      ),
-    );
+    // Hata durumu ref.listen ile handle ediliyor
   }
 
   @override
   Widget build(BuildContext context) {
-    // ✨ YENİ: Provider'ın durumunu (loading, error, data) dinle
+    // Provider'ın durumunu (loading, error, data) dinle
     ref.listen<AsyncValue<void>>(
       createEventControllerProvider,
       (previous, next) {
@@ -177,10 +164,14 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
             debugPrint('HATA: $error');
             debugPrint('STACK TRACE: $stackTrace');
             debugPrint('====================================');
-            final errorMessage = error.toString().startsWith('Exception: ')
-                ? error.toString().substring(11) // "Exception: " kısmını (11 karakter) atla
-                : error.toString();
-            _showSnackBar(errorMessage);
+
+            final errorString = error.toString();
+            final errorMessage = errorString.startsWith('Exception: ')
+                ? errorString.substring(11) // "Exception: " kısmını at
+                : errorString;
+
+            // ✅ Hatalar da artık global feedback sistemi ile
+            getIt<AppFeedbackService>().showError(errorMessage);
           },
         );
       },
@@ -189,6 +180,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final appBarHeight = 60.h + statusBarHeight;
     final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: SizedBox(
         height: screenHeight,
@@ -232,7 +224,8 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                               _startDate = date;
                               if (_endDate == null ||
                                   _endDate!.isBefore(date)) {
-                                _endDate = date.add(const Duration(hours: 1));
+                                _endDate =
+                                    date.add(const Duration(hours: 1));
                               }
                             });
                           },
@@ -259,7 +252,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                   SizedBox(height: 10.h),
                   EventDescriptionField(
                     value: _description != null
-                        ? EventDescriptionHelper.getPlainText(_description)
+                        ? EventDescriptionHelper.getPlainText(_description!)
                         : null,
                     onTap: _openDescriptionModal,
                   ),
@@ -333,7 +326,8 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                         icon: LucideIcons.globe400,
                         label: 'Görünürlük',
                         placeholder: 'Herkese Açık',
-                        value: EventVisibilityModal.getDisplayText(_visibility),
+                        value:
+                            EventVisibilityModal.getDisplayText(_visibility),
                         onTap: _openVisibilityModal,
                       ),
                       EventSettingsItem.action(
@@ -359,8 +353,9 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                 title: 'Yeni Etkinlik',
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
-                // ✨ DEĞİŞTİ: ref eklendi
-                actions: [_buildSaveButton(ref)],
+                actions: [
+                  _buildSaveButton(ref),
+                ],
               ),
             ),
           ],
@@ -370,7 +365,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   }
 
   Widget _buildSaveButton(WidgetRef ref) {
-  
     final createEventState = ref.watch(createEventControllerProvider);
     final bool isLoading = createEventState is AsyncLoading;
 
@@ -383,7 +377,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
           color: Colors.transparent,
           shape: const CircleBorder(),
           child: InkWell(
-            // ✨ DEĞİŞTİ: 'isLoading' ise null, değilse '_submitCreateEvent'
             onTap: isLoading ? null : _submitCreateEvent,
             customBorder: const CircleBorder(),
             child: Container(

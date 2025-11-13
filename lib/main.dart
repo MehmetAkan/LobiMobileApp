@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // 🗺️ EKLENDI
+import 'package:flutter_dotenv/flutter_dotenv.dart'; 
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
-/// Ana giriş noktası
-/// Neden değişiklikler:
-/// 1. ProviderScope: Riverpod için gerekli wrapper
-/// 2. setupServiceLocator: GetIt ile dependency injection
-/// 3. dotenv: Environment variables yükleme (Google Maps API keys için) - EKLENDI
-/// 4. Error handling: Uygulama başlatma sırasında oluşabilecek hatalar için
+
 Future<void> main() async {
   // Flutter binding'i başlat
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +71,7 @@ class LobiApp extends StatelessWidget {
         return MaterialApp(
           title: 'Lobi',
           debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: rootScaffoldMessengerKey,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           home: const AppEntry(),
