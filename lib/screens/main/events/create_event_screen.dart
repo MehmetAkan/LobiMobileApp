@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✨ YENİ
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/providers/event_provider.dart'; // ✨ YENİ
 import 'package:lobi_application/screens/main/events/widgets/create/sections/create_event_cover_section.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
@@ -18,24 +20,27 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/services/location_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/data/models/category_model.dart';
-import 'package:lobi_application/screens/main/events/widgets/create/forms/event_category_field.dart'; // ✨ YENİ
-import 'package:lobi_application/screens/main/events/widgets/create/modals/event_category_modal.dart'; // ✨ YENİ
+// ✨ SİLİNDİ: import 'package:lobi_application/screens/main/events/widgets/create/forms/event_category_field.dart';
+import 'package:lobi_application/screens/main/events/widgets/create/modals/event_category_modal.dart';
 
-class CreateEventScreen extends StatefulWidget {
+// ✨ DEĞİŞTİ: StatefulWidget -> ConsumerStatefulWidget
+class CreateEventScreen extends ConsumerStatefulWidget {
   const CreateEventScreen({super.key});
 
   @override
-  State<CreateEventScreen> createState() => _CreateEventScreenState();
+  // ✨ DEĞİŞTİ: State -> ConsumerState
+  ConsumerState<CreateEventScreen> createState() => _CreateEventScreenState();
 }
 
-class _CreateEventScreenState extends State<CreateEventScreen> {
+// ✨ DEĞİŞTİ: State -> ConsumerState
+class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _titleController = TextEditingController();
 
   DateTime? _startDate;
   DateTime? _endDate;
 
-  LocationModel? _selectedLocationModel; // ✨ DEĞİŞTİ
+  LocationModel? _selectedLocationModel;
   CategoryModel? _selectedCategory;
   String? _description;
   String? _coverPhotoUrl;
@@ -93,7 +98,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }
   }
 
-  /// ✨ YENİ - Konum modal'ını aç
+  /// ✨ Konum modal'ını aç
   Future<void> _openLocationModal() async {
     final location = await LocationPickerModal.show(context: context);
 
@@ -107,7 +112,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }
   }
 
-  /// ✨ YENİ - Kategori modal'ını aç
+  /// ✨ Kategori modal'ını aç
   Future<void> _openCategoryModal() async {
     final category = await EventCategoryModal.show(
       context: context,
@@ -122,8 +127,72 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     }
   }
 
+  /// ✨ YENİ: Kaydetme işlemini tetikleyen ve provider'ı çağıran fonksiyon
+  Future<void> _submitCreateEvent() async {
+    // Provider'ı çağırmadan önce 'ref.read' kullanarak
+    // 'CreateEventController'ın 'notifier'ına (kendisine) erişiyoruz.
+    final bool success = await ref
+        .read(createEventControllerProvider.notifier)
+        .createEvent(
+          title: _titleController.text,
+          description: _description,
+          coverPhotoUrl: _coverPhotoUrl,
+          startDate: _startDate,
+          endDate: _endDate,
+          location: _selectedLocationModel,
+          category: _selectedCategory,
+          visibility: _visibility,
+          isApprovalRequired: _isApprovalRequired,
+          capacity: _capacity,
+        );
+
+    if (success && mounted) {
+      // Başarılı olursa ekranı kapat
+      _showSnackBar('Etkinlik başarıyla oluşturuldu!', isError: false);
+      Navigator.of(context).pop();
+    }
+    // Hata durumu 'ref.listen' tarafından otomatik olarak ele alınacak
+  }
+
+  /// ✨ YENİ: Hata veya başarı mesajları için SnackBar gösterici
+  void _showSnackBar(String message, {bool isError = true}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red.shade600 : Colors.green.shade600,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16.w),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // ✨ YENİ: Provider'ın durumunu (loading, error, data) dinle
+    ref.listen<AsyncValue<void>>(
+      createEventControllerProvider,
+      (previous, next) {
+        next.whenOrNull(
+          // Sadece hata durumunda SnackBar göster
+          error: (error, stackTrace) {
+            // ✨ YENİ: Hatayı ve stack trace'i terminale yazdır
+            debugPrint('==== ETKİNLİK OLUŞTURMA HATASI ====');
+            debugPrint('HATA: $error');
+            debugPrint('STACK TRACE: $stackTrace');
+            debugPrint('====================================');
+
+            // Provider'daki validasyon hatası veya diğer hatalar
+            // Not: 'Exception: ' metnini kaldırarak daha temiz bir mesaj göster
+            final errorMessage = error.toString().startsWith('Exception: ')
+                ? error.toString().substring(11) // "Exception: " kısmını (11 karakter) atla
+                : error.toString();
+            _showSnackBar(errorMessage);
+          },
+        );
+      },
+    );
+
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final appBarHeight = 60.h + statusBarHeight;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -297,7 +366,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 title: 'Yeni Etkinlik',
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
-                actions: [_buildSaveButton()],
+                // ✨ DEĞİŞTİ: ref eklendi
+                actions: [_buildSaveButton(ref)],
               ),
             ),
           ],
@@ -306,7 +376,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  Widget _buildSaveButton() {
+  // ✨ DEĞİŞTİ: Metod imzası 'WidgetRef ref' alıyor ve tüm mantık güncellendi
+  Widget _buildSaveButton(WidgetRef ref) {
+    // ✨ YENİ: Provider'ın mevcut durumunu izle (sadece isLoading bilgisi için)
+    final createEventState = ref.watch(createEventControllerProvider);
+    final bool isLoading = createEventState is AsyncLoading;
+
     return Padding(
       padding: EdgeInsets.only(left: 10.w),
       child: SizedBox(
@@ -316,37 +391,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           color: Colors.transparent,
           shape: const CircleBorder(),
           child: InkWell(
-            onTap: () {
-              debugPrint('📝 === ETKİNLİK BİLGİLERİ ===');
-              debugPrint('Başlık: ${_titleController.text}');
-              debugPrint('Başlangıç: $_startDate');
-              debugPrint('Bitiş: $_endDate');
-
-              // ✨ DEĞİŞTİ - Detaylı konum bilgisi
-              if (_selectedLocationModel != null) {
-                debugPrint('📍 Konum:');
-                debugPrint('  - Yer: ${_selectedLocationModel!.placeName}');
-                debugPrint('  - Adres: ${_selectedLocationModel!.address}');
-                debugPrint(
-                  '  - Koordinat: ${_selectedLocationModel!.latitude}, ${_selectedLocationModel!.longitude}',
-                );
-                debugPrint('  - Şehir: ${_selectedLocationModel!.city}');
-                debugPrint('  - İlçe: ${_selectedLocationModel!.district}');
-              } else {
-                debugPrint('📍 Konum: Seçilmedi');
-              }
-
-              debugPrint('Açıklama: $_description');
-              debugPrint('Görünürlük: $_visibility');
-              debugPrint('Kapasite: $_capacity');
-              debugPrint('Onay: $_isApprovalRequired');
-
-              Navigator.of(context).pop();
-            },
+            // ✨ DEĞİŞTİ: 'isLoading' ise null, değilse '_submitCreateEvent'
+            onTap: isLoading ? null : _submitCreateEvent,
             customBorder: const CircleBorder(),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.getAppBarButtonBg(context),
+                // ✨ DEĞİŞTİ: Yüklenirken butonu yarı saydam yap
+                color: AppTheme.getAppBarButtonBg(context).withOpacity(
+                  isLoading ? 0.5 : 1.0,
+                ),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: AppTheme.getAppBarButtonBorder(context),
@@ -354,11 +407,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 ),
               ),
               child: Center(
-                child: Icon(
-                  LucideIcons.check400,
-                  size: 25.sp,
-                  color: AppTheme.getAppBarButtonColor(context),
-                ),
+                // ✨ DEĞİŞTİ: Yüklenirken icon yerine progress indicator göster
+                child: isLoading
+                    ? SizedBox(
+                        width: 22.sp,
+                        height: 22.sp,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppTheme.getAppBarButtonColor(context),
+                        ),
+                      )
+                    : Icon(
+                        LucideIcons.check400,
+                        size: 25.sp,
+                        color: AppTheme.getAppBarButtonColor(context),
+                      ),
               ),
             ),
           ),

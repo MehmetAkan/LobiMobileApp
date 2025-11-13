@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:lobi_application/core/supabase_client.dart';
 import 'package:lobi_application/core/utils/logger.dart';
+import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/data/services/auth_service.dart';
+import 'package:lobi_application/data/services/event_service.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/data/services/event_image_service.dart';
 import 'package:lobi_application/data/services/category_service.dart';
@@ -22,53 +24,35 @@ Future<void> setupServiceLocator() async {
     getIt.registerSingleton(SupabaseManager.instance.client);
 
     // 2. Services (Supabase ile konuşan katman)
-    getIt.registerLazySingleton<AuthService>(
-      () => AuthService(),
-    );
+    getIt.registerLazySingleton<AuthService>(() => AuthService());
 
-    getIt.registerLazySingleton<ProfileService>(
-      () => ProfileService(),
-    );
+    getIt.registerLazySingleton<ProfileService>(() => ProfileService());
 
-    getIt.registerLazySingleton<EventImageService>(
-      () => EventImageService(),
-    );
+    getIt.registerLazySingleton<EventImageService>(() => EventImageService());
 
-    getIt.registerLazySingleton<CategoryService>(
-      () => CategoryService(),
-    );
+    getIt.registerLazySingleton<CategoryService>(() => CategoryService());
 
-    // ✨ YENİ - ImagePickerService (Singleton - tekrar tekrar oluşturulmaya gerek yok)
-    getIt.registerLazySingleton<ImagePickerService>(
-      () => ImagePickerService(),
-    );
+    getIt.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
 
-    // 3. Repositories (Business logic katmanı)
+getIt.registerLazySingleton<EventService>(() => EventService(getIt()));
+
     getIt.registerLazySingleton<AuthRepository>(
-      () => AuthRepository(
-        getIt<AuthService>(),
-        getIt<ProfileService>(),
-      ),
+      () => AuthRepository(getIt<AuthService>(), getIt<ProfileService>()),
     );
 
     getIt.registerLazySingleton<ProfileRepository>(
-      () => ProfileRepository(
-        getIt<ProfileService>(),
-        getIt<AuthService>(),
-      ),
+      () => ProfileRepository(getIt<ProfileService>(), getIt<AuthService>()),
     );
 
     getIt.registerLazySingleton<EventImageRepository>(
-      () => EventImageRepository(
-        getIt<EventImageService>(),
-      ),
+      () => EventImageRepository(getIt<EventImageService>()),
     );
 
     getIt.registerLazySingleton<CategoryRepository>(
-      () => CategoryRepository(
-        getIt<CategoryService>(),
-      ),
+      () => CategoryRepository(getIt<CategoryService>()),
     );
+    
+getIt.registerLazySingleton<EventRepository>(() => EventRepository(getIt(), getIt()));
 
     AppLogger.info('✅ Dependency Injection kuruldu');
   } catch (e, stackTrace) {
