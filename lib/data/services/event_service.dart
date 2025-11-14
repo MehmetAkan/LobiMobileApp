@@ -122,6 +122,21 @@ class EventService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getPopularEvents({
+    required int limit,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_popular_events',
+        params: {'limit_in': limit},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getPopularEvents');
+    }
+  }
+
   /// Hata yönetimi
   AppException _handleError(Object error, String context) {
     final String prefix = 'EventService ($context):';

@@ -78,7 +78,6 @@ class EventRepository {
     }
   }
 
-
   Future<List<EventModel>> getThisWeekEvents() async {
     try {
       final now = DateTime.now();
@@ -138,24 +137,36 @@ class EventRepository {
     }
   }
 
- 
+  Future<List<EventModel>> getPopularEvents({int limit = 5}) async {
+    try {
+      final rows = await _eventService.getPopularEvents(limit: limit);
+
+      final events = rows
+          .map<EventModel>((row) => _mapRowToEventModel(row))
+          .toList();
+
+      return events;
+    } on AppException {
+      // Servis zaten AppException üretiyor, aynen yukarı fırlat
+      rethrow;
+    } catch (e) {
+      // Beklenmeyen hataları UnknownException'a çevir
+      throw UnknownException(
+        'Popüler etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
   EventModel _mapRowToEventModel(Map<String, dynamic> row) {
     final dynamic startDateRaw = row['start_date'];
     final DateTime startDate = _parseDateTime(startDateRaw);
 
-    // Lokasyon adı (iki farklı kolon ihtimaline göre)
-    final String locationName =
-        (row['location_name'] as String?) ??
-            (row['location_place_name'] as String?) ??
-            '';
+    // Lokasyon adı
+    final String locationName = (row['location_name'] as String?) ?? '';
 
-    // Katılımcı sayısı:
-    // 1) current_participants varsa onu
-    // 2) yoksa max_participants
-    // 3) ikisi de yoksa 0
-    final int attendeeCount = _parseInt(
-      row['current_participants'] ?? row['max_participants'],
-    );
+    // Katılımcı sayısı: participant_count kolonundan
+    final int attendeeCount = _parseInt(row['participant_count']);
 
     return EventModel(
       id: row['id']?.toString() ?? '',
@@ -165,7 +176,6 @@ class EventRepository {
       location: locationName,
       imageUrl: row['cover_image_url'] as String? ?? '',
       attendeeCount: attendeeCount,
-      // Kategoriler için şimdilik boş; ileride join ile doldururuz
       categories: const [],
     );
   }
@@ -187,5 +197,4 @@ class EventRepository {
     if (value is String) return int.tryParse(value) ?? 0;
     return 0;
   }
-  
 }

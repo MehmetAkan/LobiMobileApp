@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 import 'package:lobi_application/data/models/category_model.dart';
+import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/screens/main/explore/widgets/discover_events_list.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
@@ -162,53 +163,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                 SizedBox(height: 25.h),
-                EventsSection(
-                  title: 'Beğenebileceğin ve fazlası',
-                  onSeeAll: () {
-                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
-                  },
-                  child: EventCardList<Map<String, dynamic>>(
-                    items: _mockRecommendedEvents,
-                    itemBuilder: (event, index) {
-                      return EventCardHorizontal(
-                        imageUrl: event['imageUrl'],
-                        title: event['title'],
-                        date: event['date'],
-                        location: event['location'],
-                        attendeeCount: event['attendeeCount'],
-                        isLiked: false,
-                        showLikeButton: false,
-                        onTap: () {
-                          debugPrint('Etkinliğe tıklandı: ${event['title']}');
-                        },
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 25.h),
-                EventsSection(
-                  title: 'Popüler olanlar',
-                  onSeeAll: () {
-                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
-                  },
-                  child: EventCardList<Map<String, dynamic>>(
-                    items: _mockPopularEvents,
-                    itemBuilder: (event, index) {
-                      return EventCardHorizontal(
-                        imageUrl: event['imageUrl'],
-                        title: event['title'],
-                        date: event['date'],
-                        location: event['location'],
-                        attendeeCount: event['attendeeCount'],
-                        isLiked: false,
-                        showLikeButton: false,
-                        onTap: () {
-                          debugPrint('Etkinliğe tıklandı: ${event['title']}');
-                        },
-                      );
-                    },
-                  ),
-                ),
+               _buildPopularEventsSection(),
                 SizedBox(height: 25.h),
                 EventsSection(
                   title: 'Bu haftakiler',
@@ -340,4 +295,87 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       ],
     );
   }
+
+
+ Widget _buildPopularEventsSection() {
+    final state = ref.watch(discoverPopularEventsProvider);
+
+    return EventsSection(
+      title: 'Popüler Oranlar',
+      onSeeAll: () {
+        // İleride "Tüm popülerler" sayfasına yönlendireceğiz.
+        // Şimdilik sadece log atabiliriz.
+        debugPrint('Tümünü gör: Popüler Oranlar');
+      },
+      child: state.when(
+        loading: () => SizedBox(
+          height: 160.h,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        error: (error, stackTrace) => Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.w,
+            vertical: 10.h,
+          ),
+          child: Text(
+            'Popüler etkinlikler yüklenirken bir sorun oluştu.',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppTheme.getTextDescColor(context),
+            ),
+          ),
+        ),
+        data: (events) {
+          if (events.isEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 10.h,
+              ),
+              child: Text(
+                'Şu anda öne çıkan popüler etkinlik bulunmuyor.',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppTheme.getTextDescColor(context),
+                ),
+              ),
+            );
+          }
+
+          return EventCardList(
+            items: events,
+            itemBuilder: (event, index) {
+              final date = event.date;
+              final hour =
+                  date.hour.toString().padLeft(2, '0');
+              final minute =
+                  date.minute.toString().padLeft(2, '0');
+
+              final dateText =
+                  '${date.day} ${date.monthName} - $hour:$minute';
+
+              return EventCardHorizontal(
+                imageUrl: event.imageUrl,
+                title: event.title,
+                date: dateText,
+                location: event.location,
+                attendeeCount: event.attendeeCount,
+                isLiked: false,
+                showLikeButton: false,
+                onTap: () {
+                  debugPrint(
+                    'Popüler etkinliğe tıklandı: ${event.title}',
+                  );
+                  // İleride: detay sayfasına git
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }
+

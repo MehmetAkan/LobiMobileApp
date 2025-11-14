@@ -207,7 +207,12 @@ final homeThisWeekEventsProvider = FutureProvider<List<EventDayGroup>>((
 
   return groups;
 });
-
+final discoverPopularEventsProvider =
+    FutureProvider<List<EventModel>>((ref) async {
+  final repository = ref.read(eventRepositoryProvider);
+  // Ana sayfadaki yatay liste için 5 adet yeterli
+  return repository.getPopularEvents(limit: 5);
+});
 final discoverEventsControllerProvider =
     StateNotifierProvider<DiscoverEventsController, DiscoverEventsState>(
   (ref) => DiscoverEventsController(ref),
