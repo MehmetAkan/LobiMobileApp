@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 import 'package:lobi_application/data/models/category_model.dart';
+import 'package:lobi_application/screens/main/explore/widgets/discover_events_list.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_search_button.dart';
@@ -214,8 +215,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   onSeeAll: () {
                     debugPrint('Tümünü gör: Yakındaki Etkinlikler');
                   },
-                  child: GroupedEventList(
-                    events: _mockNearbyEvents,
+                  child: DiscoverEventsList(
                     scrollController: scrollController,
                     navbarHeight: navbarHeight,
                     onActiveDateChanged: (date) {

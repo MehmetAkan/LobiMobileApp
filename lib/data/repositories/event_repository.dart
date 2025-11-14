@@ -14,7 +14,6 @@ class EventRepository {
 
   EventRepository(this._eventService, this._authRepository);
 
-  /// Yeni etkinlik oluşturma (create_new_event RPC)
   Future<Map<String, dynamic>> createEvent({
     required String title,
     required String? description,
@@ -79,11 +78,7 @@ class EventRepository {
     }
   }
 
-  /// "Bu haftakiler" için etkinlikleri getirir.
-  ///
-  /// - Haftanın başlangıcı: Pazartesi 00:00
-  /// - Haftanın bitişi: Sonraki Pazartesi 00:00 (end exclusive)
-  /// - Sonuç: start_date'e göre sıralı EventModel listesi
+
   Future<List<EventModel>> getThisWeekEvents() async {
     try {
       final now = DateTime.now();
@@ -116,13 +111,34 @@ class EventRepository {
     }
   }
 
-  /// Supabase satırını UI'da kullanılan EventModel'e dönüştürür.
-  ///
-  /// Şu an için:
-  ///  - date  -> start_date
-  ///  - location -> location_name (yoksa location_place_name)
-  ///  - imageUrl -> cover_image_url
-  ///  - attendeeCount -> current_participants / max_participants / 0
+  Future<List<EventModel>> getUpcomingEventsPage({
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    try {
+      final rows = await _eventService.getUpcomingEventsPaginated(
+        limit: limit,
+        offset: offset,
+      );
+
+      final events = rows
+          .map<EventModel>((row) => _mapRowToEventModel(row))
+          .toList();
+
+      return events;
+    } on AppException {
+      // Servis zaten AppException üretiyor, aynen fırlat
+      rethrow;
+    } catch (e) {
+      // Beklenmeyen hatalar
+      throw UnknownException(
+        'Etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
+ 
   EventModel _mapRowToEventModel(Map<String, dynamic> row) {
     final dynamic startDateRaw = row['start_date'];
     final DateTime startDate = _parseDateTime(startDateRaw);
@@ -171,4 +187,5 @@ class EventRepository {
     if (value is String) return int.tryParse(value) ?? 0;
     return 0;
   }
+  
 }

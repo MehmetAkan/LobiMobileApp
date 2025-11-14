@@ -56,24 +56,40 @@ class EventService {
   ///
   /// [start] dahil, [end] hariç olacak şekilde [start, end) aralığını kullanır.
   /// Örn: Bu hafta için Pazartesi 00:00 - gelecek Pazartesi 00:00.
-Future<List<Map<String, dynamic>>> getEventsInRange({
-  required DateTime start,
-  required DateTime end,
-}) async {
-  try {
-    final response = await _client.rpc(
-      'get_events_in_range',
-      params: {
-        'start_date_in': start.toIso8601String(),
-        'end_date_in': end.toIso8601String(),
-      },
-    );
+  Future<List<Map<String, dynamic>>> getEventsInRange({
+    required DateTime start,
+    required DateTime end,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_events_in_range',
+        params: {
+          'start_date_in': start.toIso8601String(),
+          'end_date_in': end.toIso8601String(),
+        },
+      );
 
-    return (response as List).cast<Map<String, dynamic>>();
-  } catch (e) {
-    throw _handleError(e, 'getEventsInRange');
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getEventsInRange');
+    }
   }
-}
+
+  Future<List<Map<String, dynamic>>> getUpcomingEventsPaginated({
+    required int limit,
+    required int offset,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_upcoming_events_paginated',
+        params: {'limit_in': limit, 'offset_in': offset},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getUpcomingEventsPaginated');
+    }
+  }
 
   /// Bir kapak fotoğrafını Supabase Storage'a yükler.
   ///
@@ -88,17 +104,17 @@ Future<List<Map<String, dynamic>>> getEventsInRange({
           'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
       final filePath = '$userId/$fileName';
 
-      await _client.storage.from('event_covers').upload(
+      await _client.storage
+          .from('event_covers')
+          .upload(
             filePath,
             file,
-            fileOptions: const FileOptions(
-              cacheControl: '3600',
-              upsert: false,
-            ),
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
           );
 
-      final publicUrl =
-          _client.storage.from('event_covers').getPublicUrl(filePath);
+      final publicUrl = _client.storage
+          .from('event_covers')
+          .getPublicUrl(filePath);
 
       return publicUrl;
     } catch (e) {
@@ -119,10 +135,7 @@ Future<List<Map<String, dynamic>>> getEventsInRange({
     }
 
     if (error is StorageException) {
-      return NetworkException(
-        '$prefix ${error.message}',
-        originalError: error,
-      );
+      return NetworkException('$prefix ${error.message}', originalError: error);
     }
 
     return UnknownException(
