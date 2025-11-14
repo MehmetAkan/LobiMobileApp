@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +25,7 @@ import 'package:lobi_application/utils/event_description_helper.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/services/location_service.dart';
 import 'package:lobi_application/data/models/category_model.dart';
+import 'package:lobi_application/providers/event_image_provider.dart';
 
 class CreateEventScreen extends ConsumerStatefulWidget {
   const CreateEventScreen({super.key});
@@ -44,12 +47,46 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   bool _isApprovalRequired = false;
   EventVisibility _visibility = EventVisibility.public;
   int? _capacity;
+  @override
+  void initState() {
+    super.initState();
+    _loadRandomCoverFromLibrary();
+  }
 
   @override
   void dispose() {
     _scrollController.dispose();
     _titleController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadRandomCoverFromLibrary() async {
+    try {
+      if (_coverPhotoUrl != null) return;
+
+      final repository = ref.read(eventImageRepositoryProvider);
+
+      var images = await repository.getFeaturedImages();
+
+      if (images.isEmpty) {
+        images = await repository.getAllImages();
+      }
+
+      if (!mounted || images.isEmpty) return;
+
+      final random = Random();
+      final randomImage = images[random.nextInt(images.length)];
+
+      if (!mounted) return;
+
+      setState(() {
+        _coverPhotoUrl ??= randomImage.url;
+      });
+    } catch (e, stackTrace) {
+      debugPrint('🎨 Varsayılan kapak yüklenirken hata: $e');
+      debugPrint(stackTrace.toString());
+      // Hata durumunda sessizce default asset ile devam ediyoruz
+    }
   }
 
   /// Görünürlük modal'ını aç
@@ -145,8 +182,9 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
 
     if (success && mounted) {
       // ✅ Artık burada global feedback servisini kullanıyoruz
-      getIt<AppFeedbackService>()
-          .showSuccess('Etkinlik başarıyla oluşturuldu!');
+      getIt<AppFeedbackService>().showSuccess(
+        'Etkinlik başarıyla oluşturuldu!',
+      );
       Navigator.of(context).pop();
     }
     // Hata durumu ref.listen ile handle ediliyor
@@ -155,27 +193,26 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     // Provider'ın durumunu (loading, error, data) dinle
-    ref.listen<AsyncValue<void>>(
-      createEventControllerProvider,
-      (previous, next) {
-        next.whenOrNull(
-          error: (error, stackTrace) {
-            debugPrint('==== ETKİNLİK OLUŞTURMA HATASI ====');
-            debugPrint('HATA: $error');
-            debugPrint('STACK TRACE: $stackTrace');
-            debugPrint('====================================');
+    ref.listen<AsyncValue<void>>(createEventControllerProvider, (
+      previous,
+      next,
+    ) {
+      next.whenOrNull(
+        error: (error, stackTrace) {
+          debugPrint('==== ETKİNLİK OLUŞTURMA HATASI ====');
+          debugPrint('HATA: $error');
+          debugPrint('STACK TRACE: $stackTrace');
+          debugPrint('====================================');
 
-            final errorString = error.toString();
-            final errorMessage = errorString.startsWith('Exception: ')
-                ? errorString.substring(11) // "Exception: " kısmını at
-                : errorString;
+          final errorString = error.toString();
+          final errorMessage = errorString.startsWith('Exception: ')
+              ? errorString.substring(11) // "Exception: " kısmını at
+              : errorString;
 
-            // ✅ Hatalar da artık global feedback sistemi ile
-            getIt<AppFeedbackService>().showError(errorMessage);
-          },
-        );
-      },
-    );
+          getIt<AppFeedbackService>().showError(errorMessage);
+        },
+      );
+    });
 
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final appBarHeight = 60.h + statusBarHeight;
@@ -224,8 +261,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                               _startDate = date;
                               if (_endDate == null ||
                                   _endDate!.isBefore(date)) {
-                                _endDate =
-                                    date.add(const Duration(hours: 1));
+                                _endDate = date.add(const Duration(hours: 1));
                               }
                             });
                           },
@@ -326,8 +362,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                         icon: LucideIcons.globe400,
                         label: 'Görünürlük',
                         placeholder: 'Herkese Açık',
-                        value:
-                            EventVisibilityModal.getDisplayText(_visibility),
+                        value: EventVisibilityModal.getDisplayText(_visibility),
                         onTap: _openVisibilityModal,
                       ),
                       EventSettingsItem.action(
@@ -353,9 +388,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                 title: 'Yeni Etkinlik',
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
-                actions: [
-                  _buildSaveButton(ref),
-                ],
+                actions: [_buildSaveButton(ref)],
               ),
             ),
           ],
@@ -381,9 +414,9 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
             customBorder: const CircleBorder(),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.getAppBarButtonBg(context).withOpacity(
-                  isLoading ? 0.5 : 1.0,
-                ),
+                color: AppTheme.getAppBarButtonBg(
+                  context,
+                ).withOpacity(isLoading ? 0.2 : 0.5),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: AppTheme.getAppBarButtonBorder(context),

@@ -19,13 +19,11 @@ class EventBackground extends StatelessWidget {
     );
   }
 
-  /// ✨ YENİ: URL tipine göre dinamik arka plan görseli oluşturan helper method
   Widget _buildBackgroundImage(String? url) {
     if (url == null) {
       return _buildDefaultImage();
     }
-
-    // 1. Network URL'si (Kütüphaneden)
+   
     if (url.startsWith('http')) {
       return Image.network(
         url,
@@ -36,7 +34,6 @@ class EventBackground extends StatelessWidget {
       );
     }
 
-    // 2. Dosya Yolu (Galeriden)
     try {
       return Image.file(
         File(url),
@@ -58,7 +55,6 @@ class EventBackground extends StatelessWidget {
           Positioned.fill(
             child: Transform.scale(
               scale: 1.4,
-              // ✨ DEĞİŞTİ: Statik Image.asset yerine dinamik helper methodu kullan
               child: _buildBackgroundImage(coverPhotoUrl),
             ),
           ),
