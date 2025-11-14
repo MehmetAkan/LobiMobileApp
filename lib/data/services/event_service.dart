@@ -1,12 +1,16 @@
 import 'dart:io';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:lobi_application/core/constants/app_constants.dart';
 import 'package:lobi_application/core/errors/app_exception.dart';
 
 /// EventService - Etkinliklerle ilgili ham Supabase işlemlerini yönetir.
 ///
-/// Sorumlulukları:
+/// Sorumluluklar:
 /// 1. 'create_new_event' RPC'sini çağırarak yeni veri eklemek.
 /// 2. 'event_covers' Storage bucket'ına resim yüklemek (upload).
+/// 3. Etkinlikleri Supabase tablosundan okumak.
 class EventService {
   final SupabaseClient _client;
 
@@ -18,37 +22,61 @@ class EventService {
   /// Geriye eklenen verinin Map'ini döndürür.
   Future<Map<String, dynamic>> createEvent(Map<String, dynamic> data) async {
     try {
-      // ✨ DÜZELTME: RLS 'infinite recursion' hatasını çözmek için
+      // ✨ RLS 'infinite recursion' hatasını çözmek için
       // .insert() yerine SECURITY DEFINER bir RPC fonksiyonu çağırıyoruz.
 
       // 1. Repository'den gelen Map'in key'lerini RPC'nin beklediği
-      //    argüman adlarına ('_in' son eki ile) dönüştür.
+      // argüman adlarına ('_in' son eki ile) dönüştür.
       final rpcParams = data.map((key, value) {
         // SQL fonksiyonumuzdaki argüman adlarıyla eşleştiriyoruz.
-        return MapEntry('${key}_in', value); 
+        return MapEntry('${key}_in', value);
       });
 
       // 2. 'organizer_id'yi Map'ten siliyoruz, çünkü yeni SQL fonksiyonumuz
-      //    bunu 'auth.uid()' ile alarak daha güvenli hale getiriyor.
+      // bunu 'auth.uid()' ile alarak daha güvenli hale getiriyor.
       rpcParams.remove('organizer_id_in');
 
       // 3. RPC'yi (Remote Procedure Call) çağır
       final result = await _client
           .rpc(
             'create_new_event', // SQL'de oluşturduğumuz fonksiyonun adı
-            params: rpcParams,  // Fonksiyonun argümanları
+            params: rpcParams, // Fonksiyonun argümanları
           )
           .select() // .select() zinciri RPC'lerde de çalışır
           .single(); // Tek bir satır (yeni eklenen) döndürmesini bekliyoruz
 
-      return result;
+      return result as Map<String, dynamic>;
     } catch (e) {
       // Supabase'den gelen PostgrestError veya diğer hataları yakala
       throw _handleError(e, 'createEvent');
     }
   }
 
+  /// Belirli bir tarih aralığındaki etkinlikleri getirir.
+  ///
+  /// [start] dahil, [end] hariç olacak şekilde [start, end) aralığını kullanır.
+  /// Örn: Bu hafta için Pazartesi 00:00 - gelecek Pazartesi 00:00.
+Future<List<Map<String, dynamic>>> getEventsInRange({
+  required DateTime start,
+  required DateTime end,
+}) async {
+  try {
+    final response = await _client.rpc(
+      'get_events_in_range',
+      params: {
+        'start_date_in': start.toIso8601String(),
+        'end_date_in': end.toIso8601String(),
+      },
+    );
+
+    return (response as List).cast<Map<String, dynamic>>();
+  } catch (e) {
+    throw _handleError(e, 'getEventsInRange');
+  }
+}
+
   /// Bir kapak fotoğrafını Supabase Storage'a yükler.
+  ///
   /// (Bu fonksiyonda değişiklik yok)
   Future<String> uploadCoverImage({
     required File file,
@@ -56,12 +84,11 @@ class EventService {
   }) async {
     try {
       final fileExtension = file.path.split('.').last.toLowerCase();
-      final fileName = 'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+      final fileName =
+          'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
       final filePath = '$userId/$fileName';
 
-      await _client.storage
-          .from('event_covers') 
-          .upload(
+      await _client.storage.from('event_covers').upload(
             filePath,
             file,
             fileOptions: const FileOptions(
@@ -70,9 +97,8 @@ class EventService {
             ),
           );
 
-      final publicUrl = _client.storage
-          .from('event_covers')
-          .getPublicUrl(filePath);
+      final publicUrl =
+          _client.storage.from('event_covers').getPublicUrl(filePath);
 
       return publicUrl;
     } catch (e) {
@@ -91,12 +117,14 @@ class EventService {
         originalError: error,
       );
     }
+
     if (error is StorageException) {
       return NetworkException(
         '$prefix ${error.message}',
         originalError: error,
       );
     }
+
     return UnknownException(
       '$prefix ${error.toString()}',
       originalError: error,

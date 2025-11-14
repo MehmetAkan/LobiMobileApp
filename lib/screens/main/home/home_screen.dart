@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'package:lobi_application/core/utils/date_extensions.dart';
+import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
-import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
-import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
-import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/widgets/common/lists/grouped_event_list.dart';
-import 'package:lobi_application/core/utils/date_extensions.dart';
+import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
+import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
+import 'package:lobi_application/widgets/common/sections/events_section.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
@@ -23,62 +26,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     with ScrollablePageMixin {
   DateTime? activeDate;
 
-  final List<Map<String, dynamic>> _mockNearbyEvents = [
-    {
-      'id': '1',
-      'title': 'Sillyon Kazıları Gezisi - Antalya Kültür Yolu Festivali',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/sillyon-kazilari-gezisi-antalya-kultur-yolu-festivali-20251017153951c3bb66506bec4586a1c7e94ad06a6949.jpeg',
-      'date': '2024-11-05T19:30:00', // ✨ DateTime formatında
-      'location': 'Konya Kültür Merkezi',
-      'attendeeCount': 250,
-    },
-    {
-      'id': '2',
-      'title': 'Hayal Satıcısı',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/hayal-saticisi-20259916283672ff27d844264416927c8c68d1fcd571.jpg',
-      'date': '2024-11-05T20:00:00', // ✨ Aynı gün
-      'location': 'Mevlana Kültür Merkezi',
-      'attendeeCount': 180,
-    },
-    {
-      'id': '3',
-      'title': 'Tiyatro Oyunu Pioneers Merkezi ',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/merhaba-nietzsche-2025102214543473993bb0f194fecad9ea8f7a73f2d22.jpg',
-      'date': '2024-11-06T19:00:00', // ✨ Farklı gün
-      'location': 'Konya Şehir Tiyatrosu',
-      'attendeeCount': 150,
-    },
-    {
-      'id': '4',
-      'title': 'Açık Hava Sineması ',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/b94518d8b24145bfb3b5c41420674c9d.jpg',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '5',
-      'title': 'Açık Hava Sineması Pioneers Merkezi',
-      'imageUrl': 'https://picsum.photos/id/50/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '6',
-      'title': 'Vitray Cam Boyama Atölyesi',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/vitray-cam-boyama-atolyesi-20251118495902c6a1c22014400a963e54fa24d2aadd.jpg',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-  ];
-
+  /// Yatay liste (mock) - "Beğenebileceğin ve fazlası"
   final List<Map<String, dynamic>> _mockRecommendedEvents = [
     {
       'id': '5',
@@ -111,9 +59,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
     final profileState = ref.watch(currentUserProfileProvider);
-    final profile = profileState.value;
+    final profile = profileState.value; // Şimdilik kullanılmıyor
+
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final navbarHeight = 60.h + statusBarHeight;
 
@@ -123,53 +71,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         children: [
           SingleChildScrollView(
             controller: scrollController, // Mixin'den geliyor
-            padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 0.h),
+            padding: EdgeInsets.fromLTRB(
+              0.w,
+              navbarHeight + 20.h,
+              0.w,
+              0.h,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // YATAY LİSTE
                 EventsSection(
                   title: 'Beğenebileceğin ve fazlası',
                   onSeeAll: () {
-                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
+                    debugPrint('Tümünü gör: Beğenebileceğin ve fazlası');
                   },
                   child: EventCardList<Map<String, dynamic>>(
                     items: _mockRecommendedEvents,
                     itemBuilder: (event, index) {
                       return EventCardHorizontal(
-                        imageUrl: event['imageUrl'],
-                        title: event['title'],
-                        date: event['date'],
-                        location: event['location'],
-                        attendeeCount: event['attendeeCount'],
+                        imageUrl: event['imageUrl'] as String,
+                        title: event['title'] as String,
+                        date: event['date'] as String,
+                        location: event['location'] as String,
+                        attendeeCount: event['attendeeCount'] as int,
                         isLiked: false,
                         showLikeButton: false,
                         onTap: () {
-                          debugPrint('Etkinliğe tıklandı: ${event['title']}');
+                          debugPrint(
+                            'Etkinliğe tıklandı: ${event['title']}',
+                          );
                         },
                       );
                     },
                   ),
                 ),
                 SizedBox(height: 20.h),
+
+                // DİKEY LİSTE - "Bu haftakiler" (GERÇEK VERİ)
                 EventsSection(
                   title: 'Bu haftakiler',
                   onSeeAll: () {
-                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
+                    debugPrint('Tümünü gör: Bu haftakiler');
                   },
-                  child: GroupedEventList(
-                    events: _mockNearbyEvents,
-                    scrollController: scrollController,
-                    navbarHeight: navbarHeight,
-                    onActiveDateChanged: (date) {
-                      setState(() {
-                        activeDate = date;
-                      });
-                    },
-                  ),
+                  child: _buildThisWeekEvents(navbarHeight),
                 ),
               ],
             ),
           ),
+
+          // NAVBAR
           Positioned(
             top: 0,
             left: 0,
@@ -184,9 +135,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
-                      height: isScrolled ? 40.h : 40.h,
-                      width: isScrolled ? 40.h : 40.h,
-
+                      height: 40.h,
+                      width: 40.h,
                       child: SvgPicture.asset(
                         'assets/images/system/lobi-icon.svg',
                         fit: BoxFit.contain,
@@ -215,7 +165,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               child: child,
                             );
                           },
-                          layoutBuilder: (currentChild, previousChildren) {
+                          layoutBuilder:
+                              (currentChild, previousChildren) {
                             return Stack(
                               alignment: Alignment.centerLeft,
                               children: [
@@ -235,9 +186,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               },
               actions: (scrolled) => [
                 NavbarNotificationButton(
-                  onTap: () {
-                  
-                  },
+                  onTap: () {},
                 ),
               ],
             ),
@@ -247,7 +196,94 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  /// Tarih içeriği (activeDate != null iken)
+  /// Ana sayfadaki "Bu haftakiler" dikey listesini çizer.
+  /// Riverpod provider: [homeThisWeekEventsProvider]
+  Widget _buildThisWeekEvents(double navbarHeight) {
+    final state = ref.watch(homeThisWeekEventsProvider);
+
+    return state.when(
+      loading: () => SizedBox(
+        height: 150.h,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (error, stackTrace) {
+        debugPrint('Bu haftakiler yüklenirken hata: $error');
+
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.w,
+            vertical: 10.h,
+          ),
+          child: Text(
+            'Etkinlikler yüklenirken bir sorun oluştu.',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppTheme.getTextDescColor(context),
+            ),
+          ),
+        );
+      },
+      data: (groups) {
+        // EventDayGroup -> GroupedEventList'in beklediği düz Map yapısına çevir
+        final List<Map<String, dynamic>> items = [];
+
+        for (final group in groups) {
+          for (final event in group.events) {
+            final date = event.date;
+
+            final hour =
+                date.hour.toString().padLeft(2, '0');
+            final minute =
+                date.minute.toString().padLeft(2, '0');
+
+            items.add({
+              'id': event.id,
+              'title': event.title,
+              'imageUrl': event.imageUrl,
+              // Gruplama için ISO tarih
+              'date': date.toIso8601String(),
+              // Kart üzerinde gösterilecek metin: sadece saat
+              'displayDate': '$hour:$minute',
+              'location': event.location,
+              'attendeeCount': event.attendeeCount,
+              'isLiked': false,
+            });
+          }
+        }
+
+        if (items.isEmpty) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 20.w,
+              vertical: 10.h,
+            ),
+            child: Text(
+              'Bu hafta için etkinlik bulunmuyor.',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppTheme.getTextDescColor(context),
+              ),
+            ),
+          );
+        }
+
+        return GroupedEventList(
+          events: items,
+          scrollController: scrollController,
+          navbarHeight: navbarHeight,
+          onActiveDateChanged: (date) {
+            setState(() {
+              activeDate = date;
+            });
+          },
+        );
+      },
+    );
+  }
+
+  /// Tarih içeriği (activeDate != null iken Navbar'da gösterilen)
   Widget _buildDateContent(BuildContext context, DateTime date) {
     return Row(
       children: [
@@ -267,13 +303,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: AppTheme.getTextDescColor(context),
-
             height: 1,
           ),
         ),
       ],
     );
   }
-
- 
 }

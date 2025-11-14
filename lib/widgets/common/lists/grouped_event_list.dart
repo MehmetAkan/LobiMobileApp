@@ -24,7 +24,19 @@ import 'package:lobi_application/widgets/common/cards/events/event_card_vertical
 /// )
 /// ```
 class GroupedEventList extends StatefulWidget {
+  /// Düz event listesi.
+  ///
+  /// Beklenen alanlar:
+  /// - id            : String
+  /// - title         : String
+  /// - imageUrl      : String
+  /// - date          : String (ISO 8601 – gruplama için)
+  /// - displayDate   : String (opsiyonel – kart üzerinde gösterilecek metin)
+  /// - location      : String
+  /// - attendeeCount : int
+  /// - isLiked       : bool (opsiyonel)
   final List<Map<String, dynamic>> events;
+
   final ScrollController scrollController;
   final double navbarHeight;
   final Function(DateTime?) onActiveDateChanged;
@@ -71,27 +83,26 @@ class _GroupedEventListState extends State<GroupedEventList> {
   void _groupEventsByDate() {
     _groupedEvents.clear();
 
-    for (var event in widget.events) {
-      // Şimdilik mock date kullanıyoruz
-      // Gerçek implementasyonda event['date'] kullanılacak
-      final date = DateTime.parse(event['date'] ?? DateTime.now().toString());
+    for (final event in widget.events) {
+      final rawDate = event['date'] as String?;
+      final date = DateTime.tryParse(rawDate ?? '') ?? DateTime.now();
+
       final dateOnly = DateTime(date.year, date.month, date.day);
 
-      if (_groupedEvents[dateOnly] == null) {
-        _groupedEvents[dateOnly] = [];
-      }
+      _groupedEvents.putIfAbsent(dateOnly, () => []);
       _groupedEvents[dateOnly]!.add(event);
     }
 
     // Tarihe göre sırala
     _groupedEvents = Map.fromEntries(
-      _groupedEvents.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
+      _groupedEvents.entries.toList()
+        ..sort((a, b) => a.key.compareTo(b.key)),
     );
   }
 
   /// Her DateHeader için GlobalKey oluştur
   void _initializeKeys() {
-    for (var date in _groupedEvents.keys) {
+    for (final date in _groupedEvents.keys) {
       _headerKeys[date] = GlobalKey();
       _headerOpacities[date] = 1.0;
     }
@@ -104,7 +115,7 @@ class _GroupedEventListState extends State<GroupedEventList> {
     DateTime? newActiveDate;
     bool needsUpdate = false;
 
-    for (var entry in _headerKeys.entries) {
+    for (final entry in _headerKeys.entries) {
       final date = entry.key;
       final key = entry.value;
 
@@ -121,8 +132,10 @@ class _GroupedEventListState extends State<GroupedEventList> {
             headerBottom > widget.navbarHeight) {
           // Fade out miktarını hesapla
           final fadeRange = renderBox.size.height;
-          final fadeProgress = (widget.navbarHeight - headerTop) / fadeRange;
-          final newOpacity = (1.0 - fadeProgress).clamp(0.0, 1.0);
+          final fadeProgress =
+              (widget.navbarHeight - headerTop) / fadeRange;
+          final newOpacity =
+              (1.0 - fadeProgress).clamp(0.0, 1.0) as double;
 
           if ((_headerOpacities[date] ?? 1.0) != newOpacity) {
             _headerOpacities[date] = newOpacity;
@@ -187,8 +200,8 @@ class _GroupedEventListState extends State<GroupedEventList> {
               separatorBuilder: (context, index) => Column(
                 children: [
                   Align(
-                    alignment: Alignment
-                        .centerRight, // istersen left/right de yapabilirsin
+                    alignment: Alignment.centerRight,
+                    // istersen left/right de yapabilirsin
                     child: SizedBox(
                       width: 220.w, // buradan genişliği kontrol ediyorsun
                       child: const Divider(
@@ -203,15 +216,19 @@ class _GroupedEventListState extends State<GroupedEventList> {
               ),
               itemBuilder: (context, eventIndex) {
                 final event = events[eventIndex];
+
                 return EventCardVertical(
-                  imageUrl: event['imageUrl'],
-                  title: event['title'],
-                  date: event['date'],
-                  location: event['location'],
-                  attendeeCount: event['attendeeCount'],
-                  isLiked: event['isLiked'] ?? false,
+                  imageUrl: event['imageUrl'] as String? ?? '',
+                  title: event['title'] as String? ?? '',
+                  // Eğer displayDate varsa onu kullan, yoksa date string'i göster
+                  date: (event['displayDate'] as String?) ??
+                      (event['date'] as String? ?? ''),
+                  location: event['location'] as String? ?? '',
+                  attendeeCount: (event['attendeeCount'] as int?) ?? 0,
+                  isLiked: (event['isLiked'] as bool?) ?? false,
                   showLikeButton: false,
-                  onTap: () => debugPrint('Tıklandı: ${event['title']}'),
+                  onTap: () =>
+                      debugPrint('Tıklandı: ${event['title']}'),
                 );
               },
             ),

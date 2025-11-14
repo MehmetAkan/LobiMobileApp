@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/data/models/category_model.dart';
+import 'package:lobi_application/data/models/event_day_group.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/data/services/location_service.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/event_visibility_modal.dart';
@@ -23,8 +25,7 @@ final createEventControllerProvider =
 class CreateEventController extends StateNotifier<AsyncValue<void>> {
   final Ref _ref;
 
-  CreateEventController(this._ref)
-      : super(const AsyncValue.data(null)); // Başlangıç durumu: 'idle' (boşta)
+  CreateEventController(this._ref) : super(const AsyncValue.data(null));
 
   /// UI (CreateEventScreen) tarafından çağrılacak ana fonksiyon.
   /// Gerekli tüm parametreleri alır ve repository'ye iletir.
@@ -42,7 +43,6 @@ class CreateEventController extends StateNotifier<AsyncValue<void>> {
     required bool isApprovalRequired,
     required int? capacity,
   }) async {
-    
     // --- ÖN DOĞRULAMA (VALIDATION) ---
     // UI'dan gelen verilerin zorunlu alanlarını kontrol edelim.
     // (Daha detaylı validasyon eklenebilir)
@@ -50,16 +50,19 @@ class CreateEventController extends StateNotifier<AsyncValue<void>> {
       if (title.isEmpty) {
         throw Exception('Etkinlik başlığı boş olamaz.');
       }
+
       if (startDate == null || endDate == null) {
         throw Exception('Başlangıç ve bitiş tarihi seçilmelidir.');
       }
+
       if (location == null) {
         throw Exception('Konum seçilmelidir.');
       }
+
       if (category == null) {
         throw Exception('Kategori seçilmelidir.');
       }
-      
+
       // Durumu 'yükleniyor' olarak ayarla
       state = const AsyncValue.loading();
 
@@ -83,7 +86,6 @@ class CreateEventController extends StateNotifier<AsyncValue<void>> {
       // İşlem başarılı, durumu 'boşta'ya (data=null) geri döndür
       state = const AsyncValue.data(null);
       return true; // Başarılı
-
     } catch (e, st) {
       // Hata oluştu, durumu 'hata' olarak ayarla
       state = AsyncValue.error(e, st);
@@ -91,3 +93,27 @@ class CreateEventController extends StateNotifier<AsyncValue<void>> {
     }
   }
 }
+
+/// Ana sayfa dikey liste: "Bu haftakiler"
+///
+/// Bu provider, Supabase'ten gelen etkinlikleri:
+///  - Bu haftanın tarih aralığında çeker
+///  - Tarihe göre sıralar
+///  - [groupEventsByDay] ile güne göre gruplayarak [EventDayGroup] listesi döner.
+///
+/// UI'da kullanım:
+/// ```dart
+/// final state = ref.watch(homeThisWeekEventsProvider);
+/// ```
+final homeThisWeekEventsProvider =
+    FutureProvider<List<EventDayGroup>>((ref) async {
+  final repository = ref.read(eventRepositoryProvider);
+
+  // 1. Bu haftanın etkinliklerini al (flat liste)
+  final events = await repository.getThisWeekEvents();
+
+  // 2. Güne göre grupla
+  final groups = groupEventsByDay(events);
+
+  return groups;
+});
