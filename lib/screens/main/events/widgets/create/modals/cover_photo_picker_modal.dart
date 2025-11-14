@@ -137,24 +137,11 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
 
   Widget _buildBackground() {
     return Positioned.fill(
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Transform.scale(
-              scale: 1.4,
-              child: Image.asset(
-                'assets/images/system/event-example-white.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
-            child: Container(
-              color: AppTheme.getCreateEventBg(context).withOpacity(0.30),
-            ),
-          ),
-        ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.zinc1000,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(0.r)),
+        ),
       ),
     );
   }
@@ -572,17 +559,6 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
   Widget _buildBottomButton() {
     return Container(
       padding: EdgeInsets.fromLTRB(20.w, 15.h, 20.w, 30.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppTheme.getCreateEventBg(context).withOpacity(0),
-            AppTheme.getCreateEventBg(context).withOpacity(0.9),
-            AppTheme.getCreateEventBg(context),
-          ],
-        ),
-      ),
       child: SizedBox(
         width: double.infinity,
         height: 50.h,
@@ -618,6 +594,4 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
       ),
     );
   }
-
- 
 }

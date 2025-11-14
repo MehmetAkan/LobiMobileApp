@@ -88,7 +88,7 @@ class CreateEventCoverSection extends StatelessWidget {
 
   Widget _buildCoverImage(String? url) {
     final defaultImage = Image.asset(
-      'assets/images/system/event-example-white.png',
+      'assets/images/system/event-example.png',
       fit: BoxFit.cover,
     );
 

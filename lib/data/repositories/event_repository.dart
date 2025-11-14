@@ -78,38 +78,42 @@ class EventRepository {
     }
   }
 
-  Future<List<EventModel>> getThisWeekEvents() async {
-    try {
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
+Future<List<EventModel>> getThisWeekEvents() async {
+  try {
+    final now = DateTime.now();
+    final monday = now.subtract(Duration(days: now.weekday - 1));
+    final weekStart = DateTime(monday.year, monday.month, monday.day);
+    final weekEnd = weekStart.add(const Duration(days: 7));
 
-      // Haftanın başlangıcı (Pazartesi)
-      final weekStart = today.subtract(Duration(days: today.weekday - 1));
-      // Haftanın bitişi (Pazartesi + 7 gün) – [start, end) aralığı
-      final weekEnd = weekStart.add(const Duration(days: 7));
+    final rows = await _eventService.getEventsInRange(
+      start: weekStart,
+      end: weekEnd,
+    );
 
-      final rows = await _eventService.getEventsInRange(
-        start: weekStart,
-        end: weekEnd,
-      );
+    // Supabase satırlarını EventModel'e çevir
+    var events = rows
+        .map<EventModel>((row) => _mapRowToEventModel(row))
+        .toList();
 
-      final events = rows
-          .map<EventModel>((row) => _mapRowToEventModel(row))
-          .toList();
+    // 🔥 ÖNEMLİ KISIM: Geçmiş etkinlikleri ele
+    //
+    // Şu andan önce başlamış olan etkinlikler listede görünmesin:
+    //  - start_date < now  => geçmiş
+    //  - start_date >= now => gelecekte veya şu an
+    final nowUtc = DateTime.now().toUtc();
+    events = events
+        .where((event) => !event.date.isBefore(nowUtc))
+        .toList();
 
-      return events;
-    } on AppException {
-      // Servis zaten AppException üretiyor, aynen yukarı fırlat
-      rethrow;
-    } catch (e) {
-      // Beklenmeyen hataları UnknownException'a çevir
-      throw UnknownException(
-        'Bu haftanın etkinlikleri alınırken bir hata oluştu',
-        originalError: e,
-      );
-    }
+    // Tarihe göre sırala (en yakından en uzağa)
+    events.sort((a, b) => a.date.compareTo(b.date));
+
+    return events;
+  } catch (e) {
+    // mevcut hata yönetimin nasıl ise aynen bırak
+    rethrow;
   }
-
+}
   Future<List<EventModel>> getUpcomingEventsPage({
     int limit = 20,
     int offset = 0,

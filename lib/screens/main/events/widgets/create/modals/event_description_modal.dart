@@ -122,7 +122,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
             child: Transform.scale(
               scale: 1.4,
               child: Image.asset(
-                'assets/images/system/event-example-white.png',
+                'assets/images/system/event-example.png',
                 fit: BoxFit.cover,
               ),
             ),

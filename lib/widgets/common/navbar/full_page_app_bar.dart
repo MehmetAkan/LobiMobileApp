@@ -47,7 +47,7 @@ class FullPageAppBar extends StatefulWidget {
     this.actions,
     this.onBackPressed,
     this.height,
-    this.titleThreshold = 50.0,
+    this.titleThreshold = 20.0,
     this.blurThreshold = 3.0,
   });
 

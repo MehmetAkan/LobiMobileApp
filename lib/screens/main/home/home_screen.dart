@@ -71,12 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         children: [
           SingleChildScrollView(
             controller: scrollController, // Mixin'den geliyor
-            padding: EdgeInsets.fromLTRB(
-              0.w,
-              navbarHeight + 20.h,
-              0.w,
-              0.h,
-            ),
+            padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 60.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -98,9 +93,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         isLiked: false,
                         showLikeButton: false,
                         onTap: () {
-                          debugPrint(
-                            'Etkinliğe tıklandı: ${event['title']}',
-                          );
+                          debugPrint('Etkinliğe tıklandı: ${event['title']}');
                         },
                       );
                     },
@@ -120,7 +113,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           ),
 
-          // NAVBAR
           Positioned(
             top: 0,
             left: 0,
@@ -165,8 +157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               child: child,
                             );
                           },
-                          layoutBuilder:
-                              (currentChild, previousChildren) {
+                          layoutBuilder: (currentChild, previousChildren) {
                             return Stack(
                               alignment: Alignment.centerLeft,
                               children: [
@@ -184,11 +175,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ],
                 );
               },
-              actions: (scrolled) => [
-                NavbarNotificationButton(
-                  onTap: () {},
-                ),
-              ],
+              actions: (scrolled) => [NavbarNotificationButton(onTap: () {})],
             ),
           ),
         ],
@@ -204,18 +191,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return state.when(
       loading: () => SizedBox(
         height: 150.h,
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        child: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, stackTrace) {
         debugPrint('Bu haftakiler yüklenirken hata: $error');
 
         return Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 20.w,
-            vertical: 10.h,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
           child: Text(
             'Etkinlikler yüklenirken bir sorun oluştu.',
             style: TextStyle(
@@ -233,10 +215,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           for (final event in group.events) {
             final date = event.date;
 
-            final hour =
-                date.hour.toString().padLeft(2, '0');
-            final minute =
-                date.minute.toString().padLeft(2, '0');
+            final hour = date.hour.toString().padLeft(2, '0');
+            final minute = date.minute.toString().padLeft(2, '0');
 
             items.add({
               'id': event.id,
@@ -255,10 +235,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
         if (items.isEmpty) {
           return Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 20.w,
-              vertical: 10.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             child: Text(
               'Bu hafta için etkinlik bulunmuyor.',
               style: TextStyle(
