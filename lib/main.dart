@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
-import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
+import 'package:lobi_application/screens/main/events/event_detail_screen_ex.dart';
 
+import 'package:lobi_application/theme/app_theme.dart';
 
 Future<void> main() async {
   // Flutter binding'i başlat
@@ -61,10 +64,7 @@ class LobiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(
-        390,
-        844,
-      ),
+      designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -74,9 +74,11 @@ class LobiApp extends StatelessWidget {
           scaffoldMessengerKey: rootScaffoldMessengerKey,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          home: const AppEntry(),
           // home: const GoogleMapsTestScreen(),
-            // home: const LocationTestScreen(),
+          // home: const LocationTestScreen(),
+          //  home: const EventDetailUsageExample(),
+          home: const AppEntry(),
+         
         );
       },
     );
