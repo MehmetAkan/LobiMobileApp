@@ -7,7 +7,6 @@ import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
-import 'package:lobi_application/screens/main/events/event_detail_screen_ex.dart';
 
 import 'package:lobi_application/theme/app_theme.dart';
 
@@ -76,7 +75,6 @@ class LobiApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           // home: const GoogleMapsTestScreen(),
           // home: const LocationTestScreen(),
-          //  home: const EventDetailUsageExample(),
           home: const AppEntry(),
          
         );

@@ -78,42 +78,32 @@ class EventRepository {
     }
   }
 
-Future<List<EventModel>> getThisWeekEvents() async {
-  try {
-    final now = DateTime.now();
-    final monday = now.subtract(Duration(days: now.weekday - 1));
-    final weekStart = DateTime(monday.year, monday.month, monday.day);
-    final weekEnd = weekStart.add(const Duration(days: 7));
+  Future<List<EventModel>> getThisWeekEvents() async {
+    try {
+      final now = DateTime.now();
+      final monday = now.subtract(Duration(days: now.weekday - 1));
+      final weekStart = DateTime(monday.year, monday.month, monday.day);
+      final weekEnd = weekStart.add(const Duration(days: 7));
 
-    final rows = await _eventService.getEventsInRange(
-      start: weekStart,
-      end: weekEnd,
-    );
+      final rows = await _eventService.getEventsInRange(
+        start: weekStart,
+        end: weekEnd,
+      );
 
-    // Supabase satırlarını EventModel'e çevir
-    var events = rows
-        .map<EventModel>((row) => _mapRowToEventModel(row))
-        .toList();
+      // Supabase satırlarını EventModel'e çevir
+      var events = rows
+          .map<EventModel>((row) => _mapRowToEventModel(row))
+          .toList();
 
-    // 🔥 ÖNEMLİ KISIM: Geçmiş etkinlikleri ele
-    //
-    // Şu andan önce başlamış olan etkinlikler listede görünmesin:
-    //  - start_date < now  => geçmiş
-    //  - start_date >= now => gelecekte veya şu an
-    final nowUtc = DateTime.now().toUtc();
-    events = events
-        .where((event) => !event.date.isBefore(nowUtc))
-        .toList();
-
-    // Tarihe göre sırala (en yakından en uzağa)
-    events.sort((a, b) => a.date.compareTo(b.date));
-
-    return events;
-  } catch (e) {
-    // mevcut hata yönetimin nasıl ise aynen bırak
-    rethrow;
+      final nowUtc = DateTime.now().toUtc();
+      events = events.where((event) => !event.date.isBefore(nowUtc)).toList();
+      events.sort((a, b) => a.date.compareTo(b.date));
+      return events;
+    } catch (e) {
+      rethrow;
+    }
   }
-}
+
   Future<List<EventModel>> getUpcomingEventsPage({
     int limit = 20,
     int offset = 0,
@@ -130,10 +120,8 @@ Future<List<EventModel>> getThisWeekEvents() async {
 
       return events;
     } on AppException {
-      // Servis zaten AppException üretiyor, aynen fırlat
       rethrow;
     } catch (e) {
-      // Beklenmeyen hatalar
       throw UnknownException(
         'Etkinlikler alınırken bir hata oluştu',
         originalError: e,
@@ -162,14 +150,30 @@ Future<List<EventModel>> getThisWeekEvents() async {
     }
   }
 
+  Future<void> incrementEventViewCount(String eventId) async {
+    try {
+      await _eventService.incrementEventViewCount(eventId);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Etkinlik görüntülenme sayısı artırılırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
   EventModel _mapRowToEventModel(Map<String, dynamic> row) {
     final dynamic startDateRaw = row['start_date'];
     final DateTime startDate = _parseDateTime(startDateRaw);
 
-    // Lokasyon adı
-    final String locationName = (row['location_name'] as String?) ?? '';
+    final dynamic endDateRaw = row['end_date'];
+    final DateTime? endDate = endDateRaw != null
+        ? _parseDateTime(endDateRaw)
+        : null;
 
-    // Katılımcı sayısı: participant_count kolonundan
+    final String locationName = (row['location_name'] as String?) ?? '';
+    final String? locationSecondary = row['location_secondary_text'] as String?;
     final int attendeeCount = _parseInt(row['participant_count']);
 
     return EventModel(
@@ -177,7 +181,9 @@ Future<List<EventModel>> getThisWeekEvents() async {
       title: row['title'] as String? ?? '',
       description: row['description'] as String? ?? '',
       date: startDate,
+      endDate: endDate,
       location: locationName,
+      locationSecondary: locationSecondary,
       imageUrl: row['cover_image_url'] as String? ?? '',
       attendeeCount: attendeeCount,
       categories: const [],

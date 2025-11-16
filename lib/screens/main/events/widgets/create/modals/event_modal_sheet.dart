@@ -10,6 +10,7 @@ class EventModalSheet extends StatelessWidget {
   final String title;
   final String description;
   final List<Widget> children;
+  
 
   const EventModalSheet({
     super.key,

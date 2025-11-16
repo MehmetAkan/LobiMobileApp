@@ -14,6 +14,8 @@ import 'package:lobi_application/widgets/common/lists/grouped_event_list.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -183,7 +185,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  /// Ana sayfadaki "Bu haftakiler" dikey listesini çizer.
   /// Riverpod provider: [homeThisWeekEventsProvider]
   Widget _buildThisWeekEvents(double navbarHeight) {
     final state = ref.watch(homeThisWeekEventsProvider);
@@ -208,7 +209,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         );
       },
       data: (groups) {
-        // EventDayGroup -> GroupedEventList'in beklediği düz Map yapısına çevir
         final List<Map<String, dynamic>> items = [];
 
         for (final group in groups) {
@@ -218,7 +218,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final hour = date.hour.toString().padLeft(2, '0');
             final minute = date.minute.toString().padLeft(2, '0');
 
-            items.add({
+                items.add({
               'id': event.id,
               'title': event.title,
               'imageUrl': event.imageUrl,
@@ -229,6 +229,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               'location': event.location,
               'attendeeCount': event.attendeeCount,
               'isLiked': false,
+
+              // 👇 Detay sayfası için ham model
+              'eventModel': event,
             });
           }
         }
@@ -254,6 +257,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             setState(() {
               activeDate = date;
             });
+          },
+          onEventTap: (eventMap) {
+            final eventModel = eventMap['eventModel'] as EventModel?;
+            if (eventModel == null) return;
+
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => EventDetailScreen(event: eventModel),
+              ),
+            );
           },
         );
       },

@@ -125,6 +125,9 @@ class _DiscoverEventsListState extends ConsumerState<DiscoverEventsList> {
         'location': event.location,
         'attendeeCount': event.attendeeCount,
         'isLiked': false,
+
+        // 👇 Detay sayfası için ham model
+        'eventModel': event,
       });
     }
 

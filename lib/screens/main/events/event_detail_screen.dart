@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/core/constants/app_constants.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/supabase_client.dart';
+import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_cover.dart';
@@ -12,23 +16,14 @@ import 'package:lobi_application/screens/main/events/widgets/detail/event_detail
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_description.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/data/models/profile_model.dart';
+import 'package:lobi_application/data/services/profile_service.dart';
 
-/// EventDetailScreen - Etkinlik detay sayfası
-/// 
-/// Özellikler:
-/// - OpenContainer ile açılır (karttan büyüyerek)
-/// - CreateEventScreen ile aynı background ve navbar yapısı
-/// - Bölüm bölüm ayrılmış widget yapısı
-/// 
-/// Test verisi ile çalışır, sonraki aşamada Supabase entegrasyonu yapılacak
 class EventDetailScreen extends StatefulWidget {
-  // Şimdilik test verisi alıyoruz, sonra event ID ile çalışacak
-  final Map<String, dynamic>? testEventData;
+  final EventModel event;
 
-  const EventDetailScreen({
-    super.key,
-    this.testEventData,
-  });
+  const EventDetailScreen({super.key, required this.event});
 
   @override
   State<EventDetailScreen> createState() => _EventDetailScreenState();
@@ -37,15 +32,14 @@ class EventDetailScreen extends StatefulWidget {
 class _EventDetailScreenState extends State<EventDetailScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  // Test verisi
   late Map<String, dynamic> eventData;
 
   @override
   void initState() {
     super.initState();
-    
-    // Test verisi - Gerçek veri gelmezse default kullan
-    eventData = widget.testEventData ?? _getDefaultTestData();
+    eventData = _mapEventToDetailData(widget.event);
+    _incrementViewCount();
+    _loadOrganizerProfile();
   }
 
   @override
@@ -55,21 +49,63 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   }
 
   /// Default test verisi
-  Map<String, dynamic> _getDefaultTestData() {
+  Map<String, dynamic> _mapEventToDetailData(EventModel event) {
     return {
-      'id': 'test-event-1',
-      'title': 'Flutter & Firebase ile Mobil Uygulama Geliştirme',
-      'coverPhotoUrl': 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-      'organizerName': 'Ahmet Yılmaz',
-      'organizerPhotoUrl': 'https://i.pravatar.cc/150?img=12',
-      'startDate': DateTime.now().add(const Duration(days: 2, hours: 5)),
-      'endDate': DateTime.now().add(const Duration(days: 2, hours: 8)),
-      'locationName': 'Bilge Adam Teknoloji',
-      'locationAddress': 'Maslak, Sarıyer / İstanbul',
-      'description': 'Bu workshopta Flutter framework\'ü ile modern mobil uygulamalar geliştirmeyi öğreneceksiniz. Firebase entegrasyonu, state management ve UI/UX best practice\'lerini uygulamalı olarak deneyimleyeceksiniz.\n\nKatılımcılar:\n• Flutter temellerini öğrenecek\n• Firebase authentication kullanacak\n• Riverpod ile state management yapacak\n• Gerçek bir proje geliştirecek',
-      'attendeeCount': 42,
-      'capacity': 50,
+      'id': event.id,
+      'title': event.title,
+      'coverPhotoUrl': event.imageUrl,
+      // Şimdilik backend’den organizer bilgisi yok
+      'organizerName': '',
+      'organizerPhotoUrl': null,
+      // Şu anda sadece tek bir tarih var, start/end aynı
+      'startDate': event.date,
+      'endDate': event.endDate ?? event.date,
+      'locationName': event.location,
+      'locationAddress': event.locationSecondary ?? '',
+      'description': event.description,
     };
+  }
+
+  Future<void> _loadOrganizerProfile() async {
+    try {
+      // 1) Artık events tablosuna tekrar sorgu yok
+      final organizerId = widget.event.organizerId;
+
+      if (organizerId == null || organizerId.isEmpty) {
+        return;
+      }
+
+      // 2) organizerId ile profili getir
+      final profileService = getIt<ProfileService>();
+      final ProfileModel? profile = await profileService.getProfile(
+        organizerId,
+      );
+
+      if (profile == null || !mounted) {
+        return;
+      }
+
+      // 3) UI'da organizer alanlarını güncelle
+      setState(() {
+        eventData = {
+          ...eventData,
+          'organizerName': profile.fullName,
+          'organizerPhotoUrl': profile.avatarUrl,
+        };
+      });
+    } catch (e) {
+      debugPrint('Organizer profili yüklenemedi: $e');
+    }
+  }
+
+  Future<void> _incrementViewCount() async {
+    try {
+      final eventRepository = getIt<EventRepository>();
+      await eventRepository.incrementEventViewCount(widget.event.id);
+    } catch (e) {
+      // Kullanıcıya hata göstermiyoruz, sadece log atalım
+      debugPrint('View count artırılırken hata: $e');
+    }
   }
 
   @override
@@ -83,10 +119,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         height: screenHeight,
         child: Stack(
           children: [
-            // 1. Arka plan (Cover photo blur)
             EventBackground(coverPhotoUrl: eventData['coverPhotoUrl']),
-
-            // 2. Scrollable içerik
             SingleChildScrollView(
               controller: _scrollController,
               padding: EdgeInsets.fromLTRB(
@@ -99,9 +132,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 3. Cover fotoğraf
-                  EventDetailCover(
-                    coverPhotoUrl: eventData['coverPhotoUrl'],
-                  ),
+                  EventDetailCover(coverPhotoUrl: eventData['coverPhotoUrl']),
                   SizedBox(height: 20.h),
 
                   // 4. Organizatör bilgisi
@@ -112,9 +143,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                   SizedBox(height: 15.h),
 
                   // 5. Etkinlik başlığı
-                  EventDetailTitle(
-                    title: eventData['title'] ?? '',
-                  ),
+                  EventDetailTitle(title: eventData['title'] ?? ''),
                   SizedBox(height: 15.h),
 
                   // 6. Tarih bilgisi
@@ -122,12 +151,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     startDate: eventData['startDate'],
                     endDate: eventData['endDate'],
                   ),
-                  SizedBox(height: 25.h),
-
-                  // 7. "Konum" başlığı
+                  SizedBox(height: 20.h),
+                  const EventDetailDivider(),
+                  SizedBox(height: 20.h),
                   const EventDetailSectionTitle(title: 'Konum'),
-                  SizedBox(height: 12.h),
-
+                  SizedBox(height: 15.h),
                   // Konum bilgisi
                   EventDetailLocation(
                     locationName: eventData['locationName'] ?? '',
@@ -151,8 +179,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ],
               ),
             ),
-
-            // Navbar (en üstte)
             Positioned(
               top: 0,
               left: 0,
