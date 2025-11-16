@@ -1,4 +1,4 @@
-import 'dart:io'; // ✨ YENİ
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lobi_application/theme/app_theme.dart';
@@ -6,15 +6,22 @@ import 'package:lobi_application/theme/app_theme.dart';
 class EventBackground extends StatelessWidget {
   final String? coverPhotoUrl;
 
+  /// CreateEventScreen'de random asset gönderebilmek için,
+  /// ama verilmezse eski default görseli kullanacağız.
+  final String? defaultCoverAsset;
+
   const EventBackground({
     super.key,
     this.coverPhotoUrl,
+    this.defaultCoverAsset, // ❗ ARTIK required DEĞİL
   });
 
-  /// ✨ YENİ: Varsayılan arka plan görselini oluşturan helper method
+  /// Varsayılan arka plan görseli
   Widget _buildDefaultImage() {
     return Image.asset(
-      'assets/images/system/event-example-black.png',
+      // Eğer dışarıdan bir asset verildiyse onu kullan,
+      // verilmediyse eski görsel ile devam et
+      defaultCoverAsset ?? 'assets/images/system/event-example-black.png',
       fit: BoxFit.cover,
     );
   }
@@ -23,7 +30,7 @@ class EventBackground extends StatelessWidget {
     if (url == null) {
       return _buildDefaultImage();
     }
-   
+
     if (url.startsWith('http')) {
       return Image.network(
         url,

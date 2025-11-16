@@ -32,8 +32,8 @@ class EventCardHorizontal extends StatelessWidget {
     this.isLiked = false,
     this.onTap,
     this.onLikeTap,
-    this.width = 155,
-    this.height = 20,
+    this.width = 200,
+    this.height = 150,
     this.borderRadius = 12,
     this.showAttendeeCount = false,
     this.showLikeButton = true,
@@ -46,7 +46,7 @@ class EventCardHorizontal extends StatelessWidget {
       child: Container(
         width: width?.w,
         child: Column(
-            mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             _buildImage(),
             if (showLikeButton) _buildLikeButton(),
@@ -62,8 +62,8 @@ class EventCardHorizontal extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius.r),
       child: Image.network(
         imageUrl,
-        width: 155.w,
-        height: 155.h,
+        width: width?.w,
+        height: height?.h,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return Container(color: AppTheme.red900);

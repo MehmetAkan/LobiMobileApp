@@ -7,12 +7,14 @@ import 'dart:io';
 
 class CreateEventCoverSection extends StatelessWidget {
   final String? coverPhotoUrl;
-  final Function(String url)? onPhotoSelected; 
+  final Function(String url)? onPhotoSelected;
+  final String defaultCoverAsset;
 
   const CreateEventCoverSection({
     super.key,
     this.coverPhotoUrl,
-    this.onPhotoSelected, 
+    this.onPhotoSelected,
+    required this.defaultCoverAsset,
   });
 
   @override
@@ -23,8 +25,7 @@ class CreateEventCoverSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           child: AspectRatio(
             aspectRatio: 4 / 3,
-       child: _buildCoverImage(coverPhotoUrl),
-             
+            child: _buildCoverImage(coverPhotoUrl),
           ),
         ),
         Positioned(
@@ -87,14 +88,13 @@ class CreateEventCoverSection extends StatelessWidget {
   }
 
   Widget _buildCoverImage(String? url) {
-    final defaultImage = Image.asset(
-      'assets/images/system/event-example.png',
-      fit: BoxFit.cover,
-    );
+    // 👇 Artık sabit değil; CreateEventScreen'den gelen random asset
+    final defaultImage = Image.asset(defaultCoverAsset, fit: BoxFit.cover);
 
     if (url == null) {
       return defaultImage;
     }
+
     if (url.startsWith('http')) {
       return Image.network(
         url,
@@ -104,9 +104,10 @@ class CreateEventCoverSection extends StatelessWidget {
         },
       );
     }
+
     try {
       return Image.file(
-        File(url), // File objesi oluştur
+        File(url),
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
           return defaultImage;

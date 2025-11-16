@@ -25,7 +25,19 @@ import 'package:lobi_application/utils/event_description_helper.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/services/location_service.dart';
 import 'package:lobi_application/data/models/category_model.dart';
-import 'package:lobi_application/providers/event_image_provider.dart';
+
+const List<String> kDefaultEventCovers = [
+  'assets/images/system/events_cover/events_cover_1.jpg',
+  'assets/images/system/events_cover/events_cover_2.jpg',
+  'assets/images/system/events_cover/events_cover_3.jpg',
+  'assets/images/system/events_cover/events_cover_4.jpg',
+  'assets/images/system/events_cover/events_cover_5.jpg',
+  'assets/images/system/events_cover/events_cover_6.jpg',
+  'assets/images/system/events_cover/events_cover_7.jpg',
+  'assets/images/system/events_cover/events_cover_8.jpg',
+  'assets/images/system/events_cover/events_cover_9.jpg',
+  'assets/images/system/events_cover/events_cover_10.jpg',
+];
 
 class CreateEventScreen extends ConsumerStatefulWidget {
   const CreateEventScreen({super.key});
@@ -37,20 +49,28 @@ class CreateEventScreen extends ConsumerStatefulWidget {
 class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _titleController = TextEditingController();
-
+  final _random = Random();
   DateTime? _startDate;
   DateTime? _endDate;
   LocationModel? _selectedLocationModel;
   CategoryModel? _selectedCategory;
   String? _description;
   String? _coverPhotoUrl;
+  late final String _initialCoverAsset;
   bool _isApprovalRequired = false;
   EventVisibility _visibility = EventVisibility.public;
   int? _capacity;
   @override
   void initState() {
     super.initState();
-    _loadRandomCoverFromLibrary();
+    _initialCoverAsset =
+        kDefaultEventCovers[_random.nextInt(kDefaultEventCovers.length)];
+  }
+
+  void _handlePhotoSelected(String url) {
+    setState(() {
+      _coverPhotoUrl = url;
+    });
   }
 
   @override
@@ -60,36 +80,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     super.dispose();
   }
 
-  Future<void> _loadRandomCoverFromLibrary() async {
-    try {
-      if (_coverPhotoUrl != null) return;
-
-      final repository = ref.read(eventImageRepositoryProvider);
-
-      var images = await repository.getFeaturedImages();
-
-      if (images.isEmpty) {
-        images = await repository.getAllImages();
-      }
-
-      if (!mounted || images.isEmpty) return;
-
-      final random = Random();
-      final randomImage = images[random.nextInt(images.length)];
-
-      if (!mounted) return;
-
-      setState(() {
-        _coverPhotoUrl ??= randomImage.url;
-      });
-    } catch (e, stackTrace) {
-      debugPrint('🎨 Varsayılan kapak yüklenirken hata: $e');
-      debugPrint(stackTrace.toString());
-      // Hata durumunda sessizce default asset ile devam ediyoruz
-    }
-  }
-
-  /// Görünürlük modal'ını aç
   Future<void> _openVisibilityModal() async {
     final result = await EventVisibilityModal.show(
       context: context,
@@ -223,7 +213,10 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         height: screenHeight,
         child: Stack(
           children: [
-            EventBackground(coverPhotoUrl: _coverPhotoUrl),
+            EventBackground(
+              coverPhotoUrl: _coverPhotoUrl,
+              defaultCoverAsset: _initialCoverAsset,
+            ),
             SingleChildScrollView(
               controller: _scrollController,
               padding: EdgeInsets.fromLTRB(
@@ -237,11 +230,8 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                 children: [
                   CreateEventCoverSection(
                     coverPhotoUrl: _coverPhotoUrl,
-                    onPhotoSelected: (url) {
-                      setState(() {
-                        _coverPhotoUrl = url;
-                      });
-                    },
+                    defaultCoverAsset: _initialCoverAsset,
+                    onPhotoSelected: _handlePhotoSelected,
                   ),
                   SizedBox(height: 20.h),
                   EventTextField(

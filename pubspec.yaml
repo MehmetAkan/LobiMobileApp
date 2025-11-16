@@ -80,6 +80,17 @@ flutter:
     - assets/images/system/event-example.png
     - assets/images/system/event-example-white.png
     - assets/images/system/event-example-black.png
+    - assets/images/system/event-example.png
+    - assets/images/system/events_cover/events_cover_1.jpg
+    - assets/images/system/events_cover/events_cover_2.jpg
+    - assets/images/system/events_cover/events_cover_3.jpg
+    - assets/images/system/events_cover/events_cover_4.jpg
+    - assets/images/system/events_cover/events_cover_5.jpg
+    - assets/images/system/events_cover/events_cover_6.jpg
+    - assets/images/system/events_cover/events_cover_7.jpg
+    - assets/images/system/events_cover/events_cover_8.jpg
+    - assets/images/system/events_cover/events_cover_9.jpg
+    - assets/images/system/events_cover/events_cover_10.jpg
   fonts:
     - family: Figtree
       fonts:
