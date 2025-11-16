@@ -28,6 +28,33 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   // Filter state
   late FilterOption _selectedFilter;
   late List<FilterOption> _filterOptions;
+  Route _createEventRoute() {
+    return PageRouteBuilder(
+      fullscreenDialog: true, // iOS'ta yine modal hissi
+      transitionDuration: const Duration(milliseconds: 260),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const CreateEventScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+        );
+
+        // Hafif alttan kayma
+        final offsetAnimation = Tween<Offset>(
+          begin: const Offset(0, 0.06),
+          end: Offset.zero,
+        ).animate(curved);
+
+        return FadeTransition(
+          opacity: curved,
+          child: SlideTransition(position: offsetAnimation, child: child),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -168,13 +195,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                   children: [
                     NavbarNewButton(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateEventScreen(),
-                            fullscreenDialog: true, // ✨ iOS modal görünümü
-                          ),
-                        );
+                        Navigator.of(context).push(_createEventRoute());
                       },
                     ),
                     SizedBox(width: 10.w),

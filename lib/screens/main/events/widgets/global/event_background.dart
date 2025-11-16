@@ -59,16 +59,24 @@ class EventBackground extends StatelessWidget {
     return Positioned.fill(
       child: Stack(
         children: [
+          // Arkadaki görsel
           Positioned.fill(
             child: Transform.scale(
               scale: 1.4,
               child: _buildBackgroundImage(coverPhotoUrl),
             ),
           ),
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
-            child: Container(
-              color: AppTheme.getCreateEventBg(context).withOpacity(0.30),
+
+          // ✨ Blur + renk katmanı (ClipRect ile sınırlandırdık)
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 60,
+                sigmaY: 60,
+              ), // 60 yerine 40 da daha akıcı hissettirebilir
+              child: Container(
+                color: AppTheme.getCreateEventBg(context).withOpacity(0.70),
+              ),
             ),
           ),
         ],
