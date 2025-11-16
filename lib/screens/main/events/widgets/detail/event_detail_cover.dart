@@ -18,7 +18,7 @@ class EventDetailCover extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.r),
       child: AspectRatio(
-        aspectRatio: 1,
+        aspectRatio: 4 /3,
         child: _buildCoverImage(coverPhotoUrl),
       ),
     );

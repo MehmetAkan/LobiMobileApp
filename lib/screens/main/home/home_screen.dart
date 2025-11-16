@@ -218,19 +218,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final hour = date.hour.toString().padLeft(2, '0');
             final minute = date.minute.toString().padLeft(2, '0');
 
-                items.add({
+            items.add({
               'id': event.id,
               'title': event.title,
               'imageUrl': event.imageUrl,
-              // Gruplama için ISO tarih
               'date': date.toIso8601String(),
-              // Kart üzerinde gösterilecek metin: sadece saat
               'displayDate': '$hour:$minute',
               'location': event.location,
               'attendeeCount': event.attendeeCount,
               'isLiked': false,
-
-              // 👇 Detay sayfası için ham model
               'eventModel': event,
             });
           }
@@ -248,7 +244,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           );
         }
-
         return GroupedEventList(
           events: items,
           scrollController: scrollController,

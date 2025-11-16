@@ -11,7 +11,6 @@ import 'package:lobi_application/widgets/common/buttons/navbar_notification_butt
 import 'package:lobi_application/widgets/common/buttons/navbar_search_button.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
-import 'package:lobi_application/widgets/common/lists/grouped_event_list.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/categories/categories_grid.dart';
@@ -112,35 +111,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       'attendeeCount': 350,
     },
   ];
-  final List<Map<String, dynamic>> _mockPopularEvents = [
-    {
-      'id': '5',
-      'title': 'Gelin Takımı Stand Up Gösterisi',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/gelin-takimi-2-20251021161340218bceb06c6540618902e8591c40b1c4.jpg',
-      'date': '5 Kas - 14:30',
-      'location': 'Antalya Açık Hava Tiyartosu',
-      'attendeeCount': 500,
-    },
-    {
-      'id': '6',
-      'title': 'Ali Congun - Adliye Çayı Stand Up',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/uykucu-20251022122153ecaef744cab04f40b0a3709e7abe618c.jpg',
-      'date': '5 Kas - 14:30',
-      'location': 'Konya Kültür Merkezi',
-      'attendeeCount': 200,
-    },
-    {
-      'id': '7',
-      'title': 'Arı Maya Müzikli Danslı İnteraktif Çocuk Oyunu',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/ari-maya-muzikli-dansli-interaktif-cocuk-oyunu-2025113164048015960b03c444a0694afdd08ca695f09.jpeg',
-      'date': '5 Kas - 14:30',
-      'location': 'Meram Bağları',
-      'attendeeCount': 350,
-    },
-  ];
+
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
@@ -166,7 +137,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                _buildPopularEventsSection(),
                 SizedBox(height: 25.h),
                 EventsSection(
-                  title: 'Bu haftakiler',
+                  title: 'Tüm etkinlikler',
                   onSeeAll: () {
                     debugPrint('Tümünü gör: Yakındaki Etkinlikler');
                   },

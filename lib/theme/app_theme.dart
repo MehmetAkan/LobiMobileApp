@@ -5,14 +5,14 @@ class AppTheme {
   static const Color white = Color(0xFFFFFFFF);
   static const Color purple900 = Color(0xFF2E00A7);
   static const Color purple800 = Color(0xFF6412C6);
-  static const Color zinc100 = Color(0xFFF8F8F8);
-  static const Color zinc200 = Color(0xFFF4F4F4);
+  static const Color zinc100 = Color(0xFFFAFAFA);
+  static const Color zinc200 = Color(0xFFF7F7F7);
   static const Color zinc300 = Color(0xFFEDEDED);
   static const Color zinc400 = Color(0xFFE2E2E2);
   static const Color zinc500 = Color(0xFFB4B4B4);
   static const Color zinc600 = Color(0xFF909090);
   static const Color zinc700 = Color(0xFF727272);
-  static const Color zinc800 = Color(0xFF5F5F60);
+  static const Color zinc800 = Color(0xFF636363);
   static const Color zinc900 = Color(0xFF3E3E3E);
   static const Color zinc1000 = Color(0xFF292929);
   static const Color green100 = Color(0xFFE5F7E8);
@@ -21,9 +21,9 @@ class AppTheme {
   static const Color red100 = Color(0xFFF9E5E5);
   static const Color red800 = Color(0xFFE00303);
   static const Color red900 = Color(0xFFCB0200);
-    static const Color orange900 = Color(0xFFE29300);
+  static const Color orange900 = Color(0xFFE29300);
   static const Color black800 = Color(0xFF090A0A);
-  static const Color backgroundLight = Color(0xFFF8F8F8);
+  static const Color backgroundLight = Color.fromARGB(255, 255, 255, 255);
   static const Color backgroundDark = Color(0xFF090A0A);
   static const Color dark_zinc600 = Color(0xFFB2B2B2);
   static const Color dark_zinc700 = Color(0xFF949293);
@@ -75,7 +75,7 @@ class AppTheme {
   static Color getNavbarBtnBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : white;
+        : zinc100;
   }
 
   static Color getNavbarBtnActiveBg(BuildContext context) {
@@ -99,7 +99,7 @@ class AppTheme {
   static Color getTextHeadColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? backgroundLight
-        : backgroundDark;
+        : black800;
   }
 
   static Color getTextDescColor(BuildContext context) {
@@ -140,7 +140,7 @@ class AppTheme {
 
   static Color getEventIconTextColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
-        ? dark_zinc600
+        ? zinc800
         : zinc800;
   }
 
@@ -159,7 +159,7 @@ class AppTheme {
   static Color getCategoryCardBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc800
-        : zinc200;
+        : zinc300;
   }
 
   static Color getCategoryCardBg(BuildContext context) {

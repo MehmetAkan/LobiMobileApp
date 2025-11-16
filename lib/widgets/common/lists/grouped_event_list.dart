@@ -106,14 +106,12 @@ class _GroupedEventListState extends State<GroupedEventList> {
           }
 
           newActiveDate = date;
-        }
-        else if (headerTop > widget.navbarHeight) {
+        } else if (headerTop > widget.navbarHeight) {
           if ((_headerOpacities[date] ?? 1.0) != 1.0) {
             _headerOpacities[date] = 1.0;
             needsUpdate = true;
           }
-        }
-        else if (headerBottom <= widget.navbarHeight) {
+        } else if (headerBottom <= widget.navbarHeight) {
           if ((_headerOpacities[date] ?? 1.0) != 0.0) {
             _headerOpacities[date] = 0.0;
             needsUpdate = true;
@@ -137,7 +135,7 @@ class _GroupedEventListState extends State<GroupedEventList> {
     return ListView.builder(
       padding: widget.padding ?? EdgeInsets.zero,
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(), 
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: sortedDates.length,
       itemBuilder: (context, index) {
         final date = sortedDates[index];
@@ -155,24 +153,9 @@ class _GroupedEventListState extends State<GroupedEventList> {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               itemCount: events.length,
-              separatorBuilder: (context, index) => Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    // istersen left/right de yapabilirsin
-                    child: SizedBox(
-                      width: 220.w, // buradan genişliği kontrol ediyorsun
-                      child: const Divider(
-                        height: 0,
-                        thickness: 1,
-                        color: AppTheme.zinc300,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                ],
-              ),
-      itemBuilder: (context, eventIndex) {
+              separatorBuilder: (context, index) =>
+                  Column(children: [  SizedBox(height: 20.h), Divider(color: AppTheme.zinc300, thickness: 1, height: 1),   SizedBox(height: 20.h),]),
+              itemBuilder: (context, eventIndex) {
                 final event = events[eventIndex];
 
                 final eventModel = event['eventModel'] as EventModel?;
@@ -181,14 +164,14 @@ class _GroupedEventListState extends State<GroupedEventList> {
                   return EventCardVertical(
                     imageUrl: event['imageUrl'] as String? ?? '',
                     title: event['title'] as String? ?? '',
-                    date: (event['displayDate'] as String?) ??
+                    date:
+                        (event['displayDate'] as String?) ??
                         (event['date'] as String? ?? ''),
                     location: event['location'] as String? ?? '',
                     attendeeCount: (event['attendeeCount'] as int?) ?? 0,
                     isLiked: (event['isLiked'] as bool?) ?? false,
                     showLikeButton: false,
-                    onTap: () =>
-                        debugPrint('Tıklandı: ${event['title']}'),
+                    onTap: () => debugPrint('Tıklandı: ${event['title']}'),
                   );
                 }
 
@@ -199,22 +182,19 @@ class _GroupedEventListState extends State<GroupedEventList> {
                   closedElevation: 0,
                   openColor: Colors.transparent,
                   closedColor: Colors.transparent,
-            
 
                   openBuilder: (context, action) {
-                    return EventDetailScreen(
-                      event: eventModel,
-                    );
+                    return EventDetailScreen(event: eventModel);
                   },
                   closedBuilder: (context, openContainer) {
                     return EventCardVertical(
                       imageUrl: event['imageUrl'] as String? ?? '',
                       title: event['title'] as String? ?? '',
-                      date: (event['displayDate'] as String?) ??
+                      date:
+                          (event['displayDate'] as String?) ??
                           (event['date'] as String? ?? ''),
                       location: event['location'] as String? ?? '',
-                      attendeeCount:
-                          (event['attendeeCount'] as int?) ?? 0,
+                      attendeeCount: (event['attendeeCount'] as int?) ?? 0,
                       isLiked: (event['isLiked'] as bool?) ?? false,
                       showLikeButton: false,
                       // Kart tıklandığında OpenContainer açsın
@@ -224,7 +204,12 @@ class _GroupedEventListState extends State<GroupedEventList> {
                 );
               },
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 20.h),
+            Padding(
+              padding: EdgeInsets.only(left: 20.w, right: 20.w),
+              child: Divider(color: AppTheme.zinc300, thickness: 1, height: 1),
+            ),
+            SizedBox(height: 20.h),
           ],
         );
       },

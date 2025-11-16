@@ -4,12 +4,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
-/// ImagePickerService - Galeri erişimi ve resim kırpma servisi
-/// 
-/// Sorumluluklar:
-/// - Galeriden resim seçme
-/// - Resim kırpma (1:1 oran)
-/// - İzin yönetimi (basitleştirilmiş)
+
 class ImagePickerService {
   final ImagePicker _picker = ImagePicker();
 
@@ -58,10 +53,10 @@ class ImagePickerService {
     try {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: imagePath,
-        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1), // 1:1 oran
+        aspectRatio: const CropAspectRatio(ratioX: 4, ratioY: 3), 
         compressQuality: 85,
         maxWidth: 1920,
-        maxHeight: 1920,
+        maxHeight: 1440,
         compressFormat: ImageCompressFormat.jpg,
         uiSettings: [
           // Android ayarları

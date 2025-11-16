@@ -39,7 +39,6 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
     Navigator.of(context).pop(photoUrl);
   }
 
-  /// ✨ GÜNCEL - Direkt galeri aç ve kırp
   Future<void> _onPickFromGallery() async {
     setState(() => _isPickingImage = true);
 
@@ -306,7 +305,7 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
               crossAxisCount: 2,
               crossAxisSpacing: 15.w,
               mainAxisSpacing: 15.h,
-              childAspectRatio: 1,
+              childAspectRatio: 4 / 3,
             ),
             itemCount: images.length,
             itemBuilder: (context, index) {
@@ -403,10 +402,10 @@ class _CoverPhotoPickerModalState extends ConsumerState<CoverPhotoPickerModal>
           child: GridView.builder(
             padding: EdgeInsets.only(top: 10.h),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 2,
               crossAxisSpacing: 10.w,
               mainAxisSpacing: 10.h,
-              childAspectRatio: 1,
+              childAspectRatio: 4 / 3,
             ),
             itemCount: images.length,
             itemBuilder: (context, index) {
