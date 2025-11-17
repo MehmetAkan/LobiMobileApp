@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/modals/cover_photo_picker_modal.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/images/app_image.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'dart:io';
 
@@ -88,33 +89,10 @@ class CreateEventCoverSection extends StatelessWidget {
   }
 
   Widget _buildCoverImage(String? url) {
-    // 👇 Artık sabit değil; CreateEventScreen'den gelen random asset
-    final defaultImage = Image.asset(defaultCoverAsset, fit: BoxFit.cover);
-
-    if (url == null) {
-      return defaultImage;
-    }
-
-    if (url.startsWith('http')) {
-      return Image.network(
-        url,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return defaultImage;
-        },
-      );
-    }
-
-    try {
-      return Image.file(
-        File(url),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return defaultImage;
-        },
-      );
-    } catch (e) {
-      return defaultImage;
-    }
+    return AppImage(
+      path: url,
+      fallbackPath: defaultCoverAsset, 
+      fit: BoxFit.cover,
+    );
   }
 }

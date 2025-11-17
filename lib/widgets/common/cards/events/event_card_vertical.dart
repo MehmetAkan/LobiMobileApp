@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/images/app_image.dart';
 
 class EventCardVertical extends StatelessWidget {
   final String imageUrl;
@@ -37,37 +38,22 @@ class EventCardVertical extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+                 borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
                 child: AspectRatio(
                   aspectRatio: 4 / 3,
-                  child: Image.network(
-                    imageUrl,
+                  child: AppImage(
+                    path: imageUrl,
+                    // İstersen genel bir fallback asset de verebilirsin:
+                    // fallbackPath: 'assets/images/system/events_cover/events_cover_1.jpg',
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: AppTheme.zinc300,
-                        child: Icon(
-                          LucideIcons.image,
-                          size: 32.sp,
-                          color: AppTheme.zinc600,
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: AppTheme.red900,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                : null,
-                            strokeWidth: 6,
-                          ),
-                        ),
-                      );
-                    },
+                    placeholder: Container(
+                      color: AppTheme.zinc300,
+                      child: Icon(
+                        LucideIcons.image,
+                        size: 32.sp,
+                        color: AppTheme.zinc600,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -92,7 +78,7 @@ class EventCardVertical extends StatelessWidget {
             ],
           ),
           Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 0),
+            padding: const EdgeInsets.only(top: 10, bottom: 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

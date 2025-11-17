@@ -73,33 +73,50 @@ class EventService {
   }
 
 
-  Future<String> uploadCoverImage({
-    required File file,
-    required String userId,
-  }) async {
-    try {
-      final fileExtension = file.path.split('.').last.toLowerCase();
-      final fileName =
-          'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
-      final filePath = '$userId/$fileName';
+Future<String> uploadCoverImage({
+  required File file,
+  required String userId,
+}) async {
+  try {
+    final path = file.path;
 
-      await _client.storage
-          .from('event_covers')
-          .upload(
-            filePath,
-            file,
-            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
-          );
-
-      final publicUrl = _client.storage
-          .from('event_covers')
-          .getPublicUrl(filePath);
-
-      return publicUrl;
-    } catch (e) {
-      throw _handleError(e, 'uploadCoverImage');
+    // 1) Eğer asset yoluyorsa (ör: assets/images/system/events_cover/events_cover_4.jpg)
+    //    Supabase'e upload ETME, direkt bu string'i kullan.
+    if (path.startsWith('assets/')) {
+      return path;
     }
+
+    // 2) Güvenlik için: eğer bir şekilde http ile başlayan bir şey File olarak gelirse
+    //    (normalde olmaması lazım) yine upload etme, olduğu gibi döndür.
+    if (path.startsWith('http')) {
+      return path;
+    }
+
+    // 3) Buraya geldiysek bu cihazdaki GERÇEK bir dosya yolu demektir => upload et
+    final fileExtension = path.split('.').last.toLowerCase();
+    final fileName =
+        'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+    final filePath = '$userId/$fileName';
+
+    await _client.storage
+        .from('event_covers')
+        .upload(
+          filePath,
+          file,
+          fileOptions: const FileOptions(
+            cacheControl: '3600',
+            upsert: false,
+          ),
+        );
+
+    final publicUrl =
+        _client.storage.from('event_covers').getPublicUrl(filePath);
+
+    return publicUrl;
+  } catch (e) {
+    throw _handleError(e, 'uploadCoverImage');
   }
+}
 
   Future<List<Map<String, dynamic>>> getPopularEvents({
     required int limit,
@@ -115,6 +132,7 @@ class EventService {
       throw _handleError(e, 'getPopularEvents');
     }
   }
+  
   Future<void> incrementEventViewCount(String eventId) async {
     try {
       await _client.rpc(

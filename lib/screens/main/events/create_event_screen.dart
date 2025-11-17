@@ -155,12 +155,14 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   Future<void> _submitCreateEvent() async {
     // Provider'ı çağırmadan önce 'ref.read' kullanarak
     // CreateEventController'ın notifier'ına erişiyoruz.
+   final String coverImageUrlToSave = _coverPhotoUrl ?? _initialCoverAsset;
+
     final bool success = await ref
         .read(createEventControllerProvider.notifier)
         .createEvent(
           title: _titleController.text,
           description: _description,
-          coverPhotoUrl: _coverPhotoUrl,
+          coverPhotoUrl: coverImageUrlToSave,
           startDate: _startDate,
           endDate: _endDate,
           location: _selectedLocationModel,
