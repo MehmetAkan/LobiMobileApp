@@ -4,7 +4,7 @@ import 'package:lobi_application/screens/main/events/widgets/create/modals/cover
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'dart:io';
+
 
 class CreateEventCoverSection extends StatelessWidget {
   final String? coverPhotoUrl;

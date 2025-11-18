@@ -371,7 +371,7 @@ class _EventDescriptionModalState extends State<EventDescriptionModal> {
                   size: 22.sp,
                   color: isToggled
                       ? AppTheme.white
-                      : AppTheme.white.withOpacity(0.6),
+                      : AppTheme.white.withValues(alpha: 0.6)
                 ),
         ),
       ),

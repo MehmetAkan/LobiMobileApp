@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lobi_application/core/constants/app_constants.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
-import 'package:lobi_application/core/supabase_client.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';

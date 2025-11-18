@@ -92,15 +92,11 @@ class CustomNavbarState extends State<CustomNavbar>
       animation: _animationController,
       builder: (context, child) {
         final borderColor = Color.lerp(
-          AppTheme.getNavbarBorder(context).withOpacity(0),
+          AppTheme.getNavbarBorder(context).withValues(alpha: 0),
           AppTheme.getNavbarBorder(context), // istediğin tona çekebilirsin
           _animationController.value,
         )!;
-        // final bgColor = Color.lerp(
-        //   AppTheme.getNavbarBg(context),
-        //   AppTheme.white.withOpacity(0.5), // istediğin tona çekebilirsin
-        //   _animationController.value,
-        // )!;
+
         return ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(
@@ -114,14 +110,14 @@ class CustomNavbarState extends State<CustomNavbar>
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    AppTheme.getNavbarBg(context).withOpacity(0.2),
-                    AppTheme.getNavbarBg(context).withOpacity(0.5),
-                    AppTheme.getNavbarBg(context).withOpacity(1),
+                    AppTheme.getNavbarBg(context).withValues(alpha: .2),
+                    AppTheme.getNavbarBg(context).withValues(alpha: 0.5),
+                    AppTheme.getNavbarBg(context).withValues(alpha: 1),
                   ],
                 ),
                 border: Border(
                   bottom: BorderSide(
-                    color:  AppTheme.getNavbarBorder(context).withOpacity(0.2),
+                    color:  AppTheme.getNavbarBorder(context).withValues(alpha: .2),
                     width: 0.7, // kalınlığı buradan ayarla
                   ),
                 ),
