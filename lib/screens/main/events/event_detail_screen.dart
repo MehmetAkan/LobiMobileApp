@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/utils/event_permission_helper.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
@@ -12,6 +13,8 @@ import 'package:lobi_application/screens/main/events/widgets/detail/event_detail
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_location.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_divider.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_description.dart';
+import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_organizer_actions.dart';
+import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_attend_button.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/models/event_model.dart';
@@ -32,9 +35,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   late Map<String, dynamic> eventData;
 
+  late final bool _isOrganizer;
+
   @override
   void initState() {
     super.initState();
+
+    _isOrganizer = EventPermissionHelper.isOrganizer(widget.event);
+
     eventData = _mapEventToDetailData(widget.event);
     _incrementViewCount();
     _loadOrganizerProfile();
@@ -46,16 +54,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     super.dispose();
   }
 
-  /// Default test verisi
+  /// Event model'den UI verisi oluştur
   Map<String, dynamic> _mapEventToDetailData(EventModel event) {
     return {
       'id': event.id,
       'title': event.title,
       'coverPhotoUrl': event.imageUrl,
-      // Şimdilik backend’den organizer bilgisi yok
       'organizerName': '',
       'organizerPhotoUrl': null,
-      // Şu anda sadece tek bir tarih var, start/end aynı
       'startDate': event.date,
       'endDate': event.endDate ?? event.date,
       'locationName': event.location,
@@ -66,14 +72,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   Future<void> _loadOrganizerProfile() async {
     try {
-      // 1) Artık events tablosuna tekrar sorgu yok
       final organizerId = widget.event.organizerId;
 
       if (organizerId == null || organizerId.isEmpty) {
         return;
       }
 
-      // 2) organizerId ile profili getir
       final profileService = getIt<ProfileService>();
       final ProfileModel? profile = await profileService.getProfile(
         organizerId,
@@ -83,7 +87,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         return;
       }
 
-      // 3) UI'da organizer alanlarını güncelle
       setState(() {
         eventData = {
           ...eventData,
@@ -92,7 +95,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         };
       });
     } catch (e) {
-      debugPrint('Organizer profili yüklenemedi: $e');
+      debugPrint('⚠️ Organizer profili yüklenemedi: $e');
     }
   }
 
@@ -101,8 +104,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       final eventRepository = getIt<EventRepository>();
       await eventRepository.incrementEventViewCount(widget.event.id);
     } catch (e) {
-      // Kullanıcıya hata göstermiyoruz, sadece log atalım
-      debugPrint('View count artırılırken hata: $e');
+      debugPrint('⚠️ View count artırılırken hata: $e');
     }
   }
 
@@ -129,47 +131,35 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 3. Cover fotoğraf
                   EventDetailCover(coverPhotoUrl: eventData['coverPhotoUrl']),
                   SizedBox(height: 20.h),
-
-                  // 4. Organizatör bilgisi
                   EventDetailOrganizer(
                     name: eventData['organizerName'] ?? '',
                     photoUrl: eventData['organizerPhotoUrl'],
                   ),
-                  SizedBox(height: 15.h),
-
-                  // 5. Etkinlik başlığı
+                  SizedBox(height: 10.h),
                   EventDetailTitle(title: eventData['title'] ?? ''),
-                  SizedBox(height: 15.h),
-
-                  // 6. Tarih bilgisi
+                  SizedBox(height: 10.h),
                   EventDetailDate(
                     startDate: eventData['startDate'],
                     endDate: eventData['endDate'],
                   ),
-                  SizedBox(height: 20.h),
-                  const EventDetailDivider(),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 25.h),
+                  _buildActionButtons(),
+                  SizedBox(height: 25.h),
                   const EventDetailSectionTitle(title: 'Konum'),
-                  SizedBox(height: 15.h),
-                  // Konum bilgisi
+                  SizedBox(height: 10.h),
+                  const EventDetailDivider(),
+                  SizedBox(height: 10.h),
                   EventDetailLocation(
                     locationName: eventData['locationName'] ?? '',
                     locationAddress: eventData['locationAddress'] ?? '',
                   ),
                   SizedBox(height: 20.h),
-
-                  // 8. Divider
-                  const EventDetailDivider(),
-                  SizedBox(height: 20.h),
-
-                  // 9. "Açıklama" başlığı
                   const EventDetailSectionTitle(title: 'Açıklama'),
-                  SizedBox(height: 12.h),
-
-                  // 10. Açıklama içeriği
+                  SizedBox(height: 10.h),
+                  const EventDetailDivider(),
+                  SizedBox(height: 10.h),
                   EventDetailDescription(
                     description: eventData['description'] ?? '',
                   ),
@@ -177,6 +167,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ],
               ),
             ),
+
             Positioned(
               top: 0,
               left: 0,
@@ -185,7 +176,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 title: eventData['title'] ?? 'Etkinlik Detayı',
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
-                actions: [_buildRegisterButton()],
+                actions: [if (!_isOrganizer) _buildQuickAttendButton()],
               ),
             ),
           ],
@@ -194,8 +185,23 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  /// Sağ üstteki "Kayıt Ol" butonu
-  Widget _buildRegisterButton() {
+  Widget _buildActionButtons() {
+    if (_isOrganizer) {
+      return EventDetailOrganizerActions(
+        onShare: _handleShare,
+        onAnnouncement: _handleAnnouncement,
+        onManage: _handleManage,
+      );
+    }
+
+    return EventDetailAttendButton(
+      isAttending: false,
+      isFull: false,
+      onPressed: _handleAttend,
+    );
+  }
+
+  Widget _buildQuickAttendButton() {
     return Padding(
       padding: EdgeInsets.only(left: 10.w),
       child: SizedBox(
@@ -205,14 +211,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
           color: Colors.transparent,
           shape: const CircleBorder(),
           child: InkWell(
-            onTap: () {
-              // TODO: Kayıt ol işlemi
-              debugPrint('Kayıt ol butonuna tıklandı');
-            },
+            onTap: _handleAttend,
             customBorder: const CircleBorder(),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.getAppBarButtonBg(context).withOpacity(0.5),
+                color: AppTheme.getAppBarButtonBg(
+                  context,
+                ).withValues(alpha: 0.5),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: AppTheme.getAppBarButtonBorder(context),
@@ -231,5 +236,21 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         ),
       ),
     );
+  }
+
+  void _handleShare() {
+    debugPrint('🔗 Paylaş: ${widget.event.id}');
+  }
+
+  void _handleAnnouncement() {
+    debugPrint('📢 Duyuru: ${widget.event.id}');
+  }
+
+  void _handleManage() {
+    debugPrint('⚙️ Yönet: ${widget.event.id}');
+  }
+
+  void _handleAttend() {
+    debugPrint('✅ Katıl: ${widget.event.id}');
   }
 }

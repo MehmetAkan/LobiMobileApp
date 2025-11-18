@@ -227,9 +227,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppTheme.getAppBarBg(context).withValues(alpha: 0.1),
-            AppTheme.getAppBarBg(context).withValues(alpha: 0.5),
-            AppTheme.getAppBarBg(context).withValues(alpha: 1),
+            AppTheme.getAppBarBg(context).withOpacity(opacities[0]),
+            AppTheme.getAppBarBg(context).withOpacity(opacities[1]),
+            AppTheme.getAppBarBg(context).withOpacity(opacities[2]),
           ],
         );
 

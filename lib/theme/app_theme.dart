@@ -224,8 +224,8 @@ class AppTheme {
 
   static Color getCreateEventBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
-        ? dark_zinc600
-        : dark_zinc700;
+        ? black800
+        : black800;
   }
 
   static Color getAppBarTextColor(BuildContext context) {

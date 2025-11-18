@@ -21,8 +21,8 @@ class EventDetailOrganizer extends StatelessWidget {
       children: [
         // Profil fotoğrafı
         Container(
-          width: 32.w,
-          height: 32.w,
+          width: 25.w,
+          height: 25.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
@@ -48,7 +48,7 @@ class EventDetailOrganizer extends StatelessWidget {
         Text(
           name,
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
             color: Colors.white,
             height: 1,
@@ -63,7 +63,7 @@ class EventDetailOrganizer extends StatelessWidget {
       color: AppTheme.dark_zinc800,
       child: Icon(
         Icons.person,
-        size: 18.sp,
+        size: 15.sp,
         color: Colors.white.withOpacity(0.5),
       ),
     );

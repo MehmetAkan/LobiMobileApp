@@ -92,7 +92,7 @@ class EventRepository {
 
       // Supabase satırlarını EventModel'e çevir
       var events = rows
-          .map<EventModel>((row) => _mapRowToEventModel(row))
+          .map<EventModel>((row) => _mapToEventModel(row))
           .toList();
 
       final nowUtc = DateTime.now().toUtc();
@@ -115,7 +115,7 @@ class EventRepository {
       );
 
       final events = rows
-          .map<EventModel>((row) => _mapRowToEventModel(row))
+          .map<EventModel>((row) => _mapToEventModel(row))
           .toList();
 
       return events;
@@ -134,7 +134,7 @@ class EventRepository {
       final rows = await _eventService.getPopularEvents(limit: limit);
 
       final events = rows
-          .map<EventModel>((row) => _mapRowToEventModel(row))
+          .map<EventModel>((row) => _mapToEventModel(row))
           .toList();
 
       return events;
@@ -163,18 +163,29 @@ class EventRepository {
     }
   }
 
-  EventModel _mapRowToEventModel(Map<String, dynamic> row) {
+  EventModel _mapToEventModel(Map<String, dynamic> row) {
     final dynamic startDateRaw = row['start_date'];
-    final DateTime startDate = _parseDateTime(startDateRaw);
+    DateTime startDate;
+    if (startDateRaw is DateTime) {
+      startDate = startDateRaw;
+    } else {
+      startDate = _parseDateTime(startDateRaw);
+    }
 
+    DateTime? endDate;
     final dynamic endDateRaw = row['end_date'];
-    final DateTime? endDate = endDateRaw != null
-        ? _parseDateTime(endDateRaw)
-        : null;
+    if (endDateRaw != null) {
+      endDate = endDateRaw is DateTime
+          ? endDateRaw
+          : _parseDateTime(endDateRaw);
+    }
+    endDate = endDateRaw != null ? _parseDateTime(endDateRaw) : null;
 
     final String locationName = (row['location_name'] as String?) ?? '';
     final String? locationSecondary = row['location_secondary_text'] as String?;
     final int attendeeCount = _parseInt(row['participant_count']);
+
+    final String? organizerId = row['organizer_id'] as String?;
 
     return EventModel(
       id: row['id']?.toString() ?? '',
@@ -185,6 +196,7 @@ class EventRepository {
       location: locationName,
       locationSecondary: locationSecondary,
       imageUrl: row['cover_image_url'] as String? ?? '',
+      organizerId: organizerId,
       attendeeCount: attendeeCount,
       categories: const [],
     );
