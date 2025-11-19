@@ -1,10 +1,4 @@
-/// DateFormatType - Tarih format tipleri
-/// 
-/// Kullanım senaryoları:
-/// - long: EventCard detay, DateHeader
-/// - short: Kompakt kartlar
-/// - timeOnly: Saat bilgisi
-/// - dateTime: Event detay sayfaları
+
 enum DateFormatType {
   /// "5 Kasım Çarşamba"
   long,
@@ -32,22 +26,7 @@ enum DateFormatType {
   todayTomorrow, // "Bugün", "Yarın"
 }
 
-/// DateFormatter - Merkezi tarih formatlama utility'si
-/// 
-/// Özellikler:
-/// - Farklı format tipleri
-/// - Türkçe locale desteği
-/// - Genişletilebilir yapı
-/// - Type-safe (enum kullanımı)
-/// 
-/// Kullanım:
-/// ```dart
-/// // Direct kullanım
-/// String formatted = DateFormatter.format(date, DateFormatType.long);
-/// 
-/// // Extension ile (date_extensions.dart)
-/// String formatted = date.toLongFormat();
-/// ```
+
 class DateFormatter {
   // Private constructor - Utility class
   DateFormatter._();
@@ -163,12 +142,6 @@ class DateFormatter {
     }
   }
 
-  // ==================== Helper Methods ====================
-
-  /// Ay adını döndür
-  /// 
-  /// [month]: 1-12 arası ay numarası
-  /// [short]: true ise kısa format (Kas), false ise uzun (Kasım)
   static String getMonthName(int month, {bool short = false}) {
     const monthsLong = [
       'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',

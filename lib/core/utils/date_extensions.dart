@@ -1,23 +1,6 @@
 import 'package:lobi_application/core/utils/date_formatter.dart';
-/// DateTime Extension - Kolay kullanım için shortcut'lar
-/// 
-/// Kullanım:
-/// ```dart
-/// final date = DateTime.now();
-/// 
-/// // Format shortcut'ları
-/// print(date.toLongFormat());        // "5 Kasım Çarşamba"
-/// print(date.toShortFormat());       // "5 Kas Çar"
-/// print(date.toTimeOnly());          // "14:00"
-/// print(date.toDateTime());          // "5 Kasım - 14:00"
-/// 
-/// // Helper'lar
-/// if (date.isToday) {
-///   print('Bu etkinlik bugün!');
-/// }
-/// ```
+
 extension DateTimeFormatting on DateTime {
-  // ==================== Format Shortcut'ları ====================
 
   /// "5 Kasım Çarşamba"
   String toLongFormat() {

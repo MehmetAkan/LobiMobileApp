@@ -65,15 +65,11 @@ class EventRepository {
         'requires_approval': isApprovalRequired,
         'max_participants': capacity,
         'category_id': category.id,
-        // ✨ DÜZELTME: 'organizer_id' satırı kaldırıldı.
-        // Yeni 'create_new_event' SQL fonksiyonumuz bunu 'auth.uid()'
-        // ile güvenli bir şekilde hallediyor.
+      
       };
-
-      // 5. EventService aracılığıyla veritabanına kaydet
       return await _eventService.createEvent(dataMap);
     } catch (e) {
-      // Şimdilik üst kata aynen fırlatıyoruz (AppException ise UI zaten biliyor)
+
       rethrow;
     }
   }
@@ -90,7 +86,6 @@ class EventRepository {
         end: weekEnd,
       );
 
-      // Supabase satırlarını EventModel'e çevir
       var events = rows
           .map<EventModel>((row) => _mapToEventModel(row))
           .toList();
@@ -163,44 +158,49 @@ class EventRepository {
     }
   }
 
-  EventModel _mapToEventModel(Map<String, dynamic> row) {
-    final dynamic startDateRaw = row['start_date'];
-    DateTime startDate;
-    if (startDateRaw is DateTime) {
-      startDate = startDateRaw;
-    } else {
-      startDate = _parseDateTime(startDateRaw);
-    }
-
-    DateTime? endDate;
-    final dynamic endDateRaw = row['end_date'];
-    if (endDateRaw != null) {
-      endDate = endDateRaw is DateTime
-          ? endDateRaw
-          : _parseDateTime(endDateRaw);
-    }
-    endDate = endDateRaw != null ? _parseDateTime(endDateRaw) : null;
-
-    final String locationName = (row['location_name'] as String?) ?? '';
-    final String? locationSecondary = row['location_secondary_text'] as String?;
-    final int attendeeCount = _parseInt(row['participant_count']);
-
-    final String? organizerId = row['organizer_id'] as String?;
-
-    return EventModel(
-      id: row['id']?.toString() ?? '',
-      title: row['title'] as String? ?? '',
-      description: row['description'] as String? ?? '',
-      date: startDate,
-      endDate: endDate,
-      location: locationName,
-      locationSecondary: locationSecondary,
-      imageUrl: row['cover_image_url'] as String? ?? '',
-      organizerId: organizerId,
-      attendeeCount: attendeeCount,
-      categories: const [],
-    );
+EventModel _mapToEventModel(Map<String, dynamic> row) {
+  // Tarih parse
+  final dynamic startDateRaw = row['start_date'];
+  DateTime startDate;
+  if (startDateRaw is DateTime) {
+    startDate = startDateRaw;
+  } else {
+    startDate = _parseDateTime(startDateRaw);
   }
+
+  // End date parse
+  DateTime? endDate;
+  final dynamic endDateRaw = row['end_date'];
+  if (endDateRaw != null) {
+    endDate = endDateRaw is DateTime
+        ? endDateRaw
+        : _parseDateTime(endDateRaw);
+  }
+
+  // Diğer alanlar
+  final String locationName = (row['location_name'] as String?) ?? '';
+  final String? locationSecondary = row['location_secondary_text'] as String?;
+  final int attendeeCount = _parseInt(row['participant_count']);
+  
+  final String? organizerId = row['organizer_id'] as String?;
+  
+  final bool requiresApproval = row['requires_approval'] as bool? ?? false;
+
+  return EventModel(
+    id: row['id']?.toString() ?? '',
+    title: row['title'] as String? ?? '',
+    description: row['description'] as String? ?? '',
+    date: startDate,
+    endDate: endDate,
+    location: locationName,
+    locationSecondary: locationSecondary,
+    imageUrl: row['cover_image_url'] as String? ?? '',
+    organizerId: organizerId,  
+    attendeeCount: attendeeCount,
+    categories: const [],
+    requiresApproval: requiresApproval, 
+  );
+}
 
   DateTime _parseDateTime(dynamic value) {
     if (value is DateTime) return value;
