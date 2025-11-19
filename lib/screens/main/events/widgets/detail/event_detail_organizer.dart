@@ -42,13 +42,13 @@ class EventDetailOrganizer extends StatelessWidget {
                 : _buildDefaultAvatar(),
           ),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 5.w),
 
         // İsim soyisim
         Text(
           name,
           style: TextStyle(
-            fontSize: 13.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w500,
             color: Colors.white,
             height: 1,
@@ -63,7 +63,7 @@ class EventDetailOrganizer extends StatelessWidget {
       color: AppTheme.dark_zinc800,
       child: Icon(
         Icons.person,
-        size: 15.sp,
+        size: 18.sp,
         color: Colors.white.withOpacity(0.5),
       ),
     );

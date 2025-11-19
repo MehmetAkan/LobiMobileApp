@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/data/models/event_attendance_status.dart';
 import 'package:lobi_application/data/services/event_attendance_service.dart';
@@ -40,7 +41,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   late Map<String, dynamic> eventData;
   late final bool _isOrganizer;
-  
+
   EventAttendanceStatus _attendanceStatus = EventAttendanceStatus.notAttending;
   bool _isLoadingAttendance = true;
   bool _isProcessingAttendance = false;
@@ -48,13 +49,13 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     _isOrganizer = _checkIsOrganizer();
-    
+
     eventData = _mapEventToDetailData(widget.event);
     _incrementViewCount();
     _loadOrganizerProfile();
-    
+
     if (!_isOrganizer) {
       _loadAttendanceStatus();
     } else {
@@ -65,26 +66,26 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   bool _checkIsOrganizer() {
     final currentUserId = Supabase.instance.client.auth.currentUser?.id;
     final eventOrganizerId = widget.event.organizerId;
-    
+
     if (currentUserId == null || currentUserId.isEmpty) {
       return false;
     }
-    
+
     if (eventOrganizerId == null || eventOrganizerId.isEmpty) {
       return false;
     }
-    
+
     return currentUserId.trim() == eventOrganizerId.trim();
   }
 
   Future<void> _loadAttendanceStatus() async {
     setState(() => _isLoadingAttendance = true);
-    
+
     try {
       final status = await _attendanceService.getAttendanceStatus(
         eventId: widget.event.id,
       );
-    
+
       if (mounted) {
         setState(() {
           _attendanceStatus = status;
@@ -181,12 +182,46 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  EventDetailCover(coverPhotoUrl: eventData['coverPhotoUrl']),
-                  SizedBox(height: 20.h),
-                  EventDetailOrganizer(
-                    name: eventData['organizerName'] ?? '',
-                    photoUrl: eventData['organizerPhotoUrl'],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      EventDetailOrganizer(
+                        name: eventData['organizerName'] ?? '',
+                        photoUrl: eventData['organizerPhotoUrl'],
+                      ),
+                      if (_isOrganizer) ...[
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            color: AppTheme.purple100,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 6.h,
+                            ),
+                            child: Text(
+                              "Organizatör",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.purple900,
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
+
+                  SizedBox(height: 10.h),
+                  EventDetailCover(coverPhotoUrl: eventData['coverPhotoUrl']),
+                  SizedBox(height: 10.h),
+                  if (!_isOrganizer && !_isLoadingAttendance) ...[
+                    SizedBox(height: 10.h),
+                    EventAttendanceStatusBadge(status: _attendanceStatus),
+                  ],
                   SizedBox(height: 10.h),
                   EventDetailTitle(title: eventData['title'] ?? ''),
                   SizedBox(height: 10.h),
@@ -194,19 +229,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                     startDate: eventData['startDate'],
                     endDate: eventData['endDate'],
                   ),
-                  
-                  // ✅ Status Badge
-                  if (!_isOrganizer && !_isLoadingAttendance) ...[
-                    SizedBox(height: 10.h),
-                    EventAttendanceStatusBadge(status: _attendanceStatus),
-                  ],
-                  
-                  SizedBox(height: 25.h),
-                  
-                  // ✅ Aksiyon butonları
+
+                  SizedBox(height: 20.h),
                   _buildActionButtons(),
-                  
-                  SizedBox(height: 25.h),
+                  SizedBox(height: 20.h),
                   const EventDetailSectionTitle(title: 'Konum'),
                   SizedBox(height: 10.h),
                   const EventDetailDivider(),
@@ -235,7 +261,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 title: eventData['title'] ?? 'Etkinlik Detayı',
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
-                actions: [if (!_isOrganizer && !_attendanceStatus.canLeaveEvent) _buildQuickAttendButton()],
+                actions: [
+                  if (!_isOrganizer && !_attendanceStatus.canLeaveEvent)
+                    _buildQuickAttendButton(),
+                ],
               ),
             ),
           ],
@@ -254,12 +283,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     }
 
     if (_isLoadingAttendance) {
-      return Center(
-        child: CircularProgressIndicator(color: AppTheme.white),
-      );
+      return Center(child: CircularProgressIndicator(color: AppTheme.white));
     }
 
-    // ✅ Katılıyorsa → Katılımcı butonları
     if (_attendanceStatus.canLeaveEvent) {
       return EventAttendeeActionButtons(
         onTicket: _handleTicket,
@@ -268,7 +294,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       );
     }
 
-    // ✅ Katılmıyorsa → Katıl butonu
     return EventDetailAttendButton(
       isAttending: false,
       isFull: false,
@@ -290,7 +315,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
             customBorder: const CircleBorder(),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.getAppBarButtonBg(context).withValues(alpha: 0.5),
+                color: AppTheme.getAppBarButtonBg(
+                  context,
+                ).withValues(alpha: 0.5),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: AppTheme.getAppBarButtonBorder(context),
@@ -320,8 +347,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     );
   }
 
-  // ==================== AKSIYON METODLARI ====================
-
   void _handleShare() {
     debugPrint('🔗 Paylaş: ${widget.event.id}');
   }
@@ -334,73 +359,59 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     debugPrint('⚙️ Yönet: ${widget.event.id}');
   }
 
-  /// ✅ GÜNCEL: Katıl işlemi - requiresApproval kontrolü ile
   Future<void> _handleAttend() async {
     if (_isProcessingAttendance) return;
-    
+
     setState(() => _isProcessingAttendance = true);
-    
+
     try {
-      // ✅ Event'ten requiresApproval al
       final requiresApproval = widget.event.requiresApproval;
-      
+
       debugPrint('✅ Katıl işlemi başlatıldı');
       debugPrint('   Event ID: ${widget.event.id}');
       debugPrint('   Onay gerekli: $requiresApproval');
-      
+
       final newStatus = await _attendanceService.attendEvent(
         eventId: widget.event.id,
         requiresApproval: requiresApproval,
       );
-      
+
       if (!mounted) return;
-      
+
       setState(() {
         _attendanceStatus = newStatus;
         _isProcessingAttendance = false;
       });
-      
-      // ✅ Başarı mesajı
+
       final message = requiresApproval
           ? 'Katılım talebiniz gönderildi. Organizatör onayı bekleniyor.'
           : 'Etkinliğe katıldınız!';
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: requiresApproval ? AppTheme.orange900 : AppTheme.green900,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+
+      if (requiresApproval) {
+        getIt<AppFeedbackService>().showWarning(message);
+      } else {
+        getIt<AppFeedbackService>().showSuccess(message);
+      }
     } catch (e) {
       debugPrint('⚠️ Katılım hatası: $e');
-      
+
       if (!mounted) return;
-      
+
       setState(() => _isProcessingAttendance = false);
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Katılım işlemi başarısız: $e'),
-          backgroundColor: AppTheme.red900,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+
+      getIt<AppFeedbackService>().showError('Katılım işlemi başarısız: $e');
     }
   }
 
   void _handleTicket() {
     debugPrint('🎫 Biletim: ${widget.event.id}');
-    // TODO: Bilet modal
   }
 
   void _handleContact() {
     debugPrint('💬 İletişim: ${widget.event.id}');
-    // TODO: İletişim modal
   }
 
   void _handleMore() {
     debugPrint('⋯ Daha Fazla: ${widget.event.id}');
-    // TODO: Daha fazla seçenekler (Katılımdan ayrıl, vb.)
   }
 }

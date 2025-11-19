@@ -47,10 +47,10 @@ class EventDetailAttendButton extends StatelessWidget {
     // Henüz katılmadıysa
     return _buildButton(
       context: context,
-      label: 'Katıl',
-      icon: LucideIcons.userPlus400,
-      backgroundColor: AppTheme.purple900,
-      textColor: AppTheme.white,
+      label: 'Kayıt Ol',
+      icon: LucideIcons.tickets400,
+      backgroundColor: AppTheme.white,
+      textColor: AppTheme.black800,
       onTap: onPressed,
     );
   }
@@ -92,7 +92,7 @@ class EventDetailAttendButton extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w600,
                   color: textColor,
                   height: 1.2,
                 ),

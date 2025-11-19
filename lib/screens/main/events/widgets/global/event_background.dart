@@ -33,7 +33,7 @@ Widget build(BuildContext context) {
         ),
         ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+            filter: ImageFilter.blur(sigmaX: 120, sigmaY: 120),
             child: Container(
               color: AppTheme.getCreateEventBg(context).withOpacity(0.40),
             ),

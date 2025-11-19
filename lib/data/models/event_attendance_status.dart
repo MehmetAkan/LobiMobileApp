@@ -4,19 +4,14 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 
 enum EventAttendanceStatus {
-  /// Kullanıcı etkinliğe katılmıyor
   notAttending,
   
-  /// Kullanıcı katılım talebinde bulundu, organizatör onayı bekleniyor
   pending,
   
-  /// Kullanıcı etkinliğe katılacak (onaylandı veya onay gerektirmeyen etkinlik)
   attending,
   
-  /// Kullanıcının katılım talebi organizatör tarafından reddedildi
   rejected;
 
-  /// Kullanıcıya gösterilecek metin
   String get displayText {
     switch (this) {
       case EventAttendanceStatus.notAttending:

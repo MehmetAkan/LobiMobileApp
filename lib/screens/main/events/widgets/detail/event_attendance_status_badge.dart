@@ -3,21 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/data/models/event_attendance_status.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
-/// EventAttendanceStatusBadge - Katılım durumu göstergesi
-/// 
-/// Tarih bilgisinin hemen altında gösterilir.
-/// 
-/// Durumlar:
-/// - "Katılacaksınız" (yeşil)
-/// - "Organizatör Onayı Bekleniyor" (turuncu)
-/// - "Katılım Talebiniz Reddedildi" (kırmızı)
-/// 
-/// Kullanım:
-/// ```dart
-/// EventAttendanceStatusBadge(
-///   status: EventAttendanceStatus.attending,
-/// )
-/// ```
+
 class EventAttendanceStatusBadge extends StatelessWidget {
   final EventAttendanceStatus status;
 
@@ -40,8 +26,8 @@ class EventAttendanceStatusBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8.r),
+        color: color.withValues(alpha: 1),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: color.withValues(alpha: 0.3),
           width: 1,
@@ -52,16 +38,16 @@ class EventAttendanceStatusBadge extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 16.sp,
-            color: color,
+            size: 17.sp,
+            color: AppTheme.white,
           ),
           SizedBox(width: 6.w),
           Text(
             text,
             style: TextStyle(
-              fontSize: 13.sp,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: color,
+              color: AppTheme.white,
               height: 1.2,
             ),
           ),

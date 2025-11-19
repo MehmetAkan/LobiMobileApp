@@ -173,13 +173,11 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         );
 
     if (success && mounted) {
-      // ✅ Artık burada global feedback servisini kullanıyoruz
       getIt<AppFeedbackService>().showSuccess(
         'Etkinlik başarıyla oluşturuldu!',
       );
       Navigator.of(context).pop();
     }
-    // Hata durumu ref.listen ile handle ediliyor
   }
 
   @override

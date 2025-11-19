@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   /*Sabit Renkler*/
   static const Color white = Color(0xFFFFFFFF);
+  static const Color purple100 = Color(0xFFF4F2FB);
   static const Color purple900 = Color(0xFF2E00A7);
   static const Color purple800 = Color(0xFF6412C6);
   static const Color zinc100 = Color(0xFFFAFAFA);
@@ -139,9 +140,7 @@ class AppTheme {
   }
 
   static Color getEventIconTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
-        ? zinc800
-        : zinc800;
+    return Theme.of(context).brightness == Brightness.dark ? zinc800 : zinc800;
   }
 
   static Color getnNavigationBg(BuildContext context) {

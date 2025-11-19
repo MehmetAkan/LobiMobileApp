@@ -121,14 +121,11 @@ class AppFeedbackService {
         // Başarı: genelde aksiyon rengi / secondary
         return AppTheme.green900;
       case AppFeedbackType.error:
-        // Hata: error rengi
         return AppTheme.red800;
       case AppFeedbackType.warning:
-        // Uyarı: tercihen tertiary
         return AppTheme.orange900;
       case AppFeedbackType.info:
       default:
-        // Bilgi: primary
         return AppTheme.purple900;
     }
   }
