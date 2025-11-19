@@ -231,6 +231,22 @@ class AppTheme {
     return Theme.of(context).brightness == Brightness.dark ? black800 : white;
   }
 
+  static Color getAppBarTextColorSecondary(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? white : black800;
+  }
+
+  static Color getAppBarButtonBorderColorSecondary(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getAppBarButtonBgColorSecondary(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc200.withValues(alpha: 0.7);
+  }
+
   static Color getAppBarButtonColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? black800 : white;
   }

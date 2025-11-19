@@ -60,10 +60,14 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   late ScrollController _internalScrollController;
   late AnimationController _animationController;
   late Animation<double> _blurAnimation;
+
+  // Title animations
   late Animation<double> _titleOpacityAnimation;
+  late Animation<double> _titleScaleAnimation;
 
   bool _isScrolled = false;
   double _titleOpacity = 0.0;
+  double _titleScale = 1.0;
 
   @override
   void initState() {
@@ -81,15 +85,21 @@ class _FullPageAppBarState extends State<FullPageAppBar>
     );
 
     // Blur animation (custom_navbar'dan alındı)
-    _blurAnimation = Tween<double>(
-      begin: _getBlurAmount(false),
-      end: _getBlurAmount(true),
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.linear),
+    _blurAnimation =
+        Tween<double>(
+          begin: _getBlurAmount(false),
+          end: _getBlurAmount(true),
+        ).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.linear),
+        );
+
+    // Title opacity animation (Dark style için)
+    _titleOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    // Title opacity animation
-    _titleOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    // Title scale animation (Secondary style için)
+    _titleScaleAnimation = Tween<double>(begin: 1.0, end: 0.9).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -169,12 +179,28 @@ class _FullPageAppBarState extends State<FullPageAppBar>
       }
     }
 
-    // Title opacity threshold
-    final titleProgress = (offset / widget.titleThreshold).clamp(0.0, 1.0);
-    if (titleProgress != _titleOpacity) {
-      setState(() {
-        _titleOpacity = titleProgress;
-      });
+    // Title opacity threshold (Sadece Dark style için)
+    if (widget.style == AppBarStyle.dark) {
+      final titleProgress = (offset / widget.titleThreshold).clamp(0.0, 1.0);
+      if (titleProgress != _titleOpacity) {
+        setState(() {
+          _titleOpacity = titleProgress;
+        });
+      }
+    }
+
+    // Title scale threshold (Sadece Secondary style için)
+    if (widget.style == AppBarStyle.secondary) {
+      // 0.0 -> 1.0 arası progress
+      final scaleProgress = (offset / 50.0).clamp(0.0, 1.0);
+      // 1.0 -> 0.9 arası scale (küçülme)
+      final newScale = 1.0 - (scaleProgress * 0.1);
+
+      if (newScale != _titleScale) {
+        setState(() {
+          _titleScale = newScale;
+        });
+      }
     }
   }
 
@@ -204,7 +230,16 @@ class _FullPageAppBarState extends State<FullPageAppBar>
       case AppBarStyle.dark:
         return AppTheme.getAppBarButtonBg(context);
       case AppBarStyle.secondary:
-        return AppTheme.getAppBarButtonBg(context);
+        return AppTheme.getAppBarButtonBgColorSecondary(context);
+    }
+  }
+
+  Color _getHeadTextColor(BuildContext context) {
+    switch (widget.style) {
+      case AppBarStyle.dark:
+        return AppTheme.getAppBarTextColor(context);
+      case AppBarStyle.secondary:
+        return AppTheme.getAppBarTextColorSecondary(context);
     }
   }
 
@@ -214,7 +249,16 @@ class _FullPageAppBarState extends State<FullPageAppBar>
       case AppBarStyle.dark:
         return AppTheme.getAppBarButtonBorder(context);
       case AppBarStyle.secondary:
-        return AppTheme.getButtonIconBorder(context);
+        return AppTheme.getAppBarButtonBorderColorSecondary(context);
+    }
+  }
+
+  Color _getButtonTextColor(BuildContext context) {
+    switch (widget.style) {
+      case AppBarStyle.dark:
+        return AppTheme.getAppBarButtonBorder(context);
+      case AppBarStyle.secondary:
+        return AppTheme.getAppBarTextColorSecondary(context);
     }
   }
 
@@ -256,7 +300,6 @@ class _FullPageAppBarState extends State<FullPageAppBar>
       animation: _animationController,
       builder: (context, child) {
         final opacities = _getBackgroundOpacities();
-
         return ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(
@@ -294,23 +337,21 @@ class _FullPageAppBarState extends State<FullPageAppBar>
         children: [
           // Sol - Geri Button (Sabit)
           _buildBackButton(context),
+
+          // Orta - Başlık (Dinamik)
           Expanded(
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 300),
-              opacity: _titleOpacity,
-              child: Center(
-                child: Text(
-                  widget.title,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.getAppBarTextColor(context),
+            child: widget.style == AppBarStyle.dark
+                // Dark Style: Fade In/Out
+                ? AnimatedOpacity(
+                    duration: const Duration(milliseconds: 300),
+                    opacity: _titleOpacity,
+                    child: _buildTitleText(context),
+                  )
+                // Secondary Style: Scale Down
+                : Transform.scale(
+                    scale: _titleScale,
+                    child: _buildTitleText(context),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
           ),
 
           // Sağ - Aksiyon Butonları (Dinamik)
@@ -324,10 +365,25 @@ class _FullPageAppBarState extends State<FullPageAppBar>
     );
   }
 
+  Widget _buildTitleText(BuildContext context) {
+    return Center(
+      child: Text(
+        widget.title,
+        style: TextStyle(
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
+          color: _getHeadTextColor(context),
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
   Widget _buildBackButton(BuildContext context) {
     return SizedBox(
-      width: 45.w,
-      height: 45.w,
+      width: 40.w,
+      height: 40.w,
       child: Material(
         color: Colors.transparent,
         shape: const CircleBorder(),
@@ -346,8 +402,8 @@ class _FullPageAppBarState extends State<FullPageAppBar>
             child: Center(
               child: Icon(
                 LucideIcons.chevronLeft400,
-                size: 25.sp,
-                color: AppTheme.getAppBarButtonColor(context),
+                size: 22.sp,
+                color: _getButtonTextColor(context),
               ),
             ),
           ),
