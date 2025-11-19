@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-
+import 'package:lobi_application/widgets/common/images/app_image.dart';
 class EventCardHorizontal extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -57,35 +57,31 @@ class EventCardHorizontal extends StatelessWidget {
     );
   }
 
-  Widget _buildImage() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius.r),
-      child: Image.network(
-        imageUrl,
+Widget _buildImage() {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(borderRadius.r),
+    child: AppImage(
+      path: imageUrl,
+      // İstersen özel fallback de verebilirsin:
+      // fallbackPath: 'assets/images/system/events_cover/events_cover_1.jpg',
+      width: width?.w,
+      height: height?.h,
+      fit: BoxFit.cover,
+      placeholder: Container(
         width: width?.w,
         height: height?.h,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(color: AppTheme.red900);
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: AppTheme.zinc200,
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
-                strokeWidth: 2,
-              ),
-            ),
-          );
-        },
+        color: AppTheme.zinc200,
+        child: const Center(
+          child: SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildLikeButton() {
     return Positioned(

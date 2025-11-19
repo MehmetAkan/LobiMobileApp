@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lobi_application/widgets/common/logout/logout_test_button.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -8,7 +9,12 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Text('Profil Sayfası'),
+          child: Column(
+            children: [
+              Text('Profil Sayfası'),
+               LogoutTestButton(),
+            ],
+          ),
         ),
       ),
     );
