@@ -91,6 +91,12 @@ flutter:
     - assets/images/system/events_cover/events_cover_8.jpg
     - assets/images/system/events_cover/events_cover_9.jpg
     - assets/images/system/events_cover/events_cover_10.jpg
+    - assets/images/system/settings/setting-delete-icon.svg
+    - assets/images/system/settings/setting-event-icon.svg
+    - assets/images/system/settings/setting-lock-icon.svg
+    - assets/images/system/settings/setting-qr-icon.svg
+    - assets/images/system/settings/setting-question-icon.svg
+    - assets/images/system/settings/setting-user-icon.svg
   fonts:
     - family: Figtree
       fonts:

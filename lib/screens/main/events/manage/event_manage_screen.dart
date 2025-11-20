@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -23,7 +24,7 @@ class EventManageScreen extends StatelessWidget {
           context,
           items: [
             _MenuItem(
-              icon: LucideIcons.fileText,
+              iconPath: "assets/images/system/settings/setting-event-icon.svg",
               title: 'Etkinlik Detayları',
               description: 'Etkinlik bilgilerini düzenle',
               onTap: () => Navigator.push(
@@ -42,7 +43,7 @@ class EventManageScreen extends StatelessWidget {
           context,
           items: [
             _MenuItem(
-              icon: LucideIcons.users,
+              iconPath: "assets/images/system/settings/setting-user-icon.svg",
               title: 'Misafir Listesi',
               description: 'Katılımcıları görüntüle ve yönet',
               onTap: () => Navigator.push(
@@ -53,7 +54,7 @@ class EventManageScreen extends StatelessWidget {
               ),
             ),
             _MenuItem(
-              icon: LucideIcons.qrCode400,
+              iconPath: "assets/images/system/settings/setting-qr-icon.svg",
               title: 'Misafir Katılımı İşaretle',
               description: 'QR kod veya manuel giriş',
               onTap: () => Navigator.push(
@@ -72,7 +73,7 @@ class EventManageScreen extends StatelessWidget {
           context,
           items: [
             _MenuItem(
-              icon: LucideIcons.lock,
+              iconPath: "assets/images/system/settings/setting-lock-icon.svg",
               title: 'Erişim',
               description: 'Gizlilik ve erişim ayarları',
               onTap: () => Navigator.push(
@@ -83,7 +84,8 @@ class EventManageScreen extends StatelessWidget {
               ),
             ),
             _MenuItem(
-              icon: LucideIcons.quote400,
+              iconPath:
+                  "assets/images/system/settings/setting-question-icon.svg",
               title: 'Kayıt Soruları',
               description: 'Katılımcılara sorulacak sorular',
               onTap: () => Navigator.push(
@@ -102,7 +104,7 @@ class EventManageScreen extends StatelessWidget {
           context,
           items: [
             _MenuItem(
-              icon: LucideIcons.circle400,
+              iconPath: "assets/images/system/settings/setting-delete-icon.svg",
               title: 'Etkinliği İptal Et',
               description: 'Bu işlem geri alınamaz',
               isDestructive: true,
@@ -122,8 +124,8 @@ class EventManageScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
-        borderRadius: BorderRadius.circular(16.r),
+        color: AppTheme.zinc200,
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Column(
         children: List.generate(items.length, (index) {
@@ -136,7 +138,7 @@ class EventManageScreen extends StatelessWidget {
               if (!isLast)
                 Padding(
                   padding: EdgeInsets.only(left: 56.w),
-                  child: Divider(height: 1, color: AppTheme.zinc300),
+                  child: Divider(height: 1, color: AppTheme.zinc400),
                 ),
             ],
           );
@@ -150,17 +152,13 @@ class EventManageScreen extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: item.onTap,
-        borderRadius: BorderRadius.circular(16.r),
+        borderRadius: BorderRadius.circular(18.r),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
           child: Row(
             children: [
-              Icon(
-                item.icon,
-                size: 24.sp,
-                color: item.isDestructive ? AppTheme.red800 : AppTheme.zinc800,
-              ),
-              SizedBox(width: 16.w),
+              SvgPicture.asset(item.iconPath, width: 32.sp, height: 32.sp),
+              SizedBox(width: 15.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,13 +168,14 @@ class EventManageScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
+                        height: 1.2,
                         color: item.isDestructive
                             ? AppTheme.red800
                             : AppTheme.black800,
                       ),
                     ),
                     if (item.description != null) ...[
-                      SizedBox(height: 4.h),
+                      SizedBox(height: 1.h),
                       Text(
                         item.description!,
                         style: TextStyle(
@@ -192,7 +191,7 @@ class EventManageScreen extends StatelessWidget {
               Icon(
                 LucideIcons.chevronRight,
                 size: 20.sp,
-                color: AppTheme.zinc400,
+                color: AppTheme.zinc600,
               ),
             ],
           ),
@@ -203,14 +202,14 @@ class EventManageScreen extends StatelessWidget {
 }
 
 class _MenuItem {
-  final IconData icon;
+  final String iconPath;
   final String title;
   final String? description;
   final VoidCallback onTap;
   final bool isDestructive;
 
   _MenuItem({
-    required this.icon,
+    required this.iconPath,
     required this.title,
     this.description,
     required this.onTap,

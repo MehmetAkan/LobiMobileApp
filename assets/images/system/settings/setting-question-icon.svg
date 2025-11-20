@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#245bc7"/>
+      <stop offset="1" stop-color="#0137a0"/>
+    </linearGradient>
+  </defs>
+  <g id="setting-question-icon" transform="translate(-2728 -1244)">
+    <rect id="Rectangle_2900" data-name="Rectangle 2900" width="40" height="40" rx="12" transform="translate(2728 1244)" fill="url(#linear-gradient)"/>
+    <g id="help-question-1--circle-faq-frame-help-info-mark-more-query-question" transform="translate(2735.565 1251.565)">
+      <path id="Ellipse_373" data-name="Ellipse 373" d="M0,12.435A12.435,12.435,0,1,0,12.435,0,12.435,12.435,0,0,0,0,12.435" fill="#fff"/>
+      <g id="Union" transform="translate(7.55 4.437)">
+        <path id="Path_9213" data-name="Path 9213" d="M6.915,7.387a2.22,2.22,0,1,1,2.22,2.22A1.332,1.332,0,0,0,7.8,10.94v1.148a1.332,1.332,0,0,0,2.665,0,4.887,4.887,0,1,0-6.217-4.7,1.332,1.332,0,0,0,2.665,0Z" transform="translate(-4.25 -2.498)" fill="#1249b3"/>
+      </g>
+      <g id="Union_2" transform="translate(10.658 16.876)">
+        <path id="Path_9214" data-name="Path 9214" d="M7.776,13.053A1.776,1.776,0,1,0,6,11.276,1.776,1.776,0,0,0,7.776,13.053Z" transform="translate(-6 -9.5)" fill="#154bb4"/>
+      </g>
+    </g>
+  </g>
+</svg>

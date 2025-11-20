@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ffb764"/>
+      <stop offset="1" stop-color="#ef8203"/>
+    </linearGradient>
+  </defs>
+  <g id="setting-user-icon" transform="translate(-2728 -1244)">
+    <rect id="Rectangle_2900" data-name="Rectangle 2900" width="40" height="40" rx="12" transform="translate(2728 1244)" fill="url(#linear-gradient)"/>
+    <g id="user-podcast--human-person-share-signal-transmit-user" transform="translate(2734.126 1250.126)">
+      <path id="Union" d="M20.732,24.226a5.182,5.182,0,1,0-5.277,0A7.741,7.741,0,0,0,10.9,30.118a1.429,1.429,0,0,0,1.258,1.751,47.436,47.436,0,0,0,5.935.268,47.436,47.436,0,0,0,5.935-.268,1.429,1.429,0,0,0,1.258-1.751A7.74,7.74,0,0,0,20.732,24.226Z" transform="translate(-4.219 -5.889)" fill="#fff"/>
+      <path id="Ellipse_172_Stroke_" data-name="Ellipse 172 (Stroke)" d="M13.874,5.509A8.412,8.412,0,0,0,6.442,17.732a1.307,1.307,0,0,1-.027,1.441,3.92,3.92,0,0,1-1.971,1.274,1.294,1.294,0,0,1-1.479-.679,12.375,12.375,0,1,1,21.818,0,1.291,1.291,0,0,1-1.479.678,3.917,3.917,0,0,1-1.971-1.274,1.307,1.307,0,0,1-.027-1.44A8.411,8.411,0,0,0,13.874,5.509Z" transform="translate(0 0)" fill="#fff" fill-rule="evenodd" opacity="0.7"/>
+    </g>
+  </g>
+</svg>
