@@ -14,7 +14,7 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: _getBackgroundColor(),
         borderRadius: BorderRadius.circular(20.r),
@@ -23,7 +23,7 @@ class StatusBadge extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: 14.sp,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           color: _getTextColor(),
         ),
       ),
@@ -31,6 +31,21 @@ class StatusBadge extends StatelessWidget {
   }
 
   Color _getBackgroundColor() {
+    switch (type) {
+      case BadgeType.green:
+        return AppTheme.green100;
+      case BadgeType.red:
+        return AppTheme.red100;
+      case BadgeType.orange:
+        return AppTheme.orange100;
+      case BadgeType.purple:
+        return AppTheme.purple100;
+      case BadgeType.black:
+        return AppTheme.zinc200;
+    }
+  }
+
+  Color _getTextColor() {
     switch (type) {
       case BadgeType.green:
         return AppTheme.green900;
@@ -41,22 +56,7 @@ class StatusBadge extends StatelessWidget {
       case BadgeType.purple:
         return AppTheme.purple900;
       case BadgeType.black:
-        return AppTheme.zinc900;
-    }
-  }
-
-  Color _getTextColor() {
-    switch (type) {
-      case BadgeType.green:
-        return AppTheme.white;
-      case BadgeType.red:
-        return AppTheme.white;
-      case BadgeType.orange:
-        return AppTheme.white;
-      case BadgeType.purple:
-        return AppTheme.white;
-      case BadgeType.black:
-        return AppTheme.white;
+        return AppTheme.zinc800;
     }
   }
 }

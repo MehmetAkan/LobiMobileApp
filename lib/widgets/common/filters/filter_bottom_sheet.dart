@@ -42,7 +42,12 @@ class FilterBottomSheet extends StatelessWidget {
         color: AppTheme.getSwitchBg(context),
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      padding: EdgeInsets.symmetric(vertical: 20.h),
+      padding: EdgeInsets.only(
+        top: 20.h,
+        left: 10.w,
+        right: 10.w,
+        bottom: 10.h,
+      ),
       child: SafeArea(
         top: false,
         child: Column(
