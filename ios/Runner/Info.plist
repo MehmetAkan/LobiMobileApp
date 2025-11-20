@@ -45,29 +45,35 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	
-	<!-- BURAYI true YAPMANIZ GEREKIYOR -->
+
+	<!-- Flutter için deep linking -->
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
-		<!-- Galeri Izinleri -->
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Etkinlik kapak fotoğrafı seçmek için galeri erişimi gerekiyor</string>
 
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>Seçilen fotoğrafları kaydetmek için galeri erişimi gerekiyor</string>
+	<!-- Galeri izinleri -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Etkinlik kapak fotoğrafı seçmek için galeri erişimi gerekiyor</string>
 
-<key>NSCameraUsageDescription</key>
-<string>Etkinlik kapak fotoğrafı çekmek için kamera erişimi gerekiyor</string>
-  <!-- Konum izinleri -->
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>
-    
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>
-    
-    <!-- Google Maps için gerekli -->
-    <key>io.flutter.embedded_views_preview</key>
-    <true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Seçilen fotoğrafları kaydetmek için galeri erişimi gerekiyor</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Etkinlik kapak fotoğrafı çekmek için kamera erişimi gerekiyor</string>
+
+	<!-- Konum izinleri -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Yakınınızdaki etkinlikleri göstermek için konumunuza ihtiyacımız var</string>
+
+	<!-- Google Maps için gerekli (Flutter'da platform view) -->
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+
+	<!-- Google Maps API key -->
+	<key>GMSApiKey</key>
+	<string>YOUR_IOS_GOOGLE_MAPS_API_KEY</string>
 
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -82,7 +88,7 @@
 			</array>
 		</dict>
 	</array>
-	
+
 	<!-- LSApplicationQueriesSchemes'i kaldırın, kendi scheme'inizi query etmenize gerek yok -->
 </dict>
 </plist>
