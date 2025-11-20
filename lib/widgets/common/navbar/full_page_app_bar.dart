@@ -24,7 +24,13 @@ class FullPageAppBar extends StatefulWidget {
   /// AppBar stili
   final AppBarStyle style;
 
-  /// Sağ taraf aksiyon butonları
+  /// Sağ taraf aksiyon butonu ikonu
+  final IconData? actionIcon;
+
+  /// Sağ taraf aksiyon butonu tıklama olayı
+  final VoidCallback? onActionTap;
+
+  /// Sağ taraf aksiyon butonları (Custom)
   final List<Widget>? actions;
 
   /// Custom geri button callback (null ise Navigator.pop kullanır)
@@ -44,6 +50,8 @@ class FullPageAppBar extends StatefulWidget {
     required this.title,
     this.scrollController,
     this.style = AppBarStyle.dark,
+    this.actionIcon,
+    this.onActionTap,
     this.actions,
     this.onBackPressed,
     this.height,
@@ -256,7 +264,7 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   Color _getButtonTextColor(BuildContext context) {
     switch (widget.style) {
       case AppBarStyle.dark:
-        return AppTheme.getAppBarButtonBorder(context);
+        return AppTheme.getAppBarTextColor(context);
       case AppBarStyle.secondary:
         return AppTheme.getAppBarTextColorSecondary(context);
     }
@@ -355,7 +363,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
           ),
 
           // Sağ - Aksiyon Butonları (Dinamik)
-          if (widget.actions != null && widget.actions!.isNotEmpty)
+          if (widget.actionIcon != null)
+            _buildActionButton(context)
+          else if (widget.actions != null && widget.actions!.isNotEmpty)
             Row(mainAxisSize: MainAxisSize.min, children: widget.actions!)
           else
             // Boşluk dengesi için
@@ -402,6 +412,38 @@ class _FullPageAppBarState extends State<FullPageAppBar>
             child: Center(
               child: Icon(
                 LucideIcons.chevronLeft400,
+                size: 22.sp,
+                color: _getButtonTextColor(context),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    return SizedBox(
+      width: 40.w,
+      height: 40.w,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: widget.onActionTap,
+          customBorder: const CircleBorder(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: _getButtonBgColor(context),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _getButtonBorderColor(context),
+                width: 1,
+              ),
+            ),
+            child: Center(
+              child: Icon(
+                widget.actionIcon,
                 size: 22.sp,
                 color: _getButtonTextColor(context),
               ),

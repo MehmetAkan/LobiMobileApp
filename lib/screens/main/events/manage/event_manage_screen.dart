@@ -19,7 +19,6 @@ class EventManageScreen extends StatelessWidget {
     return StandardPage(
       title: 'Etkinliği Yönet',
       children: [
-        // 1. Grup: Etkinlik Detayları
         _buildMenuGroup(
           context,
           items: [
@@ -37,8 +36,6 @@ class EventManageScreen extends StatelessWidget {
           ],
         ),
         SizedBox(height: 20.h),
-
-        // 2. Grup: Katılımcı Yönetimi
         _buildMenuGroup(
           context,
           items: [
@@ -67,8 +64,6 @@ class EventManageScreen extends StatelessWidget {
           ],
         ),
         SizedBox(height: 20.h),
-
-        // 3. Grup: Ayarlar
         _buildMenuGroup(
           context,
           items: [
@@ -98,8 +93,6 @@ class EventManageScreen extends StatelessWidget {
           ],
         ),
         SizedBox(height: 20.h),
-
-        // 4. Grup: İptal
         _buildMenuGroup(
           context,
           items: [
@@ -124,8 +117,9 @@ class EventManageScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc200,
+        color: AppTheme.zinc100,
         borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppTheme.zinc200),
       ),
       child: Column(
         children: List.generate(items.length, (index) {

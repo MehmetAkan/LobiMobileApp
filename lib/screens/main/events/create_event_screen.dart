@@ -155,7 +155,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
   Future<void> _submitCreateEvent() async {
     // Provider'ı çağırmadan önce 'ref.read' kullanarak
     // CreateEventController'ın notifier'ına erişiyoruz.
-   final String coverImageUrlToSave = _coverPhotoUrl ?? _initialCoverAsset;
+    final String coverImageUrlToSave = _coverPhotoUrl ?? _initialCoverAsset;
 
     final bool success = await ref
         .read(createEventControllerProvider.notifier)
@@ -182,7 +182,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Provider'ın durumunu (loading, error, data) dinle
     ref.listen<AsyncValue<void>>(createEventControllerProvider, (
       previous,
       next,
@@ -394,8 +393,8 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
     return Padding(
       padding: EdgeInsets.only(left: 10.w),
       child: SizedBox(
-        width: 45.w,
-        height: 45.w,
+        width: 40.w,
+        height: 40.w,
         child: Material(
           color: Colors.transparent,
           shape: const CircleBorder(),
@@ -425,7 +424,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                       )
                     : Icon(
                         LucideIcons.check400,
-                        size: 25.sp,
+                        size: 22.sp,
                         color: AppTheme.getAppBarButtonColor(context),
                       ),
               ),

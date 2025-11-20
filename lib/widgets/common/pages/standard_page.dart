@@ -6,14 +6,16 @@ import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
 class StandardPage extends StatefulWidget {
   final String title;
   final List<Widget> children;
-  final List<Widget>? actions;
+  final IconData? actionIcon;
+  final VoidCallback? onActionTap;
   final bool isScrollable;
 
   const StandardPage({
     super.key,
     required this.title,
     required this.children,
-    this.actions,
+    this.actionIcon,
+    this.onActionTap,
     this.isScrollable = true,
   });
 
@@ -47,8 +49,8 @@ class _StandardPageState extends State<StandardPage> {
             controller: _scrollController,
             padding: EdgeInsets.only(
               top: 120.h, // AppBar altı boşluk
-              left: 20.w,
-              right: 20.w,
+              left: 15.w,
+              right: 15.w,
               bottom: 40.h,
             ),
             physics: widget.isScrollable
@@ -61,7 +63,8 @@ class _StandardPageState extends State<StandardPage> {
           FullPageAppBar(
             title: widget.title,
             scrollController: _scrollController,
-            actions: widget.actions,
+            actionIcon: widget.actionIcon,
+            onActionTap: widget.onActionTap,
             style: AppBarStyle.secondary,
           ),
         ],

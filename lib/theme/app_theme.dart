@@ -23,6 +23,8 @@ class AppTheme {
   static const Color red800 = Color(0xFFE00303);
   static const Color red900 = Color(0xFFCB0200);
   static const Color orange900 = Color(0xFFE29300);
+  static const Color blue100 = Color(0xFFE0F2FE);
+  static const Color blue800 = Color(0xFF075985);
   static const Color black800 = Color(0xFF090A0A);
   static const Color backgroundLight = Color.fromARGB(255, 255, 255, 255);
   static const Color backgroundDark = Color(0xFF090A0A);
@@ -211,7 +213,7 @@ class AppTheme {
 
   static Color getAppBarButtonBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
-        ? dark_zinc600
+        ? white
         : black800.withOpacity(0.2);
   }
 
