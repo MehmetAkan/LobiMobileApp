@@ -101,9 +101,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     },
                   ),
                 ),
-                SizedBox(height: 20.h),
-
-                // DİKEY LİSTE - "Bu haftakiler" (GERÇEK VERİ)
+                SizedBox(height: 10.h),
                 EventsSection(
                   title: 'Bu haftakiler',
                   onSeeAll: () {

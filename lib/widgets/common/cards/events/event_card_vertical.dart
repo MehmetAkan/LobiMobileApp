@@ -28,7 +28,7 @@ class EventCardVertical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = 16.r;
+    final borderRadius = 20.r;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -38,7 +38,7 @@ class EventCardVertical extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                 borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+                borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
                 child: AspectRatio(
                   aspectRatio: 4 / 3,
                   child: AppImage(
@@ -85,7 +85,7 @@ class EventCardVertical extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.getTextHeadColor(context),
                     height: 1.2,

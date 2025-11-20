@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+
 class EventsSection extends StatelessWidget {
   final String title;
   final String? subtitle;
@@ -44,8 +45,8 @@ class EventsSection extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
+            fontSize: 22.sp,
+            fontWeight: FontWeight.w700,
             color: AppTheme.getTextHeadColor(context),
             height: 1.1,
           ),
@@ -53,7 +54,7 @@ class EventsSection extends StatelessWidget {
         if (hasTap) ...[
           SizedBox(width: 4.w),
           Icon(
-           LucideIcons.chevronRight400,
+            LucideIcons.chevronRight400,
             size: 20.sp,
             color: AppTheme.getTextHeadColor(context),
           ),

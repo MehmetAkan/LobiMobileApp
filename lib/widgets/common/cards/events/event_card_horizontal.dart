@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
+
 class EventCardHorizontal extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -34,7 +35,7 @@ class EventCardHorizontal extends StatelessWidget {
     this.onLikeTap,
     this.width = 200,
     this.height = 150,
-    this.borderRadius = 12,
+    this.borderRadius = 20,
     this.showAttendeeCount = false,
     this.showLikeButton = true,
   });
@@ -57,31 +58,31 @@ class EventCardHorizontal extends StatelessWidget {
     );
   }
 
-Widget _buildImage() {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(borderRadius.r),
-    child: AppImage(
-      path: imageUrl,
-      // İstersen özel fallback de verebilirsin:
-      // fallbackPath: 'assets/images/system/events_cover/events_cover_1.jpg',
-      width: width?.w,
-      height: height?.h,
-      fit: BoxFit.cover,
-      placeholder: Container(
+  Widget _buildImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius.r),
+      child: AppImage(
+        path: imageUrl,
+        // İstersen özel fallback de verebilirsin:
+        // fallbackPath: 'assets/images/system/events_cover/events_cover_1.jpg',
         width: width?.w,
         height: height?.h,
-        color: AppTheme.zinc200,
-        child: const Center(
-          child: SizedBox(
-            width: 18,
-            height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2),
+        fit: BoxFit.cover,
+        placeholder: Container(
+          width: width?.w,
+          height: height?.h,
+          color: AppTheme.zinc200,
+          child: const Center(
+            child: SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildLikeButton() {
     return Positioned(
