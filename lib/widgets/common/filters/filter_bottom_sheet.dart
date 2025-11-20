@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/filters/filter_option.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Genel kullanılabilir filter bottom sheet widget'ı
 /// Herhangi bir sayfada filter seçenekleri göstermek için kullanılabilir
@@ -37,74 +38,91 @@ class FilterBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.getSwitchBg(context),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      padding: EdgeInsets.only(
-        top: 20.h,
-        left: 10.w,
-        right: 10.w,
-        bottom: 10.h,
-      ),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle bar
-            Container(
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: AppTheme.getSwitchText(context).withOpacity(0.3),
-                borderRadius: BorderRadius.circular(2.r),
-              ),
-            ),
-            SizedBox(height: 20.h),
+    return Padding(
+      padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.getSwitchBg(context),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30.r),
+            topLeft: Radius.circular(30.r),
+            bottomLeft: Radius.circular(45.r),
+            bottomRight: Radius.circular(45.r),
+          ),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header (Title + Close Button)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Centered Title
+                    Text(
+                      'Filtrele',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.getTextHeadColor(context),
+                      ),
+                    ),
 
-            // Title
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Filtrele',
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.getTextHeadColor(context),
-                  ),
+                    // Close Button (Right)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 40.w,
+                          height: 40.w,
+                          decoration: BoxDecoration(
+                            color: AppTheme.getModalButtonBg(context),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            LucideIcons.x,
+                            size: 20.sp,
+                            color: AppTheme.getModalButtonText(context),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: options.length,
-              separatorBuilder: (context, index) => Divider(
-                height: 2.h,
-                thickness: 1.h,
-                color: AppTheme.getSwitchActive(context),
-              ),
-              itemBuilder: (context, index) {
-                final option = options[index];
-                final isSelected = option.id == selectedOption.id;
+              SizedBox(height: 20.h),
 
-                return _FilterOptionTile(
-                  option: option,
-                  isSelected: isSelected,
-                  onTap: () {
-                    onOptionSelected(option);
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            ),
-            SizedBox(height: 10.h),
-          ],
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: options.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 2.h,
+                  thickness: 1.h,
+                  color: AppTheme.getSwitchActive(context),
+                ),
+                itemBuilder: (context, index) {
+                  final option = options[index];
+                  final isSelected = option.id == selectedOption.id;
+
+                  return _FilterOptionTile(
+                    option: option,
+                    isSelected: isSelected,
+                    onTap: () {
+                      onOptionSelected(option);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+              SizedBox(height: 10.h),
+            ],
+          ),
         ),
       ),
     );

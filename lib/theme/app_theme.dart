@@ -273,6 +273,18 @@ class AppTheme {
         : white.withOpacity(0.6);
   }
 
+  static Color getModalButtonBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc700
+        : zinc200;
+  }
+
+  static Color getModalButtonText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : black800;
+  }
+
   static Color getEventFieldText(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? white : white;
   }

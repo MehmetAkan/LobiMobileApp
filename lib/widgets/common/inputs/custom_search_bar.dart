@@ -18,30 +18,30 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 44.h,
+      height: 45.h,
       decoration: BoxDecoration(
         color: AppTheme.zinc200,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(15.r),
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
         style: TextStyle(
-          fontSize: 14.sp,
+          fontSize: 16.sp,
           color: AppTheme.black800,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(
-            fontSize: 14.sp,
-            color: AppTheme.zinc600,
-            fontWeight: FontWeight.w400,
+            fontSize: 15.sp,
+            color: AppTheme.zinc700,
+            fontWeight: FontWeight.w500,
           ),
           prefixIcon: Icon(
             LucideIcons.search,
             size: 20.sp,
-            color: AppTheme.zinc600,
+            color: AppTheme.zinc700,
           ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
