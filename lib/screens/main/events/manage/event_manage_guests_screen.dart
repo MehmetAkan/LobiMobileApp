@@ -10,6 +10,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:lobi_application/widgets/common/filters/filter_bottom_sheet.dart';
 import 'package:lobi_application/widgets/common/filters/filter_option.dart';
+import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
+import 'package:lobi_application/theme/app_theme.dart';
 
 class EventManageGuestsScreen extends StatefulWidget {
   const EventManageGuestsScreen({super.key});
@@ -100,20 +102,182 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
             return const SizedBox.shrink();
         }
 
-        return GuestListItem(
-          profileImageUrl:
-              'https://i.pravatar.cc/150?u=${index + 100}', // Random image
-          fullName: 'Kullanıcı Adı $index',
-          username: 'kullanici$index',
-          statusText: _getStatusText(index),
-          statusType: _getStatusType(index),
+        final fullName = 'Kullanıcı Adı $index';
+        final profileImageUrl = 'https://i.pravatar.cc/150?u=${index + 100}';
+
+        return InkWell(
+          onTap: () => _showGuestModal(context, fullName, profileImageUrl),
+          child: GuestListItem(
+            profileImageUrl: profileImageUrl, // Random image
+            fullName: fullName,
+            username: 'kullanici$index',
+            statusText: _getStatusText(index),
+            statusType: _getStatusType(index),
+          ),
         );
       }),
     );
   }
 
+  void _showGuestModal(
+    BuildContext context,
+    String fullName,
+    String profileImageUrl,
+  ) {
+    CustomModalSheet.show(
+      context: context,
+      showDivider: true,
+      headerLeft: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 22.5.r, // 45px diameter
+            backgroundImage: NetworkImage(profileImageUrl),
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            fullName,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.getTextHeadColor(context),
+            ),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Username Column
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Kullanıcı Adı',
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.zinc600,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  '@kullanici', // TODO: Pass actual username
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.getTextHeadColor(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Status Column
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Durum',
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.zinc600,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  'Katılacak', // TODO: Pass actual status
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.getTextHeadColor(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      footer: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.white,
+                foregroundColor: AppTheme.black800,
+                padding: EdgeInsets.symmetric(vertical: 15.h),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+                side: BorderSide(color: AppTheme.zinc400, width: 1),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    LucideIcons.badgeAlert400,
+                    size: 18.sp,
+                    color: AppTheme.black800,
+                  ),
+                  SizedBox(width: 5.w),
+                  Text(
+                    'Katılmadı',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 5.w),
+          Expanded(
+            flex: 5,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.black800,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 15.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    LucideIcons.badgeCheck400,
+                    size: 18.sp,
+                    color: AppTheme.white,
+                  ),
+                  SizedBox(width: 5.w),
+                  Text(
+                    'Katıldı',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   String _getStatusText(int index) {
-    // Mock status text based on index to simulate mixed list
     final mod = index % 4;
     switch (mod) {
       case 0:
