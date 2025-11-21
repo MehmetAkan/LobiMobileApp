@@ -40,7 +40,6 @@ class EventCardVertical extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Kullanıcı bilgisi
             Row(
               children: [
                 ClipRRect(
@@ -67,8 +66,6 @@ class EventCardVertical extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10.w),
-
-            // Etkinlik görseli
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: AspectRatio(
@@ -88,12 +85,9 @@ class EventCardVertical extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10.w),
-
-            // İçerik kısmı
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Başlık
                 Text(
                   title,
                   style: AppTextStyles.cardTitle.copyWith(
@@ -103,53 +97,35 @@ class EventCardVertical extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 8.h),
-
-                // Tarih ve Saat - İlk satır
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      LucideIcons.clock400,
-                      size: 16.sp,
-                      color: AppTheme.getEventIconColor(context),
-                    ),
-                    SizedBox(width: 5.w),
                     Text(
-                      dateTime != null
-                          ? dateTime
-                                .toShortDateTime() // "5 Kas - 14:30"
-                          : date,
+                      dateTime != null ? dateTime.toShortDateTime() : date,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.getEventIconTextColor(context),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-
-                // Konum - İkinci satır
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.mapPin400,
-                      size: 16.sp,
-                      color: AppTheme.getEventIconColor(context),
-                    ),
-                    SizedBox(width: 5.w),
-                    Expanded(
-                      child: Text(
-                        location,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.getEventIconTextColor(context),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    SizedBox(width: 5.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.zinc500,
+                        shape: BoxShape.circle,
                       ),
+                      height: 5.h,
+                      width: 5.h,
+                    ),
+                    SizedBox(width: 5.h),
+                    Text(
+                      location,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.getEventIconTextColor(context),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

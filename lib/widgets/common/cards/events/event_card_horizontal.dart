@@ -35,7 +35,7 @@ class EventCardHorizontal extends StatelessWidget {
     this.onLikeTap,
     this.width = 200,
     this.height = 150,
-    this.borderRadius = 20,
+    this.borderRadius = 15,
     this.showAttendeeCount = false,
     this.showLikeButton = true,
   });

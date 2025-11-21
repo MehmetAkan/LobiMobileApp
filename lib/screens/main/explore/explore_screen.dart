@@ -64,7 +64,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                         activeDate = date;
                       });
                     },
-                    // ✅ DEĞİŞİKLİK: Navigator.push ekledik
                     onEventTap: (event) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
