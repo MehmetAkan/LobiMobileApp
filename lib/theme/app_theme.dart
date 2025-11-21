@@ -51,6 +51,12 @@ class AppTheme {
     return Theme.of(context).brightness == Brightness.dark ? white : black800;
   }
 
+  static Color getTextNavigationColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc700;
+  }
+
   static Color getButtonIconBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
@@ -66,7 +72,7 @@ class AppTheme {
   static Color getNavbarBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : zinc100;
+        : zinc200;
   }
 
   static Color getNavbarDateDescText(BuildContext context) {

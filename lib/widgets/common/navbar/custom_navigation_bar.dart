@@ -14,7 +14,7 @@ class CustomNavigationBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     this.height,
-    this.blurAmount = 3,
+    this.blurAmount = 1,
   });
 
   @override
@@ -28,16 +28,18 @@ class CustomNavigationBar extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppTheme.getnNavigationBg(context).withOpacity(0),
-              AppTheme.getnNavigationBg(context).withOpacity(0.5),
-              AppTheme.getnNavigationBg(context).withOpacity(1),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 0.01),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 0.05),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 0.1),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 0.5),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 1),
             ],
           ),
-          border: Border(
-            top: BorderSide(color: AppTheme.getNavbarBorder(context), width: 1),
-          ),
+          // border: Border(
+          //   top: BorderSide(color: AppTheme.getNavbarBorder(context), width: 0),
+          // ),
         ),
-        padding: EdgeInsets.only(bottom: 20, top: 0, left: 20, right: 20),
+        padding: EdgeInsets.only(bottom: 20, top: 10, left: 20, right: 20),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blurAmount, sigmaY: blurAmount),
           child: Container(
@@ -48,23 +50,21 @@ class CustomNavigationBar extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppTheme.getnNavigationBg(context).withOpacity(0.2),
-                  AppTheme.getnNavigationBg(context).withOpacity(0.5),
-                  AppTheme.getnNavigationBg(context).withOpacity(1),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.7),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.8),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.9),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 1),
                 ],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.zinc800.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
+                  color: AppTheme.zinc400.withValues(alpha: 0.5),
+                  blurRadius: 5,
+                  offset: const Offset(0, 7),
                 ),
               ],
               border: Border(
-                top: BorderSide(
-                  color: AppTheme.getNavbarBorder(context),
-                  width: 1.5,
-                ),
+                top: BorderSide(color: AppTheme.zinc200, width: 1),
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
@@ -104,13 +104,6 @@ class CustomNavigationBar extends StatelessWidget {
                             color: AppTheme.getNavbarBtnBorder(context),
                             width: 0.8,
                           ),
-                          // boxShadow: [
-                          //   BoxShadow(
-                          //     color: AppTheme.dark_zinc800.withOpacity(0.1),
-                          //     blurRadius: 10,
-                          //     offset: const Offset(0, 3),
-                          //   ),
-                          // ],
                         ),
                       ),
                     ),
@@ -209,12 +202,12 @@ class CustomNavigationBar extends StatelessWidget {
               child: SvgPicture.asset(
                 isActive ? activeIcon : inactiveIcon,
                 key: ValueKey('$index-$isActive'),
-                width: 24.w,
-                height: 24.w,
+                width: 22.w,
+                height: 22.h,
                 colorFilter: ColorFilter.mode(
                   isActive
                       ? AppTheme.purple900
-                      : AppTheme.getTextDescColor(context),
+                      : AppTheme.getTextNavigationColor(context),
                   BlendMode.srcIn,
                 ),
               ),
@@ -225,10 +218,11 @@ class CustomNavigationBar extends StatelessWidget {
               curve: Curves.easeInOut,
               style: TextStyle(
                 fontSize: 13.sp,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                letterSpacing: -0.20,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
                 color: isActive
                     ? AppTheme.purple900
-                    : AppTheme.getTextDescColor(context),
+                    : AppTheme.getTextNavigationColor(context),
                 height: 1.2,
               ),
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),

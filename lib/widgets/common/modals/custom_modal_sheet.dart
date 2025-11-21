@@ -104,7 +104,7 @@ class CustomModalSheet extends StatelessWidget {
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              LucideIcons.x,
+                              LucideIcons.x400,
                               size: 20.sp,
                               color: AppTheme.getModalButtonText(context),
                             ),

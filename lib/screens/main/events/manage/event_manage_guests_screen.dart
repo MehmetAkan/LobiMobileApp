@@ -105,8 +105,9 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
         final fullName = 'Kullanıcı Adı $index';
         final profileImageUrl = 'https://i.pravatar.cc/150?u=${index + 100}';
 
-        return InkWell(
+        return GestureDetector(
           onTap: () => _showGuestModal(context, fullName, profileImageUrl),
+          behavior: HitTestBehavior.opaque,
           child: GuestListItem(
             profileImageUrl: profileImageUrl, // Random image
             fullName: fullName,
@@ -209,21 +210,21 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.white,
-                foregroundColor: AppTheme.black800,
+                foregroundColor: AppTheme.red900,
                 padding: EdgeInsets.symmetric(vertical: 15.h),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25.r),
                 ),
-                side: BorderSide(color: AppTheme.zinc400, width: 1),
+                side: BorderSide(color: AppTheme.zinc300, width: 1),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    LucideIcons.badgeAlert400,
+                    LucideIcons.circleX400,
                     size: 18.sp,
-                    color: AppTheme.black800,
+                    color: AppTheme.red900,
                   ),
                   SizedBox(width: 5.w),
                   Text(
