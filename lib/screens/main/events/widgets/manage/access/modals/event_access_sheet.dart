@@ -5,13 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class EventModalSheet extends StatelessWidget {
+class EventAccessModalSheet extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
   final List<Widget> children;
 
-  const EventModalSheet({
+  const EventAccessModalSheet({
     super.key,
     required this.icon,
     required this.title,
@@ -25,92 +25,96 @@ class EventModalSheet extends StatelessWidget {
     final viewInsets = MediaQuery.of(context).viewInsets;
 
     return AnimatedPadding(
-      padding: EdgeInsets.only(bottom: viewInsets.bottom),
+      padding: EdgeInsets.only(
+        left: 5.w,
+        right: 5.w,
+        bottom: 5.h + viewInsets.bottom,
+      ),
       duration: const Duration(milliseconds: 200),
       curve: Curves.decelerate,
-      child: ClipRRect(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppTheme.white.withOpacity(0.10),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: SingleChildScrollView(
-                // Klavye açılınca içerik kayabilsin
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 15.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildIconButton(context, icon, onTap: null),
-                          _buildIconButton(
-                            context,
-                            LucideIcons.x400,
-                            onTap: () => Navigator.of(context).pop(),
-                          ),
-                        ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.getSwitchBg(context),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30.r),
+            topLeft: Radius.circular(30.r),
+            bottomLeft: Radius.circular(45.r),
+            bottomRight: Radius.circular(45.r),
+          ),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            // Klavye açılınca içerik kayabilsin
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 15.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildIconButton(context, icon, onTap: null),
+                      _buildIconButton(
+                        context,
+                        LucideIcons.x400,
+                        onTap: () => Navigator.of(context).pop(),
                       ),
-                    ),
-
-                    // Title + Description
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.white,
-                              height: 1.2,
-                            ),
-                          ),
-                          SizedBox(height: 5.h),
-                          Text(
-                            description,
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.white.withOpacity(0.7),
-                              height: 1.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 20.h),
-
-                    // Content
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.getEventFieldBg(context),
-                          borderRadius: BorderRadius.circular(25.r),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: children,
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 30.h),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+
+                // Title + Description
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.black800,
+                          height: 1.2,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        description,
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppTheme.black800.withValues(alpha: 0.5),
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 20.h),
+
+                // Content
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.zinc200,
+                      borderRadius: BorderRadius.circular(25.r),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: children,
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 30.h),
+              ],
             ),
           ),
         ),
@@ -134,15 +138,11 @@ class EventModalSheet extends StatelessWidget {
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.getAppBarButtonBg(context),
+              color: AppTheme.zinc200,
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(
-                iconData,
-                size: 22.sp,
-                color: AppTheme.getEventFieldPlaceholder(context),
-              ),
+              child: Icon(iconData, size: 22.sp, color: AppTheme.zinc700),
             ),
           ),
         ),
@@ -151,14 +151,14 @@ class EventModalSheet extends StatelessWidget {
   }
 }
 
-class EventModalOption extends StatelessWidget {
+class EventModalAccessOption extends StatelessWidget {
   final bool isSelected;
   final String title;
   final String description;
   final VoidCallback onTap;
   final bool showDivider;
 
-  const EventModalOption({
+  const EventModalAccessOption({
     super.key,
     required this.isSelected,
     required this.title,
@@ -187,20 +187,20 @@ class EventModalOption extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? AppTheme.white
+                          ? AppTheme.zinc300
                           : AppTheme.getEventFieldPlaceholder(
                               context,
                             ).withOpacity(0.3),
                       width: 2,
                     ),
-                    color: isSelected ? AppTheme.white : Colors.transparent,
+                    color: isSelected ? AppTheme.black800 : AppTheme.zinc400,
                   ),
                   child: isSelected
                       ? Center(
                           child: Icon(
                             LucideIcons.check600,
                             size: 16.sp,
-                            color: AppTheme.black800,
+                            color: AppTheme.white,
                           ),
                         )
                       : null,
@@ -217,8 +217,8 @@ class EventModalOption extends StatelessWidget {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: isSelected
-                              ? AppTheme.white
-                              : AppTheme.white.withOpacity(0.9),
+                              ? AppTheme.black800
+                              : AppTheme.black800,
                           height: 1.2,
                         ),
                       ),
@@ -228,7 +228,7 @@ class EventModalOption extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppTheme.white.withOpacity(0.7),
+                          color: AppTheme.black800.withValues(alpha: 0.6),
                           height: 1.3,
                         ),
                       ),
@@ -242,11 +242,7 @@ class EventModalOption extends StatelessWidget {
         if (showDivider)
           Padding(
             padding: EdgeInsets.only(left: 20.w + 24.sp + 12.w),
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: AppTheme.white.withOpacity(0.1),
-            ),
+            child: Divider(height: 1, thickness: 1, color: AppTheme.zinc300),
           ),
       ],
     );

@@ -47,7 +47,6 @@ class CustomModalSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Handle keyboard overlap
     final viewInsets = MediaQuery.of(context).viewInsets;
 
     return AnimatedPadding(
