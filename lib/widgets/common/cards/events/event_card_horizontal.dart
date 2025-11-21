@@ -63,8 +63,6 @@ class EventCardHorizontal extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius.r),
       child: AppImage(
         path: imageUrl,
-        // İstersen özel fallback de verebilirsin:
-        // fallbackPath: 'assets/images/system/events_cover/events_cover_1.jpg',
         width: width?.w,
         height: height?.h,
         fit: BoxFit.cover,

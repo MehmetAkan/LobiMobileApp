@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
+import 'package:lobi_application/core/utils/date_extensions.dart';
 
 class EventCardVertical extends StatelessWidget {
   final String imageUrl;
   final String title;
-  final String date; // Biz bunu saat olarak kullanıyorduk
+  final String date; // Tarih string formatında (ISO 8601)
   final String location;
   final int attendeeCount;
   final bool isLiked;
@@ -28,156 +30,133 @@ class EventCardVertical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = 20.r;
+    // Date string'i DateTime'a çevir
+    final DateTime? dateTime = DateTime.tryParse(date);
+
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
-                child: AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: AppImage(
-                    path: imageUrl,
-                    // İstersen genel bir fallback asset de verebilirsin:
-                    // fallbackPath: 'assets/images/system/events_cover/events_cover_1.jpg',
-                    fit: BoxFit.cover,
-                    placeholder: Container(
-                      color: AppTheme.zinc300,
-                      child: Icon(
-                        LucideIcons.image,
-                        size: 32.sp,
-                        color: AppTheme.zinc600,
-                      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15, right: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Kullanıcı bilgisi
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: SizedBox(
+                    width: 30.w,
+                    height: 30.w,
+                    child: AppImage(
+                      path: 'https://i.pravatar.cc/150?u=1',
+                      fit: BoxFit.cover,
+                      placeholder: Container(color: AppTheme.zinc300),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 5.w),
+                Text(
+                  'Mehmet Akan', // Şimdilik sabit
+                  style: AppTextStyles.titleSM.copyWith(
+                    color: AppTheme.getTextHeadColor(context),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+            SizedBox(height: 10.w),
+
+            // Etkinlik görseli
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: AspectRatio(
+                aspectRatio: 4 / 3,
+                child: AppImage(
+                  path: imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: Container(
+                    color: AppTheme.zinc300,
+                    child: Icon(
+                      LucideIcons.image,
+                      size: 32.sp,
+                      color: AppTheme.zinc600,
                     ),
                   ),
                 ),
               ),
+            ),
+            SizedBox(height: 10.w),
 
-              if (showLikeButton)
-                Positioned(
-                  top: 8.h,
-                  right: 8.w,
-                  child: Container(
-                    padding: EdgeInsets.all(6.w),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.35),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      isLiked ? LucideIcons.heart : LucideIcons.heartHandshake,
-                      size: 18.sp,
-                      color: isLiked ? Colors.redAccent : Colors.white,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 0),
-            child: Column(
+            // İçerik kısmı
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Başlık
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.cardTitle.copyWith(
                     color: AppTheme.getTextHeadColor(context),
-                    height: 1.2,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 8.h),
+
+                // Tarih ve Saat - İlk satır
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Avatar
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(999),
-                      child: Container(
-                        width: 22.w,
-                        height: 22.w,
-                        color: AppTheme.zinc300,
+                    Icon(
+                      LucideIcons.clock400,
+                      size: 16.sp,
+                      color: AppTheme.getEventIconColor(context),
+                    ),
+                    SizedBox(width: 5.w),
+                    Text(
+                      dateTime != null
+                          ? dateTime
+                                .toShortDateTime() // "5 Kas - 14:30"
+                          : date,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.getEventIconTextColor(context),
                       ),
                     ),
-                    SizedBox(width: 4.w),
-                    Flexible(
+                  ],
+                ),
+                SizedBox(height: 4.h),
+
+                // Konum - İkinci satır
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      LucideIcons.mapPin400,
+                      size: 16.sp,
+                      color: AppTheme.getEventIconColor(context),
+                    ),
+                    SizedBox(width: 5.w),
+                    Expanded(
                       child: Text(
-                        'Mehmet Akan', // Şimdilik sabit
+                        location,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppTheme.getTextDescColor(context),
-                          height: 1.1,
+                          color: AppTheme.getEventIconTextColor(context),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 6.w),
-                    Text("-"),
-                    SizedBox(width: 6.w),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          LucideIcons.clock3400,
-                          size: 16.sp,
-                          color: AppTheme.getEventIconColor(context),
-                        ),
-                        SizedBox(width: 5.w),
-                        Text(
-                          date,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppTheme.getEventIconTextColor(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 5.h),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          LucideIcons.mapPin400,
-                          size: 16.sp,
-                          color: AppTheme.getEventIconColor(context),
-                        ),
-                        SizedBox(width: 5.w),
-                        Expanded(
-                          child: Text(
-                            location,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.getEventIconTextColor(context),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

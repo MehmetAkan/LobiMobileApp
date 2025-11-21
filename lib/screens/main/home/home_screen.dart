@@ -6,11 +6,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
+import 'package:lobi_application/screens/main/home/widgets/this_week_events_list.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
-import 'package:lobi_application/widgets/common/lists/grouped_event_list.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
@@ -101,9 +102,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     },
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 5.h),
                 EventsSection(
-                  title: 'Bu haftakiler',
+                  title: 'Bu haftaki etkinlikler',
                   onSeeAll: () {
                     debugPrint('Tümünü gör: Bu haftakiler');
                   },
@@ -183,7 +184,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  /// Riverpod provider: [homeThisWeekEventsProvider]
+  // ✅ YENİ METOD - Çok daha temiz ve kısa
   Widget _buildThisWeekEvents(double navbarHeight) {
     final state = ref.watch(homeThisWeekEventsProvider);
 
@@ -207,30 +208,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         );
       },
       data: (groups) {
-        final List<Map<String, dynamic>> items = [];
-
+        // Tüm etkinlikleri düz listeye çevir
+        final List<EventModel> allEvents = [];
         for (final group in groups) {
-          for (final event in group.events) {
-            final date = event.date;
-
-            final hour = date.hour.toString().padLeft(2, '0');
-            final minute = date.minute.toString().padLeft(2, '0');
-
-            items.add({
-              'id': event.id,
-              'title': event.title,
-              'imageUrl': event.imageUrl,
-              'date': date.toIso8601String(),
-              'displayDate': '$hour:$minute',
-              'location': event.location,
-              'attendeeCount': event.attendeeCount,
-              'isLiked': false,
-              'eventModel': event,
-            });
-          }
+          allEvents.addAll(group.events);
         }
 
-        if (items.isEmpty) {
+        if (allEvents.isEmpty) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             child: Text(
@@ -242,22 +226,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           );
         }
-        return GroupedEventList(
-          events: items,
-          scrollController: scrollController,
-          navbarHeight: navbarHeight,
-          onActiveDateChanged: (date) {
-            setState(() {
-              activeDate = date;
-            });
-          },
-          onEventTap: (eventMap) {
-            final eventModel = eventMap['eventModel'] as EventModel?;
-            if (eventModel == null) return;
 
+        return ThisWeekEventsList(
+          events: allEvents,
+          onEventTap: (event) {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => EventDetailScreen(event: eventModel),
+                builder: (_) => EventDetailScreen(event: event),
               ),
             );
           },
@@ -266,27 +241,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  /// Tarih içeriği (activeDate != null iken Navbar'da gösterilen)
   Widget _buildDateContent(BuildContext context, DateTime date) {
     return Row(
       children: [
         Text(
           '${date.day} ${date.monthName}',
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
+          style: AppTextStyles.titleXXSM.copyWith(
             color: AppTheme.getTextHeadColor(context),
-            height: 1,
+            fontWeight: FontWeight.w500,
           ),
         ),
         SizedBox(width: 3.w),
         Text(
           '/ ${date.dayName}',
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            color: AppTheme.getTextDescColor(context),
-            height: 1,
+          style: AppTextStyles.titleXXSM.copyWith(
+            color: AppTheme.getNavbarDateDescText(context),
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],

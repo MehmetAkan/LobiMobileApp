@@ -146,20 +146,21 @@ class _GroupedEventListState extends State<GroupedEventList> {
           key: _headerKeys[date],
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DateHeader(date: date, opacity: opacity),
             SizedBox(height: 0.h),
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
               itemCount: events.length,
-              separatorBuilder: (context, index) =>
-                  Column(children: [  SizedBox(height: 20.h), Divider(color: AppTheme.zinc300, thickness: 1, height: 1),   SizedBox(height: 20.h),]),
+              separatorBuilder: (context, index) => Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  Divider(color: AppTheme.zinc300, thickness: 1, height: 1),
+                  SizedBox(height: 20.h),
+                ],
+              ),
               itemBuilder: (context, eventIndex) {
                 final event = events[eventIndex];
-
                 final eventModel = event['eventModel'] as EventModel?;
-
                 if (eventModel == null) {
                   return EventCardVertical(
                     imageUrl: event['imageUrl'] as String? ?? '',
@@ -174,7 +175,6 @@ class _GroupedEventListState extends State<GroupedEventList> {
                     onTap: () => debugPrint('Tıklandı: ${event['title']}'),
                   );
                 }
-
                 return OpenContainer(
                   transitionDuration: const Duration(milliseconds: 400),
                   transitionType: ContainerTransitionType.fadeThrough,

@@ -1,7 +1,6 @@
 import 'package:lobi_application/core/utils/date_formatter.dart';
 
 extension DateTimeFormatting on DateTime {
-
   /// "5 Kasım Çarşamba"
   String toLongFormat() {
     return DateFormatter.format(this, DateFormatType.long);
@@ -39,6 +38,16 @@ extension DateTimeFormatting on DateTime {
       DateFormatType.timeRange,
       endDate: endDate,
     );
+  }
+
+  /// "22 KAS PZT - 14:44"
+  String toShortDateTimeWithDay() {
+    return DateFormatter.format(this, DateFormatType.shortDateTimeWithDay);
+  }
+
+  /// "Bugün - 14:44" / "Yarın - 14:44" / "22 KAS PZT - 14:44"
+  String toTodayTomorrowWithTime() {
+    return DateFormatter.format(this, DateFormatType.todayTomorrowWithTime);
   }
 
   /// "2 saat önce" / "3 gün önce"
@@ -128,7 +137,7 @@ extension DateTimeFormatting on DateTime {
 }
 
 /// Duration Extension - Süre formatlaması
-/// 
+///
 /// Kullanım:
 /// ```dart
 /// final duration = Duration(hours: 2, minutes: 30);

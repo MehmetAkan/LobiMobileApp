@@ -5,16 +5,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 import 'package:lobi_application/data/models/category_model.dart';
 import 'package:lobi_application/providers/event_provider.dart';
-import 'package:lobi_application/screens/main/explore/widgets/discover_events_list.dart';
+import 'package:lobi_application/screens/main/explore/widgets/all_events_list.dart.dart';
+import 'package:lobi_application/screens/main/explore/widgets/popular_events_list.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_search_button.dart';
-import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
-import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/categories/categories_grid.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
+import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -26,91 +26,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     with ScrollablePageMixin {
   DateTime? activeDate;
   final List<CategoryModel> _categories = CategoryModel.getMockCategories();
-  final List<Map<String, dynamic>> _mockNearbyEvents = [
-    {
-      'id': '1',
-      'title': 'Sillyon Kazıları Gezisi - Antalya Kültür Yolu Festivali',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/sillyon-kazilari-gezisi-antalya-kultur-yolu-festivali-20251017153951c3bb66506bec4586a1c7e94ad06a6949.jpeg',
-      'date': '2024-11-05T19:30:00', // ✨ DateTime formatında
-      'location': 'Konya Kültür Merkezi',
-      'attendeeCount': 250,
-    },
-    {
-      'id': '2',
-      'title': 'Hayal Satıcısı',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/hayal-saticisi-20259916283672ff27d844264416927c8c68d1fcd571.jpg',
-      'date': '2024-11-05T20:00:00', // ✨ Aynı gün
-      'location': 'Mevlana Kültür Merkezi',
-      'attendeeCount': 180,
-    },
-    {
-      'id': '3',
-      'title': 'Tiyatro Oyunu Pioneers Merkezi ',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/merhaba-nietzsche-2025102214543473993bb0f194fecad9ea8f7a73f2d22.jpg',
-      'date': '2024-11-06T19:00:00', // ✨ Farklı gün
-      'location': 'Konya Şehir Tiyatrosu',
-      'attendeeCount': 150,
-    },
-    {
-      'id': '4',
-      'title': 'Açık Hava Sineması ',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/b94518d8b24145bfb3b5c41420674c9d.jpg',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '5',
-      'title': 'Açık Hava Sineması Pioneers Merkezi',
-      'imageUrl': 'https://picsum.photos/id/50/300/300',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-    {
-      'id': '6',
-      'title': 'Vitray Cam Boyama Atölyesi',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/vitray-cam-boyama-atolyesi-20251118495902c6a1c22014400a963e54fa24d2aadd.jpg',
-      'date': '2024-11-07T21:00:00', // ✨ Farklı gün
-      'location': 'Alaaddin Tepesi',
-      'attendeeCount': 300,
-    },
-  ];
-
-  final List<Map<String, dynamic>> _mockRecommendedEvents = [
-    {
-      'id': '5',
-      'title': 'Morkomedyen Stand Up',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/morkomedyen-stand-up-202492493058dda84e1ba75b43399c3fd34102f70702.jpg',
-      'date': '5 Kas - 14:30',
-      'location': 'Antalya Açık Hava Tiyartosu',
-      'attendeeCount': 500,
-    },
-    {
-      'id': '6',
-      'title': 'Ali Congun - Adliye Çayı Stand Up',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/ali-congun-adliye-cayi-stand-up-202581920245282b8a52c40c74b86866b06a02b15a866.jpg',
-      'date': '5 Kas - 14:30',
-      'location': 'Konya Kültür Merkezi',
-      'attendeeCount': 200,
-    },
-    {
-      'id': '7',
-      'title': 'Türk rock müziğinin efsane grubu Mor ve Ötesi',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/mor-ve-otesi-20259281120578730a00788d4ca0863f88153d521be2.png',
-      'date': '5 Kas - 14:30',
-      'location': 'Meram Bağları',
-      'attendeeCount': 350,
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -134,20 +49,28 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                   },
                 ),
                 SizedBox(height: 25.h),
-               _buildPopularEventsSection(),
+                _buildPopularEventsSection(),
                 SizedBox(height: 25.h),
                 EventsSection(
                   title: 'Tüm etkinlikler',
                   onSeeAll: () {
-                    debugPrint('Tümünü gör: Yakındaki Etkinlikler');
+                    debugPrint('Tümünü gör: Tüm Etkinlikler');
                   },
-                  child: DiscoverEventsList(
+                  child: AllEventsList(
                     scrollController: scrollController,
                     navbarHeight: navbarHeight,
                     onActiveDateChanged: (date) {
                       setState(() {
                         activeDate = date;
                       });
+                    },
+                    // ✅ DEĞİŞİKLİK: Navigator.push ekledik
+                    onEventTap: (event) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => EventDetailScreen(event: event),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -208,7 +131,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                             );
                           },
                           child: activeDate == null
-                              ? const SizedBox.shrink() // hiçbir şey gösterme
+                              ? const SizedBox.shrink()
                               : _buildDateContent(context, activeDate!),
                         ),
                       ],
@@ -259,7 +182,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: AppTheme.getTextDescColor(context),
-
             height: 1,
           ),
         ),
@@ -267,29 +189,21 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 
-
- Widget _buildPopularEventsSection() {
+  Widget _buildPopularEventsSection() {
     final state = ref.watch(discoverPopularEventsProvider);
 
     return EventsSection(
-      title: 'Popüler Oranlar',
+      title: 'Popüler Etkinlikler',
       onSeeAll: () {
-        // İleride "Tüm popülerler" sayfasına yönlendireceğiz.
-        // Şimdilik sadece log atabiliriz.
-        debugPrint('Tümünü gör: Popüler Oranlar');
+        debugPrint('Tümünü gör: Popüler Etkinlikler');
       },
       child: state.when(
         loading: () => SizedBox(
-          height: 160.h,
-          child: const Center(
-            child: CircularProgressIndicator(),
-          ),
+          height: 240.h,
+          child: const Center(child: CircularProgressIndicator()),
         ),
         error: (error, stackTrace) => Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 20.w,
-            vertical: 10.h,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
           child: Text(
             'Popüler etkinlikler yüklenirken bir sorun oluştu.',
             style: TextStyle(
@@ -301,10 +215,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
         data: (events) {
           if (events.isEmpty) {
             return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.w,
-                vertical: 10.h,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               child: Text(
                 'Şu anda öne çıkan popüler etkinlik bulunmuyor.',
                 style: TextStyle(
@@ -315,32 +226,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             );
           }
 
-          return EventCardList(
-            items: events,
-            itemBuilder: (event, index) {
-              final date = event.date;
-              final hour =
-                  date.hour.toString().padLeft(2, '0');
-              final minute =
-                  date.minute.toString().padLeft(2, '0');
-
-              final dateText =
-                  '${date.day} ${date.monthName} - $hour:$minute';
-
-              return EventCardHorizontal(
-                imageUrl: event.imageUrl,
-                title: event.title,
-                date: dateText,
-                location: event.location,
-                attendeeCount: event.attendeeCount,
-                isLiked: false,
-                showLikeButton: false,
-                onTap: () {
-                  debugPrint(
-                    'Popüler etkinliğe tıklandı: ${event.title}',
-                  );
-                  // İleride: detay sayfasına git
-                },
+          return PopularEventsList(
+            events: events,
+            onEventTap: (event) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => EventDetailScreen(event: event),
+                ),
               );
             },
           );
@@ -349,4 +241,3 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
     );
   }
 }
-

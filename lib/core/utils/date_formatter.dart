@@ -1,31 +1,35 @@
-
 enum DateFormatType {
   /// "5 Kasım Çarşamba"
   long,
-  
+
   /// "5 Kas Çar"
   short,
-  
+
   /// "14:00"
   timeOnly,
-  
+
   /// "5 Kasım - 14:00"
   dateTime,
-  
+
   /// "5 Kas - 14:00"
   shortDateTime,
-  
+
   /// DateHeader için özel format
   headerFormat,
-  
+
   /// "14:00 - 16:30" (başlangıç - bitiş)
   timeRange,
-  
+
+  /// "22 KAS PZT - 14:44"
+  shortDateTimeWithDay,
+
+  /// "Bugün - 14:44" / "Yarın - 14:44" / "22 KAS PZT - 14:44"
+  todayTomorrowWithTime,
+
   /// Gelecek özellikler için
-  relative,      // "2 saat önce"
+  relative, // "2 saat önce"
   todayTomorrow, // "Bugün", "Yarın"
 }
-
 
 class DateFormatter {
   // Private constructor - Utility class
@@ -40,31 +44,37 @@ class DateFormatter {
     switch (type) {
       case DateFormatType.long:
         return _formatLong(date);
-      
+
       case DateFormatType.short:
         return _formatShort(date);
-      
+
       case DateFormatType.timeOnly:
         return _formatTimeOnly(date);
-      
+
       case DateFormatType.dateTime:
         return _formatDateTime(date);
-      
+
       case DateFormatType.shortDateTime:
         return _formatShortDateTime(date);
-      
+
       case DateFormatType.headerFormat:
         return _formatHeader(date);
-      
+
       case DateFormatType.timeRange:
         if (endDate == null) {
           throw ArgumentError('endDate is required for timeRange format');
         }
         return _formatTimeRange(date, endDate);
-      
+
+      case DateFormatType.shortDateTimeWithDay:
+        return _formatShortDateTimeWithDay(date);
+
+      case DateFormatType.todayTomorrowWithTime:
+        return _formatTodayTomorrowWithTime(date);
+
       case DateFormatType.relative:
         return _formatRelative(date);
-      
+
       case DateFormatType.todayTomorrow:
         return _formatTodayTomorrow(date);
     }
@@ -110,6 +120,30 @@ class DateFormatter {
     return '${_formatTimeOnly(start)} - ${_formatTimeOnly(end)}';
   }
 
+  /// "22 KAS PZT - 14:44"
+  static String _formatShortDateTimeWithDay(DateTime date) {
+    final dayStr = date.day.toString().padLeft(2, '0');
+    final monthStr = getMonthName(date.month, short: true).toUpperCase();
+    final dayNameStr = getDayName(date.weekday, short: true).toUpperCase();
+    final timeStr = _formatTimeOnly(date);
+
+    return '$dayStr $monthStr $dayNameStr - $timeStr';
+  }
+
+  /// "Bugün - 14:44" / "Yarın - 14:44" / "22 KAS PZT - 14:44"
+  static String _formatTodayTomorrowWithTime(DateTime date) {
+    final timeStr = _formatTimeOnly(date);
+
+    if (isToday(date)) {
+      return 'Bugün - $timeStr';
+    } else if (isTomorrow(date)) {
+      return 'Yarın - $timeStr';
+    } else {
+      // Bugün veya yarın değilse normal format
+      return _formatShortDateTimeWithDay(date);
+    }
+  }
+
   /// "2 saat önce" / "3 gün önce" (Gelecek özellik)
   static String _formatRelative(DateTime date) {
     final now = DateTime.now();
@@ -144,13 +178,33 @@ class DateFormatter {
 
   static String getMonthName(int month, {bool short = false}) {
     const monthsLong = [
-      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+      'Ocak',
+      'Şubat',
+      'Mart',
+      'Nisan',
+      'Mayıs',
+      'Haziran',
+      'Temmuz',
+      'Ağustos',
+      'Eylül',
+      'Ekim',
+      'Kasım',
+      'Aralık',
     ];
-    
+
     const monthsShort = [
-      'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-      'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+      'Oca',
+      'Şub',
+      'Mar',
+      'Nis',
+      'May',
+      'Haz',
+      'Tem',
+      'Ağu',
+      'Eyl',
+      'Eki',
+      'Kas',
+      'Ara',
     ];
 
     if (month < 1 || month > 12) {
@@ -161,18 +215,21 @@ class DateFormatter {
   }
 
   /// Gün adını döndür
-  /// 
+  ///
   /// [weekday]: 1-7 arası gün numarası (1: Pazartesi, 7: Pazar)
   /// [short]: true ise kısa format (Pzt), false ise uzun (Pazartesi)
   static String getDayName(int weekday, {bool short = false}) {
     const daysLong = [
-      'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe',
-      'Cuma', 'Cumartesi', 'Pazar'
+      'Pazartesi',
+      'Salı',
+      'Çarşamba',
+      'Perşembe',
+      'Cuma',
+      'Cumartesi',
+      'Pazar',
     ];
-    
-    const daysShort = [
-      'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'
-    ];
+
+    const daysShort = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 
     if (weekday < 1 || weekday > 7) {
       throw ArgumentError('Weekday must be between 1 and 7');

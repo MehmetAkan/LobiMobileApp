@@ -20,7 +20,7 @@ class CustomNavbar extends StatefulWidget {
     this.scrollController,
     this.height,
     this.padding,
-    this.blurThreshold = 3.0,
+    this.blurThreshold = 1.0,
   });
 
   @override
@@ -47,7 +47,7 @@ class CustomNavbarState extends State<CustomNavbar>
       vsync: this,
     );
 
-    _blurAnimation = Tween<double>(begin: 3.0, end: 3.0).animate(
+    _blurAnimation = Tween<double>(begin: 0, end: 5.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.linear),
     );
   }
@@ -82,7 +82,7 @@ class CustomNavbarState extends State<CustomNavbar>
 
   @override
   Widget build(BuildContext context) {
-    final defaultHeight = widget.height ?? 60.h;
+    final defaultHeight = widget.height ?? 55.h;
     final defaultPadding =
         widget.padding ?? EdgeInsets.symmetric(horizontal: 20.w);
     final statusBarHeight = MediaQuery.of(context).padding.top;
@@ -110,17 +110,20 @@ class CustomNavbarState extends State<CustomNavbar>
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    AppTheme.getNavbarBg(context).withValues(alpha: .2),
+                    AppTheme.getNavbarBg(context).withValues(alpha: 0.2),
+                    AppTheme.getNavbarBg(context).withValues(alpha: 0.3),
                     AppTheme.getNavbarBg(context).withValues(alpha: 0.5),
                     AppTheme.getNavbarBg(context).withValues(alpha: 1),
                   ],
                 ),
-                border: Border(
-                  bottom: BorderSide(
-                    color:  AppTheme.getNavbarBorder(context).withValues(alpha: .2),
-                    width: 0.7, // kalınlığı buradan ayarla
-                  ),
-                ),
+                // border: Border(
+                //   bottom: BorderSide(
+                //     color: AppTheme.getNavbarBorder(
+                //       context,
+                //     ).withValues(alpha: 0),
+                //     width: 0.7,
+                //   ),
+                // ),
               ),
               padding: EdgeInsets.only(top: statusBarHeight),
               child: _buildContent(defaultPadding),

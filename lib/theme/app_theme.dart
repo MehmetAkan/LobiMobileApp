@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 
 class AppTheme {
   /*Sabit Renkler*/
@@ -62,7 +64,11 @@ class AppTheme {
   static Color getNavbarBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : zinc200;
+        : zinc100;
+  }
+
+  static Color getNavbarDateDescText(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? zinc600 : zinc600;
   }
 
   static Color getNavigationBtnBorder(BuildContext context) {
@@ -110,7 +116,7 @@ class AppTheme {
   static Color getTextDescColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : zinc800;
+        : zinc600;
   }
 
   static Color getCardColor(BuildContext context) {
@@ -289,15 +295,37 @@ class AppTheme {
     return Theme.of(context).brightness == Brightness.dark ? white : white;
   }
 
+  static String? get _platformFontFamily {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+        // iOS ve macOS'ta sistem fontu (SF Pro) kullanılsın
+        return null;
+      case TargetPlatform.android:
+      case TargetPlatform.fuchsia:
+      default:
+        // Android tarafında Roboto (sistem fontu)
+        return 'Roboto';
+    }
+  }
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Figtree',
+    // fontFamily: 'Figtree',
+    fontFamily: _platformFontFamily,
     scaffoldBackgroundColor: backgroundLight,
-    textTheme: const TextTheme(),
+    textTheme: TextTheme(
+      titleLarge: AppTextStyles.pageTitle,
+      titleMedium: AppTextStyles.sectionTitle,
+      bodyLarge: AppTextStyles.body,
+      bodyMedium: AppTextStyles.bodySecondary,
+      labelLarge: AppTextStyles.button,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
       foregroundColor: Colors.black,
+      centerTitle: true,
     ),
     iconTheme: const IconThemeData(size: 22),
     filledButtonTheme: FilledButtonThemeData(
@@ -311,9 +339,15 @@ class AppTheme {
   );
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Figtree',
+    fontFamily: _platformFontFamily,
     scaffoldBackgroundColor: backgroundDark,
-    textTheme: const TextTheme(),
+    textTheme: TextTheme(
+      titleLarge: AppTextStyles.pageTitle,
+      titleMedium: AppTextStyles.sectionTitle,
+      bodyLarge: AppTextStyles.body,
+      bodyMedium: AppTextStyles.bodySecondary,
+      labelLarge: AppTextStyles.button,
+    ),
     iconTheme: const IconThemeData(size: 22),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,

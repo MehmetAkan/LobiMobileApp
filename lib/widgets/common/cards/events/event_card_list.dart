@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// EventCardList - Yatay scroll olan kart listesi (Molecule seviyesi)
-/// 
+///
 /// Kullanım alanları:
 /// - EventsSection içinde
 /// - Farklı kart tipleri için (EventCard, ProductCard, etc.)
-/// 
+///
 /// Generic tasarım sayesinde farklı item tipleri ile kullanılabilir
 class EventCardList<T> extends StatelessWidget {
   final List<T> items;
@@ -37,7 +37,8 @@ class EventCardList<T> extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: physics ?? const BouncingScrollPhysics(),
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
+        padding:
+            padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
         itemCount: items.length,
         separatorBuilder: (context, index) => SizedBox(width: spacing.w),
         itemBuilder: (context, index) {
