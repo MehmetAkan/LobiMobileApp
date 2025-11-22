@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
-import 'package:lobi_application/screens/main/home/home_screen.dart';
+import 'package:lobi_application/screens/auth/username_setup_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
@@ -175,7 +175,7 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const HomeScreen(),
+                                builder: (_) => const UsernameSetupScreen(),
                               ),
                               (route) => false,
                             );
