@@ -6,14 +6,6 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'app_feedback_config.dart';
 import 'app_feedback_type.dart';
 
-/// Uygulama genelinde kullanılacak geri bildirim servisi.
-///
-/// Kullanım örnekleri:
-///
-/// ```dart
-/// getIt<AppFeedbackService>().showSuccess('Etkinlik başarıyla oluşturuldu');
-/// getIt<AppFeedbackService>().showError('Bir hata oluştu');
-/// ```
 class AppFeedbackService {
   AppFeedbackService(
     this._scaffoldMessengerKey, {

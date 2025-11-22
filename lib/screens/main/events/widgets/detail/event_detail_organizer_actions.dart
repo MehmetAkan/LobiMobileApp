@@ -4,7 +4,6 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'event_detail_action_button.dart';
 
-
 class EventDetailOrganizerActions extends StatelessWidget {
   final VoidCallback onShare;
   final VoidCallback onAnnouncement;
@@ -30,7 +29,7 @@ class EventDetailOrganizerActions extends StatelessWidget {
           ),
         ),
         SizedBox(width: 10.w),
-        
+
         // Duyuru butonu
         Expanded(
           child: EventDetailActionButton(
@@ -40,8 +39,6 @@ class EventDetailOrganizerActions extends StatelessWidget {
           ),
         ),
         SizedBox(width: 10.w),
-        
-        // Yönet butonu
         Expanded(
           child: EventDetailActionButton(
             icon: LucideIcons.settings400,
@@ -53,4 +50,3 @@ class EventDetailOrganizerActions extends StatelessWidget {
     );
   }
 }
-

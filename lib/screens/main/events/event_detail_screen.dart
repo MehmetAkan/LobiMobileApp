@@ -398,11 +398,11 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       });
 
       final message = requiresApproval
-          ? 'Katılım talebiniz gönderildi. Organizatör onayı bekleniyor.'
-          : 'Etkinliğe katıldınız!';
+          ? 'Katılım talebiniz gönderildi.'
+          : 'Etkinliğe katıldınız';
 
       if (requiresApproval) {
-        getIt<AppFeedbackService>().showWarning(message);
+        getIt<AppFeedbackService>().showSuccess(message);
       } else {
         getIt<AppFeedbackService>().showSuccess(message);
       }
@@ -449,7 +449,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         _isProcessingAttendance = false;
       });
 
-      getIt<AppFeedbackService>().showSuccess('Katılımınız iptal edildi');
+      getIt<AppFeedbackService>().showWarning('Katılımınız iptal edildi');
 
       debugPrint('✅ Katılım başarıyla iptal edildi');
     } catch (e) {

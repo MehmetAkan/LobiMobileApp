@@ -54,8 +54,9 @@ class EventDetailActionButton extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.25,
                   color: isFeatured ? AppTheme.black800 : AppTheme.white,
                   height: 1.2,
                 ),
