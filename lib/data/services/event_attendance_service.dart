@@ -5,19 +5,19 @@ import 'package:lobi_application/data/models/event_attendance_status.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// EventAttendanceService - Etkinlik katılım işlemleri
-/// 
+///
 /// Supabase Tablo: event_participants
-/// 
+///
 /// Kullanım:
 /// ```dart
 /// final service = EventAttendanceService();
-/// 
+///
 /// // Durumu kontrol et
 /// final status = await service.getAttendanceStatus(eventId);
-/// 
+///
 /// // Etkinliğe katıl
 /// await service.attendEvent(eventId, requiresApproval: false);
-/// 
+///
 /// // Katılımdan ayrıl
 /// await service.leaveEvent(eventId);
 /// ```
@@ -26,7 +26,7 @@ class EventAttendanceService {
   static const String _tableName = 'event_participants';
 
   /// Kullanıcının etkinliğe katılım durumunu kontrol et
-  /// 
+  ///
   /// Returns:
   /// - notAttending: Katılmıyor
   /// - pending: Onay bekliyor
@@ -37,7 +37,7 @@ class EventAttendanceService {
   }) async {
     try {
       final userId = _supabase.auth.currentUser?.id;
-      
+
       if (userId == null) {
         AppLogger.warning('User not authenticated, returning notAttending');
         return EventAttendanceStatus.notAttending;
@@ -73,7 +73,7 @@ class EventAttendanceService {
   }
 
   /// Etkinliğe katıl
-  /// 
+  ///
   /// requiresApproval:
   /// - false → status: 'attending' (direkt katılır)
   /// - true → status: 'pending' (organizatör onayı bekler)
@@ -138,10 +138,7 @@ class EventAttendanceService {
   }
 
   /// Etkinlikten ayrıl (soft delete)
-  Future<void> leaveEvent({
-    required String eventId,
-    String? reason,
-  }) async {
+  Future<void> leaveEvent({required String eventId, String? reason}) async {
     final userId = _supabase.auth.currentUser?.id;
 
     if (userId == null) {
@@ -169,16 +166,79 @@ class EventAttendanceService {
   }
 
   /// Katılımcı listesi (organizatör için)
+  ///
+  /// User bilgileriyle birlikte çekmek için iki ayrı query yapar ve merge eder
+  Future<List<Map<String, dynamic>>> getAttendeesWithUserInfo({
+    required String eventId,
+    EventAttendanceStatus? filterStatus,
+    bool includeCancelled = false,
+  }) async {
+    try {
+      // 1. Event participants çek
+      var query = _supabase.from(_tableName).select().eq('event_id', eventId);
+
+      if (!includeCancelled) {
+        query = query.isFilter('cancelled_at', null);
+      }
+
+      if (filterStatus != null) {
+        query = query.eq('status', filterStatus.dbValue);
+      }
+
+      final participants = await query;
+
+      if (participants.isEmpty) {
+        return [];
+      }
+
+      // 2. User ID'leri topla
+      final userIds = (participants as List)
+          .map((p) => p['user_id'] as String)
+          .toList();
+
+      // 3. Profiles çek
+      final profiles = await _supabase
+          .from('profiles')
+          .select('user_id, first_name, last_name, avatar_url')
+          .inFilter('user_id', userIds);
+
+      // 4. Merge et
+      final profileMap = <String, Map<String, dynamic>>{};
+      for (var profile in profiles as List) {
+        profileMap[profile['user_id'] as String] =
+            profile as Map<String, dynamic>;
+      }
+
+      // 5. Birleştir
+      final result = <Map<String, dynamic>>[];
+      for (var participant in participants) {
+        final participantMap = Map<String, dynamic>.from(
+          participant as Map<String, dynamic>,
+        );
+        final userId = participantMap['user_id'] as String;
+
+        if (profileMap.containsKey(userId)) {
+          participantMap['profiles'] = profileMap[userId];
+        }
+
+        result.add(participantMap);
+      }
+
+      return result;
+    } catch (e, stackTrace) {
+      AppLogger.error('getAttendeesWithUserInfo error', e, stackTrace);
+      return [];
+    }
+  }
+
+  /// Katılımcı listesi (organizatör için) - Model olarak
   Future<List<EventAttendanceModel>> getAttendees({
     required String eventId,
     EventAttendanceStatus? filterStatus,
     bool includeCancelled = false,
   }) async {
     try {
-      var query = _supabase
-          .from(_tableName)
-          .select()
-          .eq('event_id', eventId);
+      var query = _supabase.from(_tableName).select().eq('event_id', eventId);
 
       if (!includeCancelled) {
         query = query.isFilter('cancelled_at', null);
@@ -191,7 +251,10 @@ class EventAttendanceService {
       final response = await query;
 
       final attendances = (response as List)
-          .map((json) => EventAttendanceModel.fromJson(json as Map<String, dynamic>))
+          .map(
+            (json) =>
+                EventAttendanceModel.fromJson(json as Map<String, dynamic>),
+          )
           .toList();
 
       return attendances;
@@ -212,7 +275,7 @@ class EventAttendanceService {
       filterStatus: filterStatus,
       includeCancelled: includeCancelled,
     );
-    
+
     return attendees.length;
   }
 

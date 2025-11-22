@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
+import 'package:lobi_application/data/models/event_attendance_status.dart';
+import 'package:lobi_application/data/services/event_attendance_service.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/screens/main/events/widgets/manage/guest_list_item.dart';
 import 'package:lobi_application/widgets/common/badges/status_badge.dart';
@@ -11,7 +15,9 @@ import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
 class EventManageRequestsScreen extends StatefulWidget {
-  const EventManageRequestsScreen({super.key});
+  final String eventId;
+
+  const EventManageRequestsScreen({super.key, required this.eventId});
 
   @override
   State<EventManageRequestsScreen> createState() =>
@@ -19,7 +25,10 @@ class EventManageRequestsScreen extends StatefulWidget {
 }
 
 class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
+  final EventAttendanceService _attendanceService = EventAttendanceService();
   FilterOption _selectedFilter = _filterOptions.first;
+  List<Map<String, dynamic>> _requests = [];
+  bool _isLoading = true;
 
   static const List<FilterOption> _filterOptions = [
     FilterOption(
@@ -41,6 +50,55 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadRequests();
+  }
+
+  Future<void> _loadRequests() async {
+    setState(() => _isLoading = true);
+
+    try {
+      debugPrint('🔍 Loading requests for event: ${widget.eventId}');
+
+      EventAttendanceStatus? filterStatus;
+
+      if (_selectedFilter.id == 'pending') {
+        filterStatus = EventAttendanceStatus.pending;
+      } else if (_selectedFilter.id == 'approved') {
+        filterStatus = EventAttendanceStatus.attending;
+      } else if (_selectedFilter.id == 'rejected') {
+        filterStatus = EventAttendanceStatus.rejected;
+      }
+
+      debugPrint('🔍 Filter status: $filterStatus');
+
+      final data = await _attendanceService.getAttendeesWithUserInfo(
+        eventId: widget.eventId,
+        filterStatus: filterStatus,
+        includeCancelled: false,
+      );
+
+      debugPrint('🔍 Received ${data.length} requests');
+      debugPrint('🔍 Raw data: $data');
+
+      if (mounted) {
+        setState(() {
+          _requests = data;
+          _isLoading = false;
+        });
+      }
+    } catch (e, stackTrace) {
+      debugPrint('⚠️ İstekler yüklenirken hata: $e');
+      debugPrint('⚠️ Stack trace: $stackTrace');
+      if (mounted) {
+        setState(() => _isLoading = false);
+        getIt<AppFeedbackService>().showError('İstekler yüklenemedi');
+      }
+    }
+  }
+
   void _openFilterModal() {
     FilterBottomSheet.show(
       context: context,
@@ -50,6 +108,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
         setState(() {
           _selectedFilter = option;
         });
+        _loadRequests();
       },
     );
   }
@@ -63,47 +122,72 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
       children: [
         CustomSearchBar(hintText: 'Kullanıcı Ara', onChanged: (value) {}),
         SizedBox(height: 20.h),
-        _buildRequestList(),
+        _isLoading ? _buildLoading() : _buildRequestList(),
       ],
     );
   }
 
-  Widget _buildRequestList() {
-    // Mock data generation based on filter
-    return Column(
-      children: List.generate(10, (index) {
-        // Simulate filtering for demo purposes
-        if (_selectedFilter.id != 'all') {
-          if (_selectedFilter.id == 'pending' && index % 3 != 0)
-            return const SizedBox.shrink();
-          if (_selectedFilter.id == 'approved' && index % 3 != 1)
-            return const SizedBox.shrink();
-          if (_selectedFilter.id == 'rejected' && index % 3 != 2)
-            return const SizedBox.shrink();
-        }
+  Widget _buildLoading() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(40.h),
+        child: CircularProgressIndicator(color: AppTheme.zinc800),
+      ),
+    );
+  }
 
-        final fullName = 'Kullanıcı Adı $index';
-        final profileImageUrl = 'https://i.pravatar.cc/150?u=${index + 200}';
+  Widget _buildRequestList() {
+    if (_requests.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(40.h),
+          child: Text(
+            'İstek bulunamadı',
+            style: TextStyle(fontSize: 16.sp, color: AppTheme.zinc600),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: _requests.map((request) {
+        final profile = request['profiles'] as Map<String, dynamic>?;
+        final firstName = profile?['first_name'] as String? ?? '';
+        final lastName = profile?['last_name'] as String? ?? '';
+        final fullName = '$firstName $lastName'.trim();
+        final avatarUrl = profile?['avatar_url'] as String?;
+        final status = request['status'] as String;
+        final userId = request['user_id'] as String;
 
         return GestureDetector(
-          onTap: () => _showRequestModal(context, fullName, profileImageUrl),
+          onTap: () => _showRequestModal(
+            context,
+            fullName.isEmpty ? 'Kullanıcı' : fullName,
+            avatarUrl,
+            userId,
+            status,
+          ),
           behavior: HitTestBehavior.opaque,
           child: GuestListItem(
-            profileImageUrl: profileImageUrl,
-            fullName: fullName,
-            username: 'kullanici$index',
-            statusText: _getStatusText(index),
-            statusType: _getStatusType(index),
+            profileImageUrl: (avatarUrl != null && avatarUrl.isNotEmpty)
+                ? avatarUrl
+                : '',
+            fullName: fullName.isEmpty ? 'Kullanıcı' : fullName,
+            username: '', // Username şimdilik yok
+            statusText: _getStatusText(status),
+            statusType: _getStatusType(status),
           ),
         );
-      }),
+      }).toList(),
     );
   }
 
   void _showRequestModal(
     BuildContext context,
     String fullName,
-    String profileImageUrl,
+    String? profileImageUrl,
+    String userId,
+    String currentStatus,
   ) {
     CustomModalSheet.show(
       context: context,
@@ -113,7 +197,17 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
         children: [
           CircleAvatar(
             radius: 22.5.r,
-            backgroundImage: NetworkImage(profileImageUrl),
+            backgroundImage: profileImageUrl != null
+                ? NetworkImage(profileImageUrl)
+                : null,
+            backgroundColor: AppTheme.zinc300,
+            child: profileImageUrl == null
+                ? Icon(
+                    LucideIcons.user400,
+                    size: 24.sp,
+                    color: AppTheme.zinc600,
+                  )
+                : null,
           ),
           SizedBox(height: 10.h),
           Text(
@@ -128,7 +222,6 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
       ),
       child: Row(
         children: [
-          // Username Column
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +236,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  '@kullanici',
+                  '-',
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -153,7 +246,6 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
               ],
             ),
           ),
-          // Status Column
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +260,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'Bekliyor',
+                  _getStatusText(currentStatus),
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
@@ -185,11 +277,9 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
           Expanded(
             flex: 3,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // TODO: Service integration - Reject request
-                debugPrint('🚫 İstek reddedildi');
-              },
+              onPressed: currentStatus == 'pending'
+                  ? () => _handleReject(userId)
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.white,
                 foregroundColor: AppTheme.red900,
@@ -200,17 +290,9 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                 ),
                 side: BorderSide(color: AppTheme.zinc300, width: 1),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Reddet',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              child: Text(
+                'Reddet',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -218,11 +300,9 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
           Expanded(
             flex: 5,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-
-                debugPrint('✅ İstek onaylandı');
-              },
+              onPressed: currentStatus == 'pending'
+                  ? () => _handleApprove(userId)
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.black800,
                 foregroundColor: Colors.white,
@@ -231,17 +311,9 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                   borderRadius: BorderRadius.circular(25.r),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Onayla',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              child: Text(
+                'Onayla',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -250,28 +322,69 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
     );
   }
 
-  String _getStatusText(int index) {
-    final mod = index % 3;
-    switch (mod) {
-      case 0:
+  Future<void> _handleApprove(String userId) async {
+    Navigator.pop(context);
+
+    try {
+      await _attendanceService.approveAttendance(
+        eventId: widget.eventId,
+        userId: userId,
+      );
+
+      if (mounted) {
+        getIt<AppFeedbackService>().showSuccess('İstek onaylandı');
+        _loadRequests(); // Refresh list
+      }
+    } catch (e) {
+      debugPrint('⚠️ Onaylama hatası: $e');
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('Onaylama başarısız');
+      }
+    }
+  }
+
+  Future<void> _handleReject(String userId) async {
+    Navigator.pop(context);
+
+    try {
+      await _attendanceService.rejectAttendance(
+        eventId: widget.eventId,
+        userId: userId,
+        reason: 'Organizatör tarafından reddedildi',
+      );
+
+      if (mounted) {
+        getIt<AppFeedbackService>().showWarning('İstek reddedildi');
+        _loadRequests(); // Refresh list
+      }
+    } catch (e) {
+      debugPrint('⚠️ Reddetme hatası: $e');
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('Reddetme başarısız');
+      }
+    }
+  }
+
+  String _getStatusText(String status) {
+    switch (status) {
+      case 'pending':
         return 'Bekliyor';
-      case 1:
+      case 'attending':
         return 'Onaylandı';
-      case 2:
+      case 'rejected':
         return 'Reddedildi';
       default:
         return '';
     }
   }
 
-  BadgeType _getStatusType(int index) {
-    final mod = index % 3;
-    switch (mod) {
-      case 0:
+  BadgeType _getStatusType(String status) {
+    switch (status) {
+      case 'pending':
         return BadgeType.orange;
-      case 1:
+      case 'attending':
         return BadgeType.green;
-      case 2:
+      case 'rejected':
         return BadgeType.red;
       default:
         return BadgeType.black;

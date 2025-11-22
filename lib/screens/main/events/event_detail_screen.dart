@@ -375,7 +375,8 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const EventManageRequestsScreen(),
+        builder: (context) =>
+            EventManageRequestsScreen(eventId: widget.event.id),
       ),
     );
   }
