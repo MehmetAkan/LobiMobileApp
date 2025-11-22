@@ -132,11 +132,36 @@ class _CapacityContentState extends State<_CapacityContent> {
                 children: [
                   // Kaldır butonu
                   Expanded(
-                    child: _buildButton(
-                      context: context,
-                      label: 'Kaldır',
-                      onTap: _onRemove,
-                      isPrimary: false,
+                    child: ElevatedButton(
+                      onPressed: _onRemove,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.white,
+                        foregroundColor: AppTheme.red900,
+                        padding: EdgeInsets.symmetric(vertical: 15.h),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.r),
+                        ),
+                        side: BorderSide(color: AppTheme.zinc300, width: 1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.circleX400,
+                            size: 18.sp,
+                            color: AppTheme.red900,
+                          ),
+                          SizedBox(width: 5.w),
+                          Text(
+                            'Kaldır',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -144,11 +169,28 @@ class _CapacityContentState extends State<_CapacityContent> {
 
                   // Kaydet butonu
                   Expanded(
-                    child: _buildButton(
-                      context: context,
-                      label: 'Kaydet',
-                      onTap: _onSave,
-                      isPrimary: true,
+                    child: ElevatedButton(
+                      onPressed: _onSave,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.black800,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 15.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25.r),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Kaydet',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
