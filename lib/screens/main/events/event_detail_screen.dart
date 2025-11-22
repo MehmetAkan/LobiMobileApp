@@ -294,7 +294,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
     // Pending approval durumunda özel buton göster
     if (_attendanceStatus == EventAttendanceStatus.pending) {
-      return const EventPendingApprovalButton();
+      return EventPendingApprovalButton(
+        onCancelConfirmed: _handleCancelAttendance,
+      );
     }
 
     // Attending durumunda normal action butonlar
@@ -426,11 +428,38 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   Future<void> _handleCancelAttendance() async {
     final confirmed = await EventCancelModal.show(context: context);
 
-    if (confirmed == true) {
-      debugPrint('✅ Katılım iptal edildi');
-      // TODO: Service integration
-      // await _attendanceService.cancelAttendance(eventId: widget.event.id);
-      // _loadAttendanceStatus();
+    if (confirmed != true) return;
+
+    // Loading state
+    setState(() => _isProcessingAttendance = true);
+
+    try {
+      debugPrint('🚫 Katılımı iptal ediliyor...');
+
+      await _attendanceService.leaveEvent(
+        eventId: widget.event.id,
+        reason: 'Kullanıcı katılımını iptal etti',
+      );
+
+      if (!mounted) return;
+
+      // Durumu güncelle
+      setState(() {
+        _attendanceStatus = EventAttendanceStatus.notAttending;
+        _isProcessingAttendance = false;
+      });
+
+      getIt<AppFeedbackService>().showSuccess('Katılımınız iptal edildi');
+
+      debugPrint('✅ Katılım başarıyla iptal edildi');
+    } catch (e) {
+      debugPrint('⚠️ Katılım iptal hatası: $e');
+
+      if (!mounted) return;
+
+      setState(() => _isProcessingAttendance = false);
+
+      getIt<AppFeedbackService>().showError('Katılım iptal edilemedi: $e');
     }
   }
 }
