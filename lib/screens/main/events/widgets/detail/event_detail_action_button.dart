@@ -26,7 +26,7 @@ class EventDetailActionButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(16.r),
         child: Container(
           height: 55.h,
           decoration: BoxDecoration(

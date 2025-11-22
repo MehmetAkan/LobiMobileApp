@@ -7,12 +7,14 @@ import 'event_detail_action_button.dart';
 class EventDetailOrganizerActions extends StatelessWidget {
   final VoidCallback onShare;
   final VoidCallback onAnnouncement;
+  final VoidCallback onRequests;
   final VoidCallback onManage;
 
   const EventDetailOrganizerActions({
     super.key,
     required this.onShare,
     required this.onAnnouncement,
+    required this.onRequests,
     required this.onManage,
   });
 
@@ -20,7 +22,15 @@ class EventDetailOrganizerActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Paylaş butonu
+        Expanded(
+          child: EventDetailActionButton(
+            icon: LucideIcons.listTodo400,
+            label: 'İstekler',
+            onTap: onRequests,
+            type: ActionButtonType.featured,
+          ),
+        ),
+        SizedBox(width: 5.w),
         Expanded(
           child: EventDetailActionButton(
             icon: LucideIcons.share2400,
@@ -28,9 +38,7 @@ class EventDetailOrganizerActions extends StatelessWidget {
             onTap: onShare,
           ),
         ),
-        SizedBox(width: 10.w),
-
-        // Duyuru butonu
+        SizedBox(width: 5.w),
         Expanded(
           child: EventDetailActionButton(
             icon: LucideIcons.megaphone400,
@@ -38,7 +46,8 @@ class EventDetailOrganizerActions extends StatelessWidget {
             onTap: onAnnouncement,
           ),
         ),
-        SizedBox(width: 10.w),
+        SizedBox(width: 5.w),
+
         Expanded(
           child: EventDetailActionButton(
             icon: LucideIcons.settings400,

@@ -22,6 +22,7 @@ class AppTheme {
   static const Color green500 = Color(0xFF22C55E);
   static const Color green800 = Color(0xFF06df73);
   static const Color green900 = Color(0xFF33BA20);
+  static const Color green1000 = Color(0xFF35A80C);
   static const Color red100 = Color(0xFFF9E5E5);
   static const Color red500 = Color(0xFFEF4444);
   static const Color red800 = Color(0xFFE00303);

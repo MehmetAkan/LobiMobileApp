@@ -6,6 +6,7 @@ import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/data/models/event_attendance_status.dart';
 import 'package:lobi_application/data/services/event_attendance_service.dart';
 import 'package:lobi_application/screens/main/events/manage/event_manage_screen.dart';
+import 'package:lobi_application/screens/main/events/manage/event_manage_requests_screen.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_cover.dart';
@@ -281,6 +282,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       return EventDetailOrganizerActions(
         onShare: _handleShare,
         onAnnouncement: _handleAnnouncement,
+        onRequests: _handleRequests,
         onManage: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const EventManageScreen()),
@@ -349,7 +351,7 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                         ),
                       )
                     : Icon(
-                        LucideIcons.userPlus400,
+                        LucideIcons.ticket400,
                         size: 22.sp,
                         color: AppTheme.getAppBarButtonColor(context),
                       ),
@@ -367,6 +369,15 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   void _handleAnnouncement() {
     debugPrint('📢 Duyuru: ${widget.event.id}');
+  }
+
+  void _handleRequests() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const EventManageRequestsScreen(),
+      ),
+    );
   }
 
   void _handleManage() {
