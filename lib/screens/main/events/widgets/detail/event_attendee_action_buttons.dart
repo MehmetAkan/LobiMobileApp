@@ -3,17 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'event_detail_action_button.dart';
+import 'event_attendee_action_dropdown.dart';
 
 class EventAttendeeActionButtons extends StatelessWidget {
   final VoidCallback onTicket;
   final VoidCallback onContact;
-  final VoidCallback onMore;
+  final VoidCallback onCancelAttendance;
 
   const EventAttendeeActionButtons({
     super.key,
     required this.onTicket,
     required this.onContact,
-    required this.onMore,
+    required this.onCancelAttendance,
   });
 
   @override
@@ -38,11 +39,11 @@ class EventAttendeeActionButtons extends StatelessWidget {
           ),
         ),
         SizedBox(width: 10.w),
+
+        // Daha Fazla - Dropdown
         Expanded(
-          child: EventDetailActionButton(
-            icon: LucideIcons.ellipsis400,
-            label: 'Daha Fazla',
-            onTap: onMore,
+          child: EventAttendeeActionDropdown(
+            onCancelAttendance: onCancelAttendance,
           ),
         ),
       ],

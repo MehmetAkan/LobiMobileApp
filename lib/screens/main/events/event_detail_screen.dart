@@ -20,6 +20,8 @@ import 'package:lobi_application/screens/main/events/widgets/detail/event_detail
 import 'package:lobi_application/screens/main/events/widgets/detail/event_detail_attend_button.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/event_attendance_status_badge.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/event_attendee_action_buttons.dart';
+import 'package:lobi_application/screens/main/events/widgets/detail/event_pending_approval_button.dart';
+import 'package:lobi_application/screens/main/events/widgets/create/modals/event_cancel_modal.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/models/event_model.dart';
@@ -290,11 +292,17 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
       return Center(child: CircularProgressIndicator(color: AppTheme.white));
     }
 
+    // Pending approval durumunda özel buton göster
+    if (_attendanceStatus == EventAttendanceStatus.pending) {
+      return const EventPendingApprovalButton();
+    }
+
+    // Attending durumunda normal action butonlar
     if (_attendanceStatus.canLeaveEvent) {
       return EventAttendeeActionButtons(
         onTicket: _handleTicket,
         onContact: _handleContact,
-        onMore: _handleMore,
+        onCancelAttendance: _handleCancelAttendance,
       );
     }
 
@@ -415,7 +423,14 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     debugPrint('💬 İletişim: ${widget.event.id}');
   }
 
-  void _handleMore() {
-    debugPrint('⋯ Daha Fazla: ${widget.event.id}');
+  Future<void> _handleCancelAttendance() async {
+    final confirmed = await EventCancelModal.show(context: context);
+
+    if (confirmed == true) {
+      debugPrint('✅ Katılım iptal edildi');
+      // TODO: Service integration
+      // await _attendanceService.cancelAttendance(eventId: widget.event.id);
+      // _loadAttendanceStatus();
+    }
   }
 }
