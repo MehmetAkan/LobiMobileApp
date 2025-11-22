@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/data/services/username_service.dart';
-import 'package:lobi_application/screens/main/main_navigation_screen.dart';
+import 'package:lobi_application/screens/auth/favorite_categories_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
@@ -96,10 +96,12 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
 
       if (!mounted) return;
 
-      // Navigate to home
+      // Navigate to favorite categories
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+        MaterialPageRoute(
+          builder: (context) => const FavoriteCategoriesScreen(),
+        ),
         (route) => false,
       );
     } catch (e) {
