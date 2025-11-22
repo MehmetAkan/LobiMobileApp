@@ -11,9 +11,9 @@ class AuthTextField extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffix;
   final VoidCallback? onTap; // date picker gibi özel durumlarda
-  final bool readOnly;       // doğum tarihi gibi direkt yazdırmak istemiyorsak
+  final bool readOnly; // doğum tarihi gibi direkt yazdırmak istemiyorsak
   final TextAlign textAlign; // doğrulama kodu ortalı olsun diye
-  final int? maxLength;      // doğrulama kodu 6 hane gibi
+  final int? maxLength; // doğrulama kodu 6 hane gibi
 
   const AuthTextField({
     super.key,
@@ -68,7 +68,7 @@ class AuthTextField extends StatelessWidget {
             letterSpacing: obscureText ? 2 : 0,
           ),
           decoration: InputDecoration(
-            counterText: '', 
+            counterText: '',
             hintText: hintText,
             hintStyle: TextStyle(
               color: AppTheme.zinc600,
@@ -78,7 +78,7 @@ class AuthTextField extends StatelessWidget {
             filled: true,
             fillColor: fillColor,
             contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
+              vertical: 20,
               horizontal: 14,
             ),
             prefixIcon: prefix == null
@@ -103,31 +103,19 @@ class AuthTextField extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: borderColor,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: borderColor, width: 1),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: focusedBorderColor,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: focusedBorderColor, width: 1),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: errorColor,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: errorColor, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: errorColor,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: errorColor, width: 1),
             ),
             // Flutter TextField default olarak errorText'i InputDecoration içinde bekler
             errorText: errorText,
