@@ -4,6 +4,7 @@ import 'package:lobi_application/screens/main/explore/explore_screen.dart';
 import 'package:lobi_application/screens/main/events/events_screen.dart';
 import 'package:lobi_application/screens/main/profile/profile_screen.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navigation_bar.dart';
+import 'package:lobi_application/widgets/common/banners/offline_banner.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -26,9 +27,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true, // Bottom navbar altına içerik uzansın
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(
+            child: IndexedStack(index: _currentIndex, children: _screens),
+          ),
+        ],
       ),
       bottomNavigationBar: CustomNavigationBar(
         currentIndex: _currentIndex,

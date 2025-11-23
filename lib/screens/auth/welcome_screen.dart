@@ -3,6 +3,7 @@ import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/gradient_button.dart';
 import 'package:lobi_application/widgets/auth/auth_bottom_sheet.dart';
+import 'package:lobi_application/widgets/common/overlays/offline_overlay.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -12,8 +13,6 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -98,6 +97,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
             ),
           ),
+          const OfflineOverlay(),
         ],
       ),
     );

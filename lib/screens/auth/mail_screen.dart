@@ -6,6 +6,7 @@ import 'package:lobi_application/widgets/auth/auth_text_field.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
+import 'package:lobi_application/widgets/common/overlays/offline_overlay.dart';
 
 // StatefulWidget → ConsumerStatefulWidget (tek değişiklik)
 class MailScreen extends ConsumerStatefulWidget {
@@ -119,7 +120,9 @@ class _MailScreenState extends ConsumerState<MailScreen> {
                             });
 
                             // BURASI DEĞİŞTİ: Controller yerine Provider
-                            final controller = ref.read(authControllerProvider.notifier);
+                            final controller = ref.read(
+                              authControllerProvider.notifier,
+                            );
                             final error = await controller.requestOtp(
                               emailCtrl.text.trim(),
                             );
@@ -154,6 +157,7 @@ class _MailScreenState extends ConsumerState<MailScreen> {
               ),
             ),
           ),
+          const OfflineOverlay(),
         ],
       ),
     );

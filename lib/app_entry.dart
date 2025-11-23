@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/providers/auth_provider.dart';
+import 'package:lobi_application/providers/connectivity_provider.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/screens/auth/welcome_screen.dart';
 import 'package:lobi_application/screens/auth/username_setup_screen.dart';
@@ -71,6 +72,7 @@ class AppEntry extends ConsumerWidget {
         // 2. Kullanıcı var -> Profil kontrolü
         AppLogger.debug('Kullanıcı var: ${user.email} -> Profil kontrolü');
         final profileState = ref.watch(currentUserProfileProvider);
+        final networkStatus = ref.watch(connectivityProvider);
 
         return profileState.when(
           loading: () {
@@ -80,8 +82,36 @@ class AppEntry extends ConsumerWidget {
             );
           },
           error: (error, stack) {
+            // If offline, show waiting screen instead of error
+            if (networkStatus == NetworkStatus.offline) {
+              return Scaffold(
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'İnternet bağlantısı bekleniyor...',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Bağlantı sağlandığında otomatik devam edilecek',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            // If online but error, go to CreateProfile (might be missing profile)
             AppLogger.error('Profil yükleme hatası', error, stack);
-            // Profil yüklenemezse CreateProfile'a yönlendir
             return const CreateProfileScreen();
           },
           data: (profile) {

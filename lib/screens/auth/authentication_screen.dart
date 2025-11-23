@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/data/repositories/auth_repository.dart';
 import 'package:lobi_application/providers/auth_provider.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
-import 'package:lobi_application/screens/main/home/home_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 import 'package:lobi_application/widgets/auth/auth_verification_input.dart';
+import 'package:lobi_application/widgets/common/overlays/offline_overlay.dart';
 
 class AuthenticationScreen extends ConsumerStatefulWidget {
   final String email;
@@ -128,7 +129,9 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                               isLoading = true;
                               errorText = null;
                             });
-                            final controller = ref.read(authControllerProvider.notifier);
+                            final controller = ref.read(
+                              authControllerProvider.notifier,
+                            );
                             final result = await controller.verifyOtp(
                               email: widget.email,
                               code: _code,
@@ -146,10 +149,11 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                                   ),
                                 );
                               } else {
+                                // Navigate to AppEntry (auth listener will handle routing)
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const HomeScreen(),
+                                    builder: (_) => const AppEntry(),
                                   ),
                                   (route) => false,
                                 );
@@ -157,7 +161,8 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                             } else {
                               // Hata var
                               setState(() {
-                                errorText = result?.errorMessage ??
+                                errorText =
+                                    result?.errorMessage ??
                                     'Doğrulama başarısız. Tekrar deneyin.';
                               });
                             }
@@ -173,6 +178,7 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
               ),
             ),
           ),
+          const OfflineOverlay(),
         ],
       ),
     );

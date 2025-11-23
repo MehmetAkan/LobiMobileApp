@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/event_permission_helper.dart';
 import 'package:lobi_application/data/repositories/auth_repository.dart';
@@ -7,7 +8,7 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// LogoutTestButton - Test amaçlı çıkış butonu
-/// 
+///
 /// Kullanım:
 /// ```dart
 /// // Herhangi bir sayfaya ekle:
@@ -29,7 +30,9 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Çıkış Yap'),
-        content: const Text('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'),
+        content: const Text(
+          'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -37,9 +40,7 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppTheme.red900,
-            ),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.red900),
             child: const Text('Çıkış Yap'),
           ),
         ],
@@ -53,22 +54,22 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
     try {
       final authRepo = getIt<AuthRepository>();
       await authRepo.signOut();
-      
+
       // Cache'i temizle
       EventPermissionHelper.clearCache();
 
       if (!mounted) return;
 
-      // Login sayfasına yönlendir
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        '/login',
+      // AppEntry'ye yönlendir (auth listener welcome screen'e götürür)
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const AppEntry()),
         (route) => false,
       );
     } catch (e) {
       if (!mounted) return;
-      
+
       setState(() => _isLoading = false);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Çıkış yapılırken hata: $e'),
@@ -134,7 +135,7 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
 // ==================== ALTERNATİF: SADECE İKON BUTONU ====================
 
 /// LogoutIconButton - Sadece icon, kompakt versiyon
-/// 
+///
 /// AppBar veya dar alanlara sığması için
 class LogoutIconButton extends StatefulWidget {
   const LogoutIconButton({super.key});
@@ -151,7 +152,9 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Çıkış Yap'),
-        content: const Text('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'),
+        content: const Text(
+          'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -159,9 +162,7 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppTheme.red900,
-            ),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.red900),
             child: const Text('Çıkış Yap'),
           ),
         ],
@@ -175,20 +176,20 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
     try {
       final authRepo = getIt<AuthRepository>();
       await authRepo.signOut();
-      
+
       EventPermissionHelper.clearCache();
 
       if (!mounted) return;
 
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        '/login',
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const AppEntry()),
         (route) => false,
       );
     } catch (e) {
       if (!mounted) return;
-      
+
       setState(() => _isLoading = false);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Çıkış yapılırken hata: $e'),
