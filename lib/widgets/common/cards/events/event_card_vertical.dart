@@ -35,106 +35,103 @@ class EventCardVertical extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: SizedBox(
-                    width: 30.w,
-                    height: 30.w,
-                    child: AppImage(
-                      path: 'https://i.pravatar.cc/150?u=1',
-                      fit: BoxFit.cover,
-                      placeholder: Container(color: AppTheme.zinc300),
-                    ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(999),
+                child: SizedBox(
+                  width: 30.w,
+                  height: 30.w,
+                  child: AppImage(
+                    path: 'https://i.pravatar.cc/150?u=1',
+                    fit: BoxFit.cover,
+                    placeholder: Container(color: AppTheme.zinc300),
                   ),
                 ),
-                SizedBox(width: 5.w),
-                Text(
-                  'Mehmet Akan', // Şimdilik sabit
-                  style: AppTextStyles.titleSM.copyWith(
-                    color: AppTheme.getTextHeadColor(context),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(width: 5.w),
+              Text(
+                'Mehmet Akan', // Şimdilik sabit
+                style: AppTextStyles.titleSM.copyWith(
+                  color: AppTheme.getTextHeadColor(context),
                 ),
-              ],
-            ),
-            SizedBox(height: 10.w),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: AppImage(
-                  path: imageUrl,
-                  fit: BoxFit.cover,
-                  placeholder: Container(
-                    color: AppTheme.zinc300,
-                    child: Icon(
-                      LucideIcons.image,
-                      size: 32.sp,
-                      color: AppTheme.zinc600,
-                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          SizedBox(height: 10.w),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: AspectRatio(
+              aspectRatio: 4 / 3,
+              child: AppImage(
+                path: imageUrl,
+                fit: BoxFit.cover,
+                placeholder: Container(
+                  color: AppTheme.zinc300,
+                  child: Icon(
+                    LucideIcons.image,
+                    size: 32.sp,
+                    color: AppTheme.zinc600,
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 10.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.cardTitle.copyWith(
-                    color: AppTheme.getTextHeadColor(context),
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 10.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.cardTitle.copyWith(
+                  color: AppTheme.getTextHeadColor(context),
                 ),
-                SizedBox(height: 8.h),
-                Row(
-                  children: [
-                    Text(
-                      dateTime != null ? dateTime.toShortDateTime() : date,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 8.h),
+              Row(
+                children: [
+                  Text(
+                    dateTime != null ? dateTime.toShortDateTime() : date,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.getEventIconTextColor(context),
+                    ),
+                  ),
+                  SizedBox(width: 5.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.zinc500,
+                      shape: BoxShape.circle,
+                    ),
+                    height: 5.h,
+                    width: 5.h,
+                  ),
+                  SizedBox(width: 5.h),
+                  Expanded(
+                    child: Text(
+                      location,
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w500,
                         color: AppTheme.getEventIconTextColor(context),
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(width: 5.h),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.zinc500,
-                        shape: BoxShape.circle,
-                      ),
-                      height: 5.h,
-                      width: 5.h,
-                    ),
-                    SizedBox(width: 5.h),
-                    Expanded(
-                      child: Text(
-                        location,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.getEventIconTextColor(context),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

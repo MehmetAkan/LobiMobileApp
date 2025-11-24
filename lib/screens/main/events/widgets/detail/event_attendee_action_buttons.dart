@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'event_detail_action_button.dart';
 import 'event_attendee_action_dropdown.dart';

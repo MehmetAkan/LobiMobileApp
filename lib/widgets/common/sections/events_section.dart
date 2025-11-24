@@ -23,12 +23,8 @@ class EventsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding:
-              padding ?? EdgeInsets.only(left: 15.w, right: 15.w, bottom: 15.h),
-          child: _buildHeader(context),
-        ),
-        SizedBox(height: 10.h),
+        _buildHeader(context),
+        SizedBox(height: 15.h),
         child,
       ],
     );

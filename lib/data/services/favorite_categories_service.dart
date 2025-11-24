@@ -58,4 +58,61 @@ class FavoriteCategoriesService {
       return false;
     }
   }
+
+  /// Add single favorite category
+  Future<void> addFavoriteCategory({
+    required String userId,
+    required String categoryId,
+  }) async {
+    try {
+      await _supabase.from('user_favorite_categories').insert({
+        'user_id': userId,
+        'category_id': categoryId,
+      });
+
+      AppLogger.success('Category added to favorites: $categoryId');
+    } catch (e, stackTrace) {
+      AppLogger.error('Add favorite category error', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  /// Remove single favorite category
+  Future<void> removeFavoriteCategory({
+    required String userId,
+    required String categoryId,
+  }) async {
+    try {
+      await _supabase
+          .from('user_favorite_categories')
+          .delete()
+          .eq('user_id', userId)
+          .eq('category_id', categoryId);
+
+      AppLogger.success('Category removed from favorites: $categoryId');
+    } catch (e, stackTrace) {
+      AppLogger.error('Remove favorite category error', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  /// Check if category is favorite
+  Future<bool> isFavoriteCategory({
+    required String userId,
+    required String categoryId,
+  }) async {
+    try {
+      final result = await _supabase
+          .from('user_favorite_categories')
+          .select()
+          .eq('user_id', userId)
+          .eq('category_id', categoryId)
+          .maybeSingle();
+
+      return result != null;
+    } catch (e, stackTrace) {
+      AppLogger.error('Check favorite category error', e, stackTrace);
+      return false;
+    }
+  }
 }

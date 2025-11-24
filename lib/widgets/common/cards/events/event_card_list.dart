@@ -38,7 +38,7 @@ class EventCardList<T> extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: physics ?? const BouncingScrollPhysics(),
         padding:
-            padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
+            padding ?? EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
         itemCount: items.length,
         separatorBuilder: (context, index) => SizedBox(width: spacing.w),
         itemBuilder: (context, index) {

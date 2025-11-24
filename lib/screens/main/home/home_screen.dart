@@ -78,37 +78,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // YATAY LİSTE
-                EventsSection(
-                  title: 'Beğenebileceğin ve fazlası',
-                  onSeeAll: () {
-                    debugPrint('Tümünü gör: Beğenebileceğin ve fazlası');
-                  },
-                  child: EventCardList<Map<String, dynamic>>(
-                    items: _mockRecommendedEvents,
-                    itemBuilder: (event, index) {
-                      return EventCardHorizontal(
-                        imageUrl: event['imageUrl'] as String,
-                        title: event['title'] as String,
-                        date: event['date'] as String,
-                        location: event['location'] as String,
-                        attendeeCount: event['attendeeCount'] as int,
-                        isLiked: false,
-                        showLikeButton: false,
-                        onTap: () {
-                          debugPrint('Etkinliğe tıklandı: ${event['title']}');
-                        },
-                      );
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 0),
+                  child: EventsSection(
+                    title: 'Beğenebileceğin ve fazlası',
+                    onSeeAll: () {
+                      debugPrint('Tümünü gör: Beğenebileceğin ve fazlası');
                     },
+                    child: EventCardList<Map<String, dynamic>>(
+                      items: _mockRecommendedEvents,
+                      itemBuilder: (event, index) {
+                        return EventCardHorizontal(
+                          imageUrl: event['imageUrl'] as String,
+                          title: event['title'] as String,
+                          date: event['date'] as String,
+                          location: event['location'] as String,
+                          attendeeCount: event['attendeeCount'] as int,
+                          isLiked: false,
+                          showLikeButton: false,
+                          onTap: () {
+                            debugPrint('Etkinliğe tıklandı: ${event['title']}');
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 5.h),
-                EventsSection(
-                  title: 'Bu haftaki etkinlikler',
-                  onSeeAll: () {
-                    debugPrint('Tümünü gör: Bu haftakiler');
-                  },
-                  child: _buildThisWeekEvents(navbarHeight),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: EventsSection(
+                    title: 'Bu haftaki etkinlikler',
+                    onSeeAll: () {
+                      debugPrint('Tümünü gör: Bu haftakiler');
+                    },
+                    child: _buildThisWeekEvents(navbarHeight),
+                  ),
                 ),
               ],
             ),
@@ -184,7 +190,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     );
   }
 
-  // ✅ YENİ METOD - Çok daha temiz ve kısa
   Widget _buildThisWeekEvents(double navbarHeight) {
     final state = ref.watch(homeThisWeekEventsProvider);
 
@@ -197,7 +202,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         debugPrint('Bu haftakiler yüklenirken hata: $error');
 
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
           child: Text(
             'Etkinlikler yüklenirken bir sorun oluştu.',
             style: TextStyle(
@@ -208,7 +213,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         );
       },
       data: (groups) {
-        // Tüm etkinlikleri düz listeye çevir
         final List<EventModel> allEvents = [];
         for (final group in groups) {
           allEvents.addAll(group.events);
@@ -216,7 +220,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
         if (allEvents.isEmpty) {
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
             child: Text(
               'Bu hafta için etkinlik bulunmuyor.',
               style: TextStyle(

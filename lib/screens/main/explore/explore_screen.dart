@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 import 'package:lobi_application/data/models/category_model.dart';
 import 'package:lobi_application/providers/event_provider.dart';
+import 'package:lobi_application/screens/main/category/category_detail_screen.dart';
 import 'package:lobi_application/screens/main/explore/widgets/all_events_list.dart.dart';
 import 'package:lobi_application/screens/main/explore/widgets/popular_events_list.dart';
 import 'package:lobi_application/theme/app_theme.dart';
@@ -45,32 +46,41 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 CategoriesGrid(
                   categories: _categories,
                   onCategoryTap: (category) {
-                    debugPrint('Kategori tıklandı: ${category.name}');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CategoryDetailScreen(category: category),
+                      ),
+                    );
                   },
                 ),
                 SizedBox(height: 25.h),
+
                 _buildPopularEventsSection(),
                 SizedBox(height: 25.h),
-                EventsSection(
-                  title: 'Tüm etkinlikler',
-                  onSeeAll: () {
-                    debugPrint('Tümünü gör: Tüm Etkinlikler');
-                  },
-                  child: AllEventsList(
-                    scrollController: scrollController,
-                    navbarHeight: navbarHeight,
-                    onActiveDateChanged: (date) {
-                      setState(() {
-                        activeDate = date;
-                      });
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: EventsSection(
+                    title: 'Tüm etkinlikler',
+                    onSeeAll: () {
+                      debugPrint('Tümünü gör: Tüm Etkinlikler');
                     },
-                    onEventTap: (event) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => EventDetailScreen(event: event),
-                        ),
-                      );
-                    },
+                    child: AllEventsList(
+                      scrollController: scrollController,
+                      navbarHeight: navbarHeight,
+                      onActiveDateChanged: (date) {
+                        setState(() {
+                          activeDate = date;
+                        });
+                      },
+                      onEventTap: (event) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => EventDetailScreen(event: event),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -191,51 +201,48 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
   Widget _buildPopularEventsSection() {
     final state = ref.watch(discoverPopularEventsProvider);
 
-    return EventsSection(
-      title: 'Popüler Etkinlikler',
-      onSeeAll: () {
-        debugPrint('Tümünü gör: Popüler Etkinlikler');
-      },
-      child: state.when(
-        loading: () => SizedBox(
-          height: 240.h,
-          child: const Center(child: CircularProgressIndicator()),
-        ),
-        error: (error, stackTrace) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-          child: Text(
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 0),
+      child: EventsSection(
+        title: 'Popüler Etkinlikler',
+        onSeeAll: () {
+          debugPrint('Tümünü gör: Popüler Etkinlikler');
+        },
+        child: state.when(
+          loading: () => SizedBox(
+            height: 240.h,
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stackTrace) => Text(
             'Popüler etkinlikler yüklenirken bir sorun oluştu.',
             style: TextStyle(
               fontSize: 14.sp,
               color: AppTheme.getTextDescColor(context),
             ),
           ),
-        ),
-        data: (events) {
-          if (events.isEmpty) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-              child: Text(
+          data: (events) {
+            if (events.isEmpty) {
+              return Text(
                 'Şu anda öne çıkan popüler etkinlik bulunmuyor.',
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: AppTheme.getTextDescColor(context),
                 ),
-              ),
-            );
-          }
-
-          return PopularEventsList(
-            events: events,
-            onEventTap: (event) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => EventDetailScreen(event: event),
-                ),
               );
-            },
-          );
-        },
+            }
+
+            return PopularEventsList(
+              events: events,
+              onEventTap: (event) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => EventDetailScreen(event: event),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

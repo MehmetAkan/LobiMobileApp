@@ -5,16 +5,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lobi_application/core/constants/app_constants.dart';
 import 'package:lobi_application/core/errors/app_exception.dart';
 
-
 class EventService {
   final SupabaseClient _client;
 
   EventService(this._client);
 
-
   Future<Map<String, dynamic>> createEvent(Map<String, dynamic> data) async {
     try {
-
       final rpcParams = data.map((key, value) {
         return MapEntry('${key}_in', value);
       });
@@ -23,11 +20,8 @@ class EventService {
 
       // 3. RPC'yi (Remote Procedure Call) çağır
       final result = await _client
-          .rpc(
-            'create_new_event', 
-            params: rpcParams, 
-          )
-          .select() 
+          .rpc('create_new_event', params: rpcParams)
+          .select()
           .single();
 
       return result as Map<String, dynamic>;
@@ -35,7 +29,6 @@ class EventService {
       throw _handleError(e, 'createEvent');
     }
   }
-
 
   Future<List<Map<String, dynamic>>> getEventsInRange({
     required DateTime start,
@@ -72,51 +65,48 @@ class EventService {
     }
   }
 
+  Future<String> uploadCoverImage({
+    required File file,
+    required String userId,
+  }) async {
+    try {
+      final path = file.path;
 
-Future<String> uploadCoverImage({
-  required File file,
-  required String userId,
-}) async {
-  try {
-    final path = file.path;
+      // 1) Eğer asset yoluyorsa (ör: assets/images/system/events_cover/events_cover_4.jpg)
+      //    Supabase'e upload ETME, direkt bu string'i kullan.
+      if (path.startsWith('assets/')) {
+        return path;
+      }
 
-    // 1) Eğer asset yoluyorsa (ör: assets/images/system/events_cover/events_cover_4.jpg)
-    //    Supabase'e upload ETME, direkt bu string'i kullan.
-    if (path.startsWith('assets/')) {
-      return path;
+      // 2) Güvenlik için: eğer bir şekilde http ile başlayan bir şey File olarak gelirse
+      //    (normalde olmaması lazım) yine upload etme, olduğu gibi döndür.
+      if (path.startsWith('http')) {
+        return path;
+      }
+
+      // 3) Buraya geldiysek bu cihazdaki GERÇEK bir dosya yolu demektir => upload et
+      final fileExtension = path.split('.').last.toLowerCase();
+      final fileName =
+          'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+      final filePath = '$userId/$fileName';
+
+      await _client.storage
+          .from('event_covers')
+          .upload(
+            filePath,
+            file,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+
+      final publicUrl = _client.storage
+          .from('event_covers')
+          .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (e) {
+      throw _handleError(e, 'uploadCoverImage');
     }
-
-    // 2) Güvenlik için: eğer bir şekilde http ile başlayan bir şey File olarak gelirse
-    //    (normalde olmaması lazım) yine upload etme, olduğu gibi döndür.
-    if (path.startsWith('http')) {
-      return path;
-    }
-
-    // 3) Buraya geldiysek bu cihazdaki GERÇEK bir dosya yolu demektir => upload et
-    final fileExtension = path.split('.').last.toLowerCase();
-    final fileName =
-        'cover_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
-    final filePath = '$userId/$fileName';
-
-    await _client.storage
-        .from('event_covers')
-        .upload(
-          filePath,
-          file,
-          fileOptions: const FileOptions(
-            cacheControl: '3600',
-            upsert: false,
-          ),
-        );
-
-    final publicUrl =
-        _client.storage.from('event_covers').getPublicUrl(filePath);
-
-    return publicUrl;
-  } catch (e) {
-    throw _handleError(e, 'uploadCoverImage');
   }
-}
 
   Future<List<Map<String, dynamic>>> getPopularEvents({
     required int limit,
@@ -132,7 +122,7 @@ Future<String> uploadCoverImage({
       throw _handleError(e, 'getPopularEvents');
     }
   }
-  
+
   Future<void> incrementEventViewCount(String eventId) async {
     try {
       await _client.rpc(
@@ -141,6 +131,25 @@ Future<String> uploadCoverImage({
       );
     } catch (e) {
       throw _handleError(e, 'incrementEventViewCount');
+    }
+  }
+
+  /// Get upcoming events by category
+  Future<List<Map<String, dynamic>>> getEventsByCategory(
+    String categoryId,
+  ) async {
+    try {
+      final response = await _client
+          .from(AppConstants.eventsTable)
+          .select()
+          .eq('category_id', categoryId)
+          .gte('start_date', DateTime.now().toIso8601String())
+          .order('start_date', ascending: true)
+          .limit(20);
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getEventsByCategory');
     }
   }
 

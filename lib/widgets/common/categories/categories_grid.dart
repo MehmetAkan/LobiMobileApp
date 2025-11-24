@@ -28,7 +28,7 @@ class CategoriesGrid extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: padding ?? EdgeInsets.symmetric(horizontal: 20.w),
+        padding: padding ?? EdgeInsets.symmetric(horizontal: 15.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
