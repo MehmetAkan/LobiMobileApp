@@ -154,6 +154,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                   widget.category.name,
                   style: TextStyle(
                     fontSize: 24.sp,
+                    letterSpacing: -0.25,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.black800,
                   ),
@@ -167,9 +168,9 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                       'Bu kategorideki etkinlikleri keşfet',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 16.sp,
                     color: AppTheme.zinc600,
-                    height: 1.5,
+                    height: 1,
                   ),
                 ),
               ),
@@ -211,16 +212,16 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 32.h),
+              SizedBox(height: 25.h),
               Text(
                 'Etkinlikler (${_events.length})',
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.black800,
                 ),
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 0.h),
               if (_isLoadingEvents)
                 Center(
                   child: Padding(
@@ -231,7 +232,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
               else if (_events.isEmpty)
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.all(40.h),
+                    padding: EdgeInsets.all(20.h),
                     child: Column(
                       children: [
                         Icon(
@@ -254,10 +255,18 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                 )
               else
                 ListView.separated(
+                  padding: const EdgeInsets.only(top: 15, bottom: 50),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: _events.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                  separatorBuilder: (_, __) => Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    child: Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppTheme.zinc200,
+                    ),
+                  ),
                   itemBuilder: (context, index) {
                     final event = _events[index];
                     return EventCardVertical(
