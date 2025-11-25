@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -12,7 +13,9 @@ import 'event_manage_guests_screen.dart';
 import 'event_manage_questions_screen.dart';
 
 class EventManageScreen extends StatelessWidget {
-  const EventManageScreen({super.key});
+  final EventModel event;
+
+  const EventManageScreen({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +29,20 @@ class EventManageScreen extends StatelessWidget {
               iconPath: "assets/images/system/settings/setting-event-icon.svg",
               title: 'Etkinlik Detayları',
               description: 'Etkinlik bilgilerini düzenle',
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EventManageDetailsScreen(),
-                ),
-              ),
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        EventManageDetailsScreen(event: event),
+                  ),
+                );
+
+                // If update successful, pop back to detail screen with refresh signal
+                if (result == true && context.mounted) {
+                  Navigator.of(context).pop(true);
+                }
+              },
             ),
           ],
         ),

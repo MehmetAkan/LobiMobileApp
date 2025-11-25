@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/data/models/event_attendance_status.dart';
 import 'package:lobi_application/data/services/event_attendance_service.dart';
+import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/screens/main/events/manage/event_manage_screen.dart';
 import 'package:lobi_application/screens/main/events/manage/event_manage_requests_screen.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
@@ -30,21 +32,23 @@ import 'package:lobi_application/data/models/profile_model.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EventDetailScreen extends StatefulWidget {
+class EventDetailScreen extends ConsumerStatefulWidget {
   final EventModel event;
 
   const EventDetailScreen({super.key, required this.event});
 
   @override
-  State<EventDetailScreen> createState() => _EventDetailScreenState();
+  ConsumerState<EventDetailScreen> createState() => _EventDetailScreenState();
 }
 
-class _EventDetailScreenState extends State<EventDetailScreen> {
+class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   final ScrollController _scrollController = ScrollController();
   final EventAttendanceService _attendanceService = EventAttendanceService();
+  final EventRepository _eventRepository = getIt<EventRepository>();
 
   late Map<String, dynamic> eventData;
   late final bool _isOrganizer;
+  late EventModel _currentEvent; // Current event (might be refreshed)
 
   EventAttendanceStatus _attendanceStatus = EventAttendanceStatus.notAttending;
   bool _isLoadingAttendance = true;
@@ -54,9 +58,10 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   void initState() {
     super.initState();
 
+    _currentEvent = widget.event; // Initialize with initial event
     _isOrganizer = _checkIsOrganizer();
 
-    eventData = _mapEventToDetailData(widget.event);
+    eventData = _mapEventToDetailData(_currentEvent);
     _incrementViewCount();
     _loadOrganizerProfile();
 
@@ -108,6 +113,36 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  /// Refresh event data from backend
+  Future<void> _refreshEvent() async {
+    try {
+      final updatedEvent = await _eventRepository.getEventById(widget.event.id);
+
+      if (mounted) {
+        setState(() {
+          _currentEvent = updatedEvent;
+          eventData = _mapEventToDetailData(_currentEvent);
+        });
+
+        // Invalidate event providers to refresh Home/Explore lists
+        ref.invalidate(homeThisWeekEventsProvider);
+        ref.invalidate(discoverPopularEventsProvider);
+        ref.invalidate(
+          discoverEventsControllerProvider,
+        ); // Explore upcoming events
+
+        getIt<AppFeedbackService>().showSuccess(
+          'Etkinlik bilgileri güncellendi',
+        );
+      }
+    } catch (e) {
+      debugPrint('⚠️ Event refresh error: $e');
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('Güncellenmiş veri alınamadı');
+      }
+    }
   }
 
   Map<String, dynamic> _mapEventToDetailData(EventModel event) {
@@ -283,10 +318,19 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
         onShare: _handleShare,
         onAnnouncement: _handleAnnouncement,
         onRequests: _handleRequests,
-        onManage: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EventManageScreen()),
-        ),
+        onManage: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventManageScreen(event: _currentEvent),
+            ),
+          );
+
+          // If update successful, refresh event data
+          if (result == true && mounted) {
+            await _refreshEvent();
+          }
+        },
       );
     }
 

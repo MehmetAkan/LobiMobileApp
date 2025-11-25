@@ -11,7 +11,8 @@ class EventModel {
   final int attendeeCount;
   final bool isLiked;
   final List<String> categories;
-  final bool requiresApproval; 
+  final String? categoryId; // Added for category tracking
+  final bool requiresApproval;
 
   EventModel({
     required this.id,
@@ -19,14 +20,15 @@ class EventModel {
     required this.description,
     required this.date,
     required this.location,
-    this.locationSecondary,    
+    this.locationSecondary,
     this.organizerId,
     this.endDate,
     required this.imageUrl,
     required this.attendeeCount,
     this.isLiked = false,
     this.categories = const [],
-    this.requiresApproval = false, 
+    this.categoryId,
+    this.requiresApproval = false,
   });
 
   // Mock data için factory
@@ -72,13 +74,14 @@ class EventModel {
     String? description,
     DateTime? date,
     String? location,
-    String? locationSecondary, 
+    String? locationSecondary,
     String? imageUrl,
     DateTime? endDate,
     String? organizerId,
     int? attendeeCount,
     bool? isLiked,
     List<String>? categories,
+    String? categoryId,
     bool? requiresApproval,
   }) {
     return EventModel(
@@ -94,7 +97,8 @@ class EventModel {
       attendeeCount: attendeeCount ?? this.attendeeCount,
       isLiked: isLiked ?? this.isLiked,
       categories: categories ?? this.categories,
-      requiresApproval: requiresApproval ?? this.requiresApproval, 
+      categoryId: categoryId ?? this.categoryId,
+      requiresApproval: requiresApproval ?? this.requiresApproval,
     );
   }
 }

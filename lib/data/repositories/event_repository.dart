@@ -65,11 +65,9 @@ class EventRepository {
         'requires_approval': isApprovalRequired,
         'max_participants': capacity,
         'category_id': category.id,
-      
       };
       return await _eventService.createEvent(dataMap);
     } catch (e) {
-
       rethrow;
     }
   }
@@ -158,49 +156,65 @@ class EventRepository {
     }
   }
 
-EventModel _mapToEventModel(Map<String, dynamic> row) {
-  // Tarih parse
-  final dynamic startDateRaw = row['start_date'];
-  DateTime startDate;
-  if (startDateRaw is DateTime) {
-    startDate = startDateRaw;
-  } else {
-    startDate = _parseDateTime(startDateRaw);
+  /// Get single event by ID
+  Future<EventModel> getEventById(String eventId) async {
+    try {
+      final row = await _eventService.getEventById(eventId);
+      return _mapToEventModel(row);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Etkinlik detayı alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
   }
 
-  // End date parse
-  DateTime? endDate;
-  final dynamic endDateRaw = row['end_date'];
-  if (endDateRaw != null) {
-    endDate = endDateRaw is DateTime
-        ? endDateRaw
-        : _parseDateTime(endDateRaw);
+  EventModel _mapToEventModel(Map<String, dynamic> row) {
+    // Tarih parse
+    final dynamic startDateRaw = row['start_date'];
+    DateTime startDate;
+    if (startDateRaw is DateTime) {
+      startDate = startDateRaw;
+    } else {
+      startDate = _parseDateTime(startDateRaw);
+    }
+
+    // End date parse
+    DateTime? endDate;
+    final dynamic endDateRaw = row['end_date'];
+    if (endDateRaw != null) {
+      endDate = endDateRaw is DateTime
+          ? endDateRaw
+          : _parseDateTime(endDateRaw);
+    }
+
+    // Diğer alanlar
+    final String locationName = (row['location_name'] as String?) ?? '';
+    final String? locationSecondary = row['location_secondary_text'] as String?;
+    final int attendeeCount = _parseInt(row['participant_count']);
+
+    final String? organizerId = row['organizer_id'] as String?;
+
+    final bool requiresApproval = row['requires_approval'] as bool? ?? false;
+
+    return EventModel(
+      id: row['id']?.toString() ?? '',
+      title: row['title'] as String? ?? '',
+      description: row['description'] as String? ?? '',
+      date: startDate,
+      endDate: endDate,
+      location: locationName,
+      locationSecondary: locationSecondary,
+      imageUrl: row['cover_image_url'] as String? ?? '',
+      organizerId: organizerId,
+      attendeeCount: attendeeCount,
+      categories: const [],
+      categoryId: row['category_id'] as String?, // Parse category_id
+      requiresApproval: requiresApproval,
+    );
   }
-
-  // Diğer alanlar
-  final String locationName = (row['location_name'] as String?) ?? '';
-  final String? locationSecondary = row['location_secondary_text'] as String?;
-  final int attendeeCount = _parseInt(row['participant_count']);
-  
-  final String? organizerId = row['organizer_id'] as String?;
-  
-  final bool requiresApproval = row['requires_approval'] as bool? ?? false;
-
-  return EventModel(
-    id: row['id']?.toString() ?? '',
-    title: row['title'] as String? ?? '',
-    description: row['description'] as String? ?? '',
-    date: startDate,
-    endDate: endDate,
-    location: locationName,
-    locationSecondary: locationSecondary,
-    imageUrl: row['cover_image_url'] as String? ?? '',
-    organizerId: organizerId,  
-    attendeeCount: attendeeCount,
-    categories: const [],
-    requiresApproval: requiresApproval, 
-  );
-}
 
   DateTime _parseDateTime(dynamic value) {
     if (value is DateTime) return value;

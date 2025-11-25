@@ -153,6 +153,36 @@ class EventService {
     }
   }
 
+  /// Update existing event
+  Future<void> updateEvent({
+    required String eventId,
+    required Map<String, dynamic> updates,
+  }) async {
+    try {
+      await _client
+          .from(AppConstants.eventsTable)
+          .update(updates)
+          .eq('id', eventId);
+    } catch (e) {
+      throw _handleError(e, 'updateEvent');
+    }
+  }
+
+  /// Get single event by ID
+  Future<Map<String, dynamic>> getEventById(String eventId) async {
+    try {
+      final response = await _client
+          .from(AppConstants.eventsTable)
+          .select()
+          .eq('id', eventId)
+          .single();
+
+      return response as Map<String, dynamic>;
+    } catch (e) {
+      throw _handleError(e, 'getEventById');
+    }
+  }
+
   AppException _handleError(Object error, String context) {
     final String prefix = 'EventService ($context):';
 
