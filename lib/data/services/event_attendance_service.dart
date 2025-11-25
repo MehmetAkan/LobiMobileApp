@@ -324,4 +324,46 @@ class EventAttendanceService {
       throw DatabaseException('Reddetme başarısız: ${e.message}');
     }
   }
+
+  /// Get all guests for an event (with profiles) - GUEST LIST
+  Future<List<Map<String, dynamic>>> getEventGuests(String eventId) async {
+    try {
+      final response = await _supabase
+          .from(_tableName)
+          .select('''
+            *,
+            profiles!inner(first_name, last_name, avatar_url)
+          ''')
+          .eq('event_id', eventId)
+          .order('joined_at', ascending: false);
+
+      AppLogger.success('Misafir listesi alındı: ${(response as List).length}');
+      return (response as List).cast<Map<String, dynamic>>();
+    } on PostgrestException catch (e) {
+      AppLogger.error('Supabase error in getEventGuests', e);
+      throw DatabaseException('Misafir listesi alınamadı: ${e.message}');
+    }
+  }
+
+  /// Update attendance status (mark as attended/did_not_attend)
+  Future<void> updateAttendanceStatus({
+    required String attendanceId,
+    required EventAttendanceStatus newStatus,
+  }) async {
+    try {
+      final updates = <String, dynamic>{'status': newStatus.dbValue};
+
+      // Set attended_at if marking as attended
+      if (newStatus == EventAttendanceStatus.attended) {
+        updates['attended_at'] = DateTime.now().toIso8601String();
+      }
+
+      await _supabase.from(_tableName).update(updates).eq('id', attendanceId);
+
+      AppLogger.success('Katılım durumu güncellendi: ${newStatus.dbValue}');
+    } on PostgrestException catch (e) {
+      AppLogger.error('Supabase error in updateAttendanceStatus', e);
+      throw DatabaseException('Durum güncellenemedi: ${e.message}');
+    }
+  }
 }

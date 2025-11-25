@@ -1,6 +1,5 @@
 import 'package:lobi_application/data/models/event_attendance_status.dart';
 
-
 class EventAttendanceModel {
   final String id;
   final String eventId;
@@ -10,6 +9,7 @@ class EventAttendanceModel {
   final DateTime? approvedAt;
   final DateTime? rejectedAt;
   final DateTime? cancelledAt;
+  final DateTime? attendedAt; // ✅ NEW: Katıldı işareti zamanı
   final String? cancellationReason;
 
   const EventAttendanceModel({
@@ -21,6 +21,7 @@ class EventAttendanceModel {
     this.approvedAt,
     this.rejectedAt,
     this.cancelledAt,
+    this.attendedAt,
     this.cancellationReason,
   });
 
@@ -41,6 +42,9 @@ class EventAttendanceModel {
       cancelledAt: json['cancelled_at'] != null
           ? DateTime.parse(json['cancelled_at'] as String)
           : null,
+      attendedAt: json['attended_at'] != null
+          ? DateTime.parse(json['attended_at'] as String)
+          : null,
       cancellationReason: json['cancellation_reason'] as String?,
     );
   }
@@ -56,6 +60,7 @@ class EventAttendanceModel {
       if (approvedAt != null) 'approved_at': approvedAt!.toIso8601String(),
       if (rejectedAt != null) 'rejected_at': rejectedAt!.toIso8601String(),
       if (cancelledAt != null) 'cancelled_at': cancelledAt!.toIso8601String(),
+      if (attendedAt != null) 'attended_at': attendedAt!.toIso8601String(),
       if (cancellationReason != null) 'cancellation_reason': cancellationReason,
     };
   }
@@ -76,6 +81,7 @@ class EventAttendanceModel {
     DateTime? approvedAt,
     DateTime? rejectedAt,
     DateTime? cancelledAt,
+    DateTime? attendedAt,
     String? cancellationReason,
   }) {
     return EventAttendanceModel(
@@ -87,6 +93,7 @@ class EventAttendanceModel {
       approvedAt: approvedAt ?? this.approvedAt,
       rejectedAt: rejectedAt ?? this.rejectedAt,
       cancelledAt: cancelledAt ?? this.cancelledAt,
+      attendedAt: attendedAt ?? this.attendedAt,
       cancellationReason: cancellationReason ?? this.cancellationReason,
     );
   }

@@ -57,7 +57,7 @@ class EventManageScreen extends StatelessWidget {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const EventManageGuestsScreen(),
+                  builder: (context) => EventManageGuestsScreen(event: event),
                 ),
               ),
             ),

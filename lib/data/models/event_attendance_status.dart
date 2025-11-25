@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-
 enum EventAttendanceStatus {
   notAttending,
-  
+
   pending,
-  
+
   attending,
-  
+
+  attended, // ✅ NEW: Etkinlikte katıldı
+
+  didNotAttend, // ✅ NEW: Etkinlikte katılmadı
+
   rejected;
 
   String get displayText {
@@ -20,6 +23,10 @@ enum EventAttendanceStatus {
         return 'Organizatör Onayı Bekleniyor';
       case EventAttendanceStatus.attending:
         return 'Katılacaksınız';
+      case EventAttendanceStatus.attended:
+        return 'Katıldı';
+      case EventAttendanceStatus.didNotAttend:
+        return 'Katılmadı';
       case EventAttendanceStatus.rejected:
         return 'Katılım Talebiniz Reddedildi';
     }
@@ -34,6 +41,10 @@ enum EventAttendanceStatus {
         return AppTheme.orange900;
       case EventAttendanceStatus.attending:
         return AppTheme.green900;
+      case EventAttendanceStatus.attended:
+        return AppTheme.green500; // Katıldı - yeşil
+      case EventAttendanceStatus.didNotAttend:
+        return AppTheme.red500; // Katılmadı - kırmızı
       case EventAttendanceStatus.rejected:
         return AppTheme.red900;
     }
@@ -48,6 +59,10 @@ enum EventAttendanceStatus {
         return LucideIcons.clock400;
       case EventAttendanceStatus.attending:
         return LucideIcons.badgeCheck400;
+      case EventAttendanceStatus.attended:
+        return LucideIcons.check400; // Katıldı - check
+      case EventAttendanceStatus.didNotAttend:
+        return LucideIcons.x400; // Katılmadı - X
       case EventAttendanceStatus.rejected:
         return LucideIcons.circleX400;
     }
@@ -74,6 +89,10 @@ enum EventAttendanceStatus {
         return 'pending';
       case EventAttendanceStatus.attending:
         return 'attending';
+      case EventAttendanceStatus.attended:
+        return 'attended';
+      case EventAttendanceStatus.didNotAttend:
+        return 'did_not_attend';
       case EventAttendanceStatus.rejected:
         return 'rejected';
     }
@@ -86,6 +105,10 @@ enum EventAttendanceStatus {
         return EventAttendanceStatus.pending;
       case 'attending':
         return EventAttendanceStatus.attending;
+      case 'attended':
+        return EventAttendanceStatus.attended;
+      case 'did_not_attend':
+        return EventAttendanceStatus.didNotAttend;
       case 'rejected':
         return EventAttendanceStatus.rejected;
       default:

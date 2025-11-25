@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/data/models/guest_model.dart';
+import 'package:lobi_application/data/models/event_attendance_status.dart';
+import 'package:lobi_application/data/services/event_attendance_service.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/screens/main/events/widgets/manage/guest_list_item.dart';
-
 import 'package:lobi_application/widgets/common/badges/status_badge.dart';
-
 import 'package:lobi_application/widgets/common/inputs/custom_search_bar.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-
 import 'package:lobi_application/widgets/common/filters/filter_bottom_sheet.dart';
 import 'package:lobi_application/widgets/common/filters/filter_option.dart';
 import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
 class EventManageGuestsScreen extends StatefulWidget {
-  const EventManageGuestsScreen({super.key});
+  final EventModel event;
+
+  const EventManageGuestsScreen({super.key, required this.event});
 
   @override
   State<EventManageGuestsScreen> createState() =>
@@ -22,6 +27,11 @@ class EventManageGuestsScreen extends StatefulWidget {
 }
 
 class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
+  final EventAttendanceService _service = EventAttendanceService();
+  List<GuestModel> _allGuests = [];
+  List<GuestModel> _filteredGuests = [];
+  bool _isLoading = true;
+
   FilterOption _selectedFilter = _filterOptions.first;
 
   static const List<FilterOption> _filterOptions = [
@@ -42,16 +52,62 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
       icon: LucideIcons.badgeCheck400,
     ),
     FilterOption(
-      id: 'invited',
-      label: 'Davet Edildi',
-      icon: LucideIcons.mail400,
-    ),
-    FilterOption(
       id: 'not_attending',
-      label: 'Katılmayacaklar',
+      label: 'Katılmadı',
       icon: LucideIcons.badgeX400,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGuests();
+  }
+
+  Future<void> _loadGuests() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final guestsData = await _service.getEventGuests(widget.event.id);
+      final guests = guestsData
+          .map((json) => GuestModel.fromJson(json))
+          .toList();
+
+      if (mounted) {
+        setState(() {
+          _allGuests = guests;
+          _applyFilter();
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('⚠️ Guest load error: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+        getIt<AppFeedbackService>().showError('Misafir listesi yüklenemedi');
+      }
+    }
+  }
+
+  void _applyFilter() {
+    if (_selectedFilter.id == 'all') {
+      _filteredGuests = _allGuests;
+    } else {
+      _filteredGuests = _allGuests.where((guest) {
+        switch (_selectedFilter.id) {
+          case 'attending':
+            return guest.status == EventAttendanceStatus.attending;
+          case 'attended':
+            return guest.status == EventAttendanceStatus.attended;
+          case 'not_attending':
+            return guest.status == EventAttendanceStatus.didNotAttend;
+          default:
+            return true;
+        }
+      }).toList();
+    }
+  }
+
   void _openFilterModal() {
     FilterBottomSheet.show(
       context: context,
@@ -60,6 +116,7 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
       onOptionSelected: (option) {
         setState(() {
           _selectedFilter = option;
+          _applyFilter();
         });
       },
     );
@@ -85,46 +142,65 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
   }
 
   Widget _buildGuestList() {
-    // Mock data generation based on filter
-    // In a real app, this would filter the actual list
+    if (_isLoading) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_filteredGuests.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Text(
+            _selectedFilter.id == 'all'
+                ? 'Henüz misafir yok'
+                : 'Bu filtre için misafir bulunamadı',
+            style: TextStyle(
+              fontSize: 15.sp,
+              color: AppTheme.getTextDescColor(context),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Column(
-      children: List.generate(10, (index) {
-        // Simulate filtering for demo purposes
-        if (_selectedFilter.id != 'all') {
-          // Simple logic to show different items for different filters
-          if (_selectedFilter.id == 'attending' && index % 4 != 0)
-            return const SizedBox.shrink();
-          if (_selectedFilter.id == 'attended' && index % 4 != 1)
-            return const SizedBox.shrink();
-          if (_selectedFilter.id == 'invited' && index % 4 != 2)
-            return const SizedBox.shrink();
-          if (_selectedFilter.id == 'not_attending' && index % 4 != 3)
-            return const SizedBox.shrink();
-        }
-
-        final fullName = 'Kullanıcı Adı $index';
-        final profileImageUrl = 'https://i.pravatar.cc/150?u=${index + 100}';
-
+      children: _filteredGuests.map((guest) {
         return GestureDetector(
-          onTap: () => _showGuestModal(context, fullName, profileImageUrl),
+          onTap: () => _showGuestModal(context, guest),
           behavior: HitTestBehavior.opaque,
           child: GuestListItem(
-            profileImageUrl: profileImageUrl, // Random image
-            fullName: fullName,
-            username: 'kullanici$index',
-            statusText: _getStatusText(index),
-            statusType: _getStatusType(index),
+            profileImageUrl: guest.profileImageUrl ?? '',
+            fullName: guest.fullName,
+            username: '@${guest.username}',
+            statusText: guest.statusDisplayText,
+            statusType: _getStatusType(guest.status),
           ),
         );
-      }),
+      }).toList(),
     );
   }
 
-  void _showGuestModal(
-    BuildContext context,
-    String fullName,
-    String profileImageUrl,
-  ) {
+  BadgeType _getStatusType(EventAttendanceStatus status) {
+    switch (status) {
+      case EventAttendanceStatus.attending:
+      case EventAttendanceStatus.pending:
+        return BadgeType.orange;
+      case EventAttendanceStatus.attended:
+        return BadgeType.green;
+      case EventAttendanceStatus.didNotAttend:
+      case EventAttendanceStatus.rejected:
+        return BadgeType.red;
+      default:
+        return BadgeType.black;
+    }
+  }
+
+  void _showGuestModal(BuildContext context, GuestModel guest) {
     CustomModalSheet.show(
       context: context,
       showDivider: true,
@@ -132,12 +208,15 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 22.5.r, // 45px diameter
-            backgroundImage: NetworkImage(profileImageUrl),
+            radius: 22.5.r,
+            backgroundImage: guest.profileImageUrl != null
+                ? NetworkImage(guest.profileImageUrl!)
+                : null,
+            backgroundColor: AppTheme.zinc300,
           ),
           SizedBox(height: 10.h),
           Text(
-            fullName,
+            guest.fullName,
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
@@ -146,168 +225,157 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          // Username Column
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Kullanıcı Adı',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.zinc600,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  '@kullanici', // TODO: Pass actual username
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.getTextHeadColor(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Status Column
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Durum',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.zinc600,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  'Katılacak', // TODO: Pass actual status
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.getTextHeadColor(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      footer: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.white,
-                foregroundColor: AppTheme.red900,
-                padding: EdgeInsets.symmetric(vertical: 15.h),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.r),
-                ),
-                side: BorderSide(color: AppTheme.zinc300, width: 1),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.circleX400,
-                    size: 18.sp,
-                    color: AppTheme.red900,
-                  ),
-                  SizedBox(width: 5.w),
-                  Text(
-                    'Katılmadı',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
+          Row(
+            children: [
+              // Username Column
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Kullanıcı Adı',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.zinc600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(width: 5.w),
-          Expanded(
-            flex: 5,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.black800,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 15.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.r),
+                    SizedBox(height: 4.h),
+                    Text(
+                      '@${guest.username}',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.getTextHeadColor(context),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.badgeCheck400,
-                    size: 18.sp,
-                    color: AppTheme.white,
-                  ),
-                  SizedBox(width: 5.w),
-                  Text(
-                    'Katıldı',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
+              // Status Column
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Durum',
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.zinc600,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 4.h),
+                    Text(
+                      guest.statusDisplayText,
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.getTextHeadColor(context),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
+          ),
+          SizedBox(height: 24.h),
+          _buildModalButton(
+            context: context,
+            label: 'Katıldı Olarak İşaretle',
+            onPressed: () => _markAsAttended(guest),
+            isPrimary: guest.status != EventAttendanceStatus.attended,
+          ),
+          SizedBox(height: 10.h),
+          _buildModalButton(
+            context: context,
+            label: 'Katılmadı Olarak İşaretle',
+            onPressed: () => _markAsDidNotAttend(guest),
+            isPrimary: false,
+            isDestructive: guest.status != EventAttendanceStatus.didNotAttend,
           ),
         ],
       ),
     );
   }
 
-  String _getStatusText(int index) {
-    final mod = index % 4;
-    switch (mod) {
-      case 0:
-        return 'Katılacak';
-      case 1:
-        return 'Katıldı';
-      case 2:
-        return 'Davet Edildi';
-      case 3:
-        return 'Katılmıyor';
-      default:
-        return '';
+  Widget _buildModalButton({
+    required BuildContext context,
+    required String label,
+    required VoidCallback onPressed,
+    bool isPrimary = false,
+    bool isDestructive = false,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      height: 50.h,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isPrimary
+              ? AppTheme.green900
+              : isDestructive
+              ? AppTheme.red900
+              : AppTheme.zinc200,
+          foregroundColor: isPrimary || isDestructive
+              ? Colors.white
+              : AppTheme.getTextHeadColor(context),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _markAsAttended(GuestModel guest) async {
+    Navigator.of(context, rootNavigator: true).pop();
+
+    try {
+      await _service.updateAttendanceStatus(
+        attendanceId: guest.id,
+        newStatus: EventAttendanceStatus.attended,
+      );
+
+      if (mounted) {
+        getIt<AppFeedbackService>().showSuccess(
+          '${guest.fullName} katıldı olarak işaretlendi',
+        );
+        await _loadGuests(); // Refresh list
+      }
+    } catch (e) {
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('İşlem başarısız');
+      }
     }
   }
 
-  BadgeType _getStatusType(int index) {
-    // Mock status type based on index
-    final mod = index % 4;
-    switch (mod) {
-      case 0:
-        return BadgeType.purple;
-      case 1:
-        return BadgeType.green;
-      case 2:
-        return BadgeType.black;
-      case 3:
-        return BadgeType.red;
-      default:
-        return BadgeType.black;
+  Future<void> _markAsDidNotAttend(GuestModel guest) async {
+    Navigator.of(context, rootNavigator: true).pop();
+
+    try {
+      await _service.updateAttendanceStatus(
+        attendanceId: guest.id,
+        newStatus: EventAttendanceStatus.didNotAttend,
+      );
+
+      if (mounted) {
+        getIt<AppFeedbackService>().showSuccess(
+          '${guest.fullName} katılmadı olarak işaretlendi',
+        );
+        await _loadGuests(); // Refresh list
+      }
+    } catch (e) {
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('İşlem başarısız');
+      }
     }
   }
 }
