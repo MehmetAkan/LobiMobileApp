@@ -42,9 +42,7 @@ class GuestModel {
       id: json['id'] as String,
       userId: json['user_id'] as String,
       fullName: fullName.isNotEmpty ? fullName : 'İsimsiz',
-      username:
-          json['user_id'] as String? ??
-          'kullanici', // TODO: username if available
+      username: profiles?['username'] as String? ?? 'kullanici',
       profileImageUrl: profiles?['avatar_url'] as String?,
       status: EventAttendanceStatus.fromDbValue(json['status'] as String?),
       joinedAt: DateTime.parse(json['joined_at'] as String),

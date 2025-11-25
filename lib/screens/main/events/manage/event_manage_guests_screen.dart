@@ -176,7 +176,7 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
           child: GuestListItem(
             profileImageUrl: guest.profileImageUrl ?? '',
             fullName: guest.fullName,
-            username: '@${guest.username}',
+            username: guest.username, // GuestListItem zaten @ ekliyor
             statusText: guest.statusDisplayText,
             statusType: _getStatusType(guest.status),
           ),

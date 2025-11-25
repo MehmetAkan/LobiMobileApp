@@ -332,7 +332,7 @@ class EventAttendanceService {
           .from(_tableName)
           .select('''
             *,
-            profiles!inner(first_name, last_name, avatar_url)
+            profiles!inner(first_name, last_name, username, avatar_url)
           ''')
           .eq('event_id', eventId)
           .order('joined_at', ascending: false);
