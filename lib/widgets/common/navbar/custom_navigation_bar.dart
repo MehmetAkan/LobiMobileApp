@@ -14,7 +14,7 @@ class CustomNavigationBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTap,
     this.height,
-    this.blurAmount = 1,
+    this.blurAmount = 3,
   });
 
   @override
@@ -28,11 +28,9 @@ class CustomNavigationBar extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppTheme.getnNavigationBg(context).withValues(alpha: 0.01),
-              AppTheme.getnNavigationBg(context).withValues(alpha: 0.05),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 0),
               AppTheme.getnNavigationBg(context).withValues(alpha: 0.1),
-              AppTheme.getnNavigationBg(context).withValues(alpha: 0.5),
-              AppTheme.getnNavigationBg(context).withValues(alpha: 1),
+              AppTheme.getnNavigationBg(context).withValues(alpha: 0.2),
             ],
           ),
           // border: Border(
@@ -56,13 +54,13 @@ class CustomNavigationBar extends StatelessWidget {
                   AppTheme.getnNavigationBg(context).withValues(alpha: 1),
                 ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.zinc400.withValues(alpha: 0.5),
-                  blurRadius: 5,
-                  offset: const Offset(0, 7),
-                ),
-              ],
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: AppTheme.red900.withValues(alpha: 0.5),
+              //     blurRadius: 5,
+              //     offset: const Offset(0, 7),
+              //   ),
+              // ],
               border: Border(
                 top: BorderSide(color: AppTheme.zinc200, width: 1),
               ),

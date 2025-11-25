@@ -24,6 +24,7 @@ class EventCapacityModal {
   static Future<int?> show({required BuildContext context, int? currentValue}) {
     return showModalBottomSheet<int?>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => _CapacityContent(currentValue: currentValue),

@@ -33,6 +33,7 @@ class CustomModalSheet extends StatelessWidget {
   }) {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true, // Display above bottom navbar
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => CustomModalSheet(

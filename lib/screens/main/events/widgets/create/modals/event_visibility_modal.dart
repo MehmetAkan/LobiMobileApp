@@ -3,13 +3,10 @@ import 'package:lobi_application/screens/main/events/widgets/create/modals/event
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Görünürlük seçenekleri
-enum EventVisibility {
-  public,
-  private,
-}
+enum EventVisibility { public, private }
 
 /// EventVisibilityModal - Görünürlük seçimi
-/// 
+///
 /// Kullanım:
 /// ```dart
 /// final result = await EventVisibilityModal.show(
@@ -27,6 +24,7 @@ class EventVisibilityModal {
   }) {
     return showModalBottomSheet<EventVisibility>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => _VisibilityContent(currentValue: currentValue),
@@ -40,7 +38,6 @@ class EventVisibilityModal {
         return 'Herkese Açık';
       case EventVisibility.private:
         return 'Özel';
-    
     }
   }
 }
@@ -75,7 +72,8 @@ class _VisibilityContentState extends State<_VisibilityContent> {
     return EventModalSheet(
       icon: LucideIcons.globe400,
       title: 'Etkinliğin Görünürlüğü',
-      description: 'Bu Etkinliğinizi kimler görebileceğiniz seçin ? Direkt erişim link olanlar görebilir.',
+      description:
+          'Bu Etkinliğinizi kimler görebileceğiniz seçin ? Direkt erişim link olanlar görebilir.',
       children: [
         EventModalOption(
           isSelected: _selected == EventVisibility.public,
@@ -89,7 +87,6 @@ class _VisibilityContentState extends State<_VisibilityContent> {
           description: 'Sadece davet edilenler görebilir',
           onTap: () => _onSelect(EventVisibility.private),
         ),
-        
       ],
     );
   }

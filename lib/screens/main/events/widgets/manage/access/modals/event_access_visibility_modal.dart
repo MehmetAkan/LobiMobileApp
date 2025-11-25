@@ -12,6 +12,7 @@ class EventAccessVisibilityModal {
   }) {
     return showModalBottomSheet<EventAccessVisibility>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => _VisibilityContent(currentValue: currentValue),

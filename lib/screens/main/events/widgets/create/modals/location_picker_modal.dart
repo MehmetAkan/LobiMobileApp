@@ -19,11 +19,10 @@ import 'dart:async'; // ✨ YENİ - Timer için
 /// }
 /// ```
 class LocationPickerModal {
-  static Future<LocationModel?> show({
-    required BuildContext context,
-  }) {
+  static Future<LocationModel?> show({required BuildContext context}) {
     return showModalBottomSheet<LocationModel>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       enableDrag: true,
@@ -49,17 +48,17 @@ class _LocationPickerContentState
   @override
   void initState() {
     super.initState();
-    
+
     // ✨ YENİ - Otomatik arama (debounce ile)
     _searchController.addListener(() {
       final query = _searchController.text.trim();
-      
+
       // UI'ı güncelle (temizle butonu için)
       setState(() {});
-      
+
       // Önceki timer'ı iptal et
       _debounceTimer?.cancel();
-      
+
       if (query.isEmpty) {
         ref.read(placeSearchProvider.notifier).clearResults();
       } else if (query.length >= 2) {
@@ -115,9 +114,7 @@ class _LocationPickerContentState
           SizedBox(height: 10.h),
 
           // Results
-          Expanded(
-            child: _buildResults(),
-          ),
+          Expanded(child: _buildResults()),
 
           // Klavye padding
           SizedBox(height: keyboardHeight),
@@ -134,7 +131,7 @@ class _LocationPickerContentState
         width: 40.w,
         height: 4.h,
         decoration: BoxDecoration(
-         color: AppTheme.getCreateEventBg(context).withValues(alpha: 0.30),
+          color: AppTheme.getCreateEventBg(context).withValues(alpha: 0.30),
           borderRadius: BorderRadius.circular(2.r),
         ),
       ),
@@ -230,7 +227,7 @@ class _LocationPickerContentState
                 ),
               ),
             ),
-            
+
             // ✨ YENİ - Temizle butonu (yazı varsa göster)
             if (_searchController.text.isNotEmpty)
               GestureDetector(
@@ -243,7 +240,9 @@ class _LocationPickerContentState
                   height: 40.w,
                   margin: EdgeInsets.only(right: 5.w),
                   decoration: BoxDecoration(
-                    color: AppTheme.getEventFieldPlaceholder(context).withOpacity(0.2),
+                    color: AppTheme.getEventFieldPlaceholder(
+                      context,
+                    ).withOpacity(0.2),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
@@ -275,8 +274,9 @@ class _LocationPickerContentState
                 Icon(
                   Icons.location_on_outlined,
                   size: 48.sp,
-                  color: AppTheme.getEventFieldPlaceholder(context)
-                      .withOpacity(0.5),
+                  color: AppTheme.getEventFieldPlaceholder(
+                    context,
+                  ).withOpacity(0.5),
                 ),
                 SizedBox(height: 16.h),
                 Text(
@@ -297,8 +297,7 @@ class _LocationPickerContentState
           itemCount: predictions.length,
           separatorBuilder: (context, index) => Divider(
             height: 1.h,
-            color:
-                AppTheme.getEventFieldPlaceholder(context).withOpacity(0.1),
+            color: AppTheme.getEventFieldPlaceholder(context).withOpacity(0.1),
           ),
           itemBuilder: (context, index) {
             final prediction = predictions[index];
@@ -317,11 +316,7 @@ class _LocationPickerContentState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.error_outline,
-                size: 48.sp,
-                color: AppTheme.red900,
-              ),
+              Icon(Icons.error_outline, size: 48.sp, color: AppTheme.red900),
               SizedBox(height: 16.h),
               Text(
                 'Bir hata oluştu',

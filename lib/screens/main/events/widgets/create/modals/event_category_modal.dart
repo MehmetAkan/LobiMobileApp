@@ -27,6 +27,7 @@ class EventCategoryModal {
     return showModalBottomSheet<CategoryModel>(
       context: context,
       backgroundColor: Colors.transparent,
+      useRootNavigator: true,
       isScrollControlled: true,
       builder: (context) => _CategoryContent(currentValue: currentValue),
     );
@@ -94,7 +95,9 @@ class _CategoryContentState extends ConsumerState<_CategoryContent> {
           }).toList();
         },
         loading: () => [_buildLoadingState()],
-        error: (error, stack) => [_buildStateMessage('Hata: ${error.toString()}')],
+        error: (error, stack) => [
+          _buildStateMessage('Hata: ${error.toString()}'),
+        ],
       ),
     );
   }
@@ -193,8 +196,9 @@ class _CategoryOption extends StatelessWidget {
                     border: Border.all(
                       color: isSelected
                           ? AppTheme.white
-                          : AppTheme.getEventFieldPlaceholder(context)
-                              .withOpacity(0.3),
+                          : AppTheme.getEventFieldPlaceholder(
+                              context,
+                            ).withOpacity(0.3),
                       width: 2,
                     ),
                     color: isSelected ? AppTheme.white : Colors.transparent,
@@ -215,7 +219,9 @@ class _CategoryOption extends StatelessWidget {
         ),
         if (showDivider)
           Padding(
-            padding: EdgeInsets.only(left: 15.w + 22.sp + 12.w), // İcona göre hizalı
+            padding: EdgeInsets.only(
+              left: 15.w + 22.sp + 12.w,
+            ), // İcona göre hizalı
             child: Divider(
               height: 1,
               thickness: 1,

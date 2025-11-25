@@ -17,6 +17,7 @@ class EventCancelModal {
   static Future<bool?> show({required BuildContext context}) {
     return showModalBottomSheet<bool>(
       context: context,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) => const _CancelContent(),

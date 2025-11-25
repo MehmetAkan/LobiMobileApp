@@ -195,7 +195,10 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                   children: [
                     NavbarNewButton(
                       onTap: () {
-                        Navigator.of(context).push(_createEventRoute());
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).push(_createEventRoute());
                       },
                     ),
                     SizedBox(width: 10.w),
