@@ -323,7 +323,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
   }
 
   Future<void> _handleApprove(String userId) async {
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop();
 
     try {
       await _attendanceService.approveAttendance(
@@ -344,7 +344,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
   }
 
   Future<void> _handleReject(String userId) async {
-    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true).pop();
 
     try {
       await _attendanceService.rejectAttendance(

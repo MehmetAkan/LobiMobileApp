@@ -95,7 +95,8 @@ class CustomModalSheet extends StatelessWidget {
                         ],
                         // Close Button
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () =>
+                              Navigator.of(context, rootNavigator: true).pop(),
                           child: Container(
                             width: 40.w,
                             height: 40.w,
