@@ -14,6 +14,9 @@ class EventModel {
   final String? categoryId; // Added for category tracking
   final bool requiresApproval;
   final bool isPublic; // Event visibility (true = public, false = private)
+  final bool isCancelled; // Event cancellation status
+  final DateTime? cancelledAt; // When event was cancelled
+  final String? cancellationReason; // Optional reason for cancellation
 
   EventModel({
     required this.id,
@@ -31,6 +34,9 @@ class EventModel {
     this.categoryId,
     this.requiresApproval = false,
     this.isPublic = true, // Default to public
+    this.isCancelled = false, // Default to not cancelled
+    this.cancelledAt,
+    this.cancellationReason,
   });
 
   // Mock data için factory
@@ -86,6 +92,9 @@ class EventModel {
     String? categoryId,
     bool? requiresApproval,
     bool? isPublic,
+    bool? isCancelled,
+    DateTime? cancelledAt,
+    String? cancellationReason,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -103,6 +112,9 @@ class EventModel {
       categoryId: categoryId ?? this.categoryId,
       requiresApproval: requiresApproval ?? this.requiresApproval,
       isPublic: isPublic ?? this.isPublic,
+      isCancelled: isCancelled ?? this.isCancelled,
+      cancelledAt: cancelledAt ?? this.cancelledAt,
+      cancellationReason: cancellationReason ?? this.cancellationReason,
     );
   }
 }

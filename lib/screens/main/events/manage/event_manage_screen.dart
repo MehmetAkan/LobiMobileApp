@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/data/services/event_service.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -11,6 +14,7 @@ import 'event_manage_checkin_screen.dart';
 import 'event_manage_details_screen.dart';
 import 'event_manage_guests_screen.dart';
 import 'event_manage_questions_screen.dart';
+import '../widgets/manage/event_cancel_modal.dart';
 
 class EventManageScreen extends StatelessWidget {
   final EventModel event;
@@ -112,14 +116,32 @@ class EventManageScreen extends StatelessWidget {
               title: 'Etkinliği İptal Et',
               description: 'Bu işlem geri alınamaz',
               isDestructive: true,
-              onTap: () {
-                // TODO: Show confirmation dialog
-              },
+              onTap: () => _handleCancelEvent(context),
             ),
           ],
         ),
       ],
     );
+  }
+
+  Future<void> _handleCancelEvent(BuildContext context) async {
+    final confirmed = await EventCancelModal.show(context);
+
+    if (confirmed == true && context.mounted) {
+      try {
+        await getIt<EventService>().cancelEvent(eventId: event.id);
+
+        if (context.mounted) {
+          getIt<AppFeedbackService>().showWarning('Etkinlik iptal edildi');
+          // Pop all the way back to home
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      } catch (e) {
+        if (context.mounted) {
+          getIt<AppFeedbackService>().showError('İptal işlemi başarısız: $e');
+        }
+      }
+    }
   }
 
   Widget _buildMenuGroup(

@@ -258,6 +258,43 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
                   SizedBox(height: 10.h),
                   EventDetailCover(coverPhotoUrl: eventData['coverPhotoUrl']),
+
+                  // Cancelled event banner
+                  if (_currentEvent.isCancelled) ...[
+                    SizedBox(height: 10.h),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.r),
+                        color: AppTheme.red800,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            LucideIcons.circleX,
+                            color: Colors.white,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              'Bu Etkinlik İptal Edilmiştir',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
                   SizedBox(height: 10.h),
                   if (!_isOrganizer && !_isLoadingAttendance) ...[
                     SizedBox(height: 10.h),
@@ -315,6 +352,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 
   Widget _buildActionButtons() {
+    // Return empty if cancelled
+    if (_currentEvent.isCancelled) {
+      return const SizedBox.shrink();
+    }
+
     if (_isOrganizer) {
       return EventDetailOrganizerActions(
         onShare: _handleShare,
@@ -373,6 +415,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 
   Widget _buildQuickAttendButton() {
+    // Hide if event is cancelled
+    if (_currentEvent.isCancelled) {
+      return const SizedBox.shrink();
+    }
+
     // Attended veya DidNotAttend durumunda butonu gizle
     if (_attendanceStatus == EventAttendanceStatus.attended ||
         _attendanceStatus == EventAttendanceStatus.didNotAttend) {

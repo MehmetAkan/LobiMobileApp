@@ -199,6 +199,14 @@ class EventRepository {
 
     final bool requiresApproval = row['requires_approval'] as bool? ?? false;
     final bool isPublic = row['is_public'] as bool? ?? true;
+    final bool isCancelled = row['is_cancelled'] as bool? ?? false;
+
+    DateTime? cancelledAt;
+    if (row['cancelled_at'] != null) {
+      cancelledAt = _parseDateTime(row['cancelled_at']);
+    }
+
+    final String? cancellationReason = row['cancellation_reason'] as String?;
 
     return EventModel(
       id: row['id']?.toString() ?? '',
@@ -212,9 +220,12 @@ class EventRepository {
       organizerId: organizerId,
       attendeeCount: attendeeCount,
       categories: const [],
-      categoryId: row['category_id'] as String?, // Parse category_id
+      categoryId: row['category_id'] as String?,
       requiresApproval: requiresApproval,
       isPublic: isPublic,
+      isCancelled: isCancelled,
+      cancelledAt: cancelledAt,
+      cancellationReason: cancellationReason,
     );
   }
 

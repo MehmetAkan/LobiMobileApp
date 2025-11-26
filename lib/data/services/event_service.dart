@@ -198,6 +198,25 @@ class EventService {
     }
   }
 
+  /// Cancel event
+  Future<void> cancelEvent({
+    required String eventId,
+    String? cancellationReason,
+  }) async {
+    try {
+      await _client
+          .from(AppConstants.eventsTable)
+          .update({
+            'is_cancelled': true,
+            'cancelled_at': DateTime.now().toIso8601String(),
+            'cancellation_reason': cancellationReason,
+          })
+          .eq('id', eventId);
+    } catch (e) {
+      throw _handleError(e, 'cancelEvent');
+    }
+  }
+
   /// Get single event by ID
   Future<Map<String, dynamic>> getEventById(String eventId) async {
     try {
