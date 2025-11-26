@@ -195,19 +195,19 @@ class AppTheme {
   static Color getSwitchBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : white;
+        : zinc100;
   }
 
   static Color getSwitchBorder(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : zinc200;
+        : zinc300;
   }
 
   static Color getSwitchActive(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600
-        : zinc300;
+        : zinc400;
   }
 
   static Color getFilterText(BuildContext context) {

@@ -171,6 +171,34 @@ class EventRepository {
     }
   }
 
+  Future<List<EventModel>> getUserUpcomingEvents(String userId) async {
+    try {
+      final rows = await _eventService.getUserUpcomingEvents(userId: userId);
+      return rows.map((row) => _mapToEventModel(row)).toList();
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Yaklaşan etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
+  Future<List<EventModel>> getUserPastEvents(String userId) async {
+    try {
+      final rows = await _eventService.getUserPastEvents(userId: userId);
+      return rows.map((row) => _mapToEventModel(row)).toList();
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Geçmiş etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
   EventModel _mapToEventModel(Map<String, dynamic> row) {
     // Tarih parse
     final dynamic startDateRaw = row['start_date'];
@@ -207,6 +235,7 @@ class EventRepository {
     }
 
     final String? cancellationReason = row['cancellation_reason'] as String?;
+    final String? attendanceStatus = row['attendance_status'] as String?;
 
     return EventModel(
       id: row['id']?.toString() ?? '',
@@ -226,6 +255,7 @@ class EventRepository {
       isCancelled: isCancelled,
       cancelledAt: cancelledAt,
       cancellationReason: cancellationReason,
+      attendanceStatus: attendanceStatus,
     );
   }
 

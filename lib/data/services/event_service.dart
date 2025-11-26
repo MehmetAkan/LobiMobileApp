@@ -198,6 +198,38 @@ class EventService {
     }
   }
 
+  /// Get user's upcoming events (attending or organizing)
+  Future<List<Map<String, dynamic>>> getUserUpcomingEvents({
+    required String userId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_user_upcoming_events',
+        params: {'user_id_in': userId},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getUserUpcomingEvents');
+    }
+  }
+
+  /// Get user's past events (attending or organizing)
+  Future<List<Map<String, dynamic>>> getUserPastEvents({
+    required String userId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_user_past_events',
+        params: {'user_id_in': userId},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getUserPastEvents');
+    }
+  }
+
   /// Cancel event
   Future<void> cancelEvent({
     required String eventId,

@@ -27,13 +27,8 @@ class EventsFilterConfig {
         icon: LucideIcons.clockFading400,
       ),
       const FilterOption(
-        id: 'invited',
-        label: 'Davet Edildi',
-        icon: LucideIcons.mails400,
-      ),
-      const FilterOption(
-        id: 'not_attending',
-        label: 'Katılmayacak',
+        id: 'rejected',
+        label: 'Reddedildi',
         icon: LucideIcons.circleAlert400,
       ),
     ];

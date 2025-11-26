@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/data/repositories/auth_repository.dart';
+import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/screens/main/events/create_event_screen.dart';
+import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_filter_button.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_new_button.dart';
@@ -13,6 +18,7 @@ import 'package:lobi_application/widgets/common/switches/lobi_segmented_switch.d
 import 'package:lobi_application/widgets/common/filters/filter_bottom_sheet.dart';
 import 'package:lobi_application/widgets/common/filters/filter_option.dart';
 import 'package:lobi_application/widgets/common/filters/configs/events_filter_config.dart';
+import 'package:lobi_application/widgets/common/cards/events/event_card_compact.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   const EventsScreen({super.key});
@@ -28,9 +34,16 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
   // Filter state
   late FilterOption _selectedFilter;
   late List<FilterOption> _filterOptions;
+
+  // Data state
+  List<EventModel> _upcomingEvents = [];
+  List<EventModel> _pastEvents = [];
+  bool _isLoading = false;
+  String? _error;
+
   Route _createEventRoute() {
     return PageRouteBuilder(
-      fullscreenDialog: true, // iOS'ta yine modal hissi
+      fullscreenDialog: true,
       transitionDuration: const Duration(milliseconds: 260),
       reverseTransitionDuration: const Duration(milliseconds: 220),
       pageBuilder: (context, animation, secondaryAnimation) =>
@@ -42,7 +55,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
           reverseCurve: Curves.easeInCubic,
         );
 
-        // Hafif alttan kayma
         final offsetAnimation = Tween<Offset>(
           begin: const Offset(0, 0.06),
           end: Offset.zero,
@@ -63,6 +75,63 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     _filterOptions = EventsFilterConfig.getOptions();
     // Varsayılan olarak "Tüm Etkinlikler" seçili
     _selectedFilter = _filterOptions.firstWhere((option) => option.isDefault);
+
+    // Load events
+    _loadEvents();
+  }
+
+  Future<void> _loadEvents() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final userId = getIt<AuthRepository>().currentUser?.id;
+      if (userId == null) {
+        throw Exception('Kullanıcı oturumu bulunamadı');
+      }
+
+      final repository = getIt<EventRepository>();
+
+      final upcoming = await repository.getUserUpcomingEvents(userId);
+      final past = await repository.getUserPastEvents(userId);
+
+      setState(() {
+        _upcomingEvents = upcoming;
+        _pastEvents = past;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  List<EventModel> _getFilteredEvents() {
+    final userId = getIt<AuthRepository>().currentUser?.id;
+    final events = _showUpcoming ? _upcomingEvents : _pastEvents;
+
+    switch (_selectedFilter.id) {
+      case 'all':
+        return events;
+      case 'organizer':
+        // Events where user is the organizer
+        return events.where((e) => e.organizerId == userId).toList();
+      case 'attending':
+        // Events where user is attending (status = 'attending')
+        return events.where((e) => e.attendanceStatus == 'attending').toList();
+      case 'pending':
+        // Events where user approval is pending (status = 'pending')
+        return events.where((e) => e.attendanceStatus == 'pending').toList();
+      case 'rejected':
+        // Events where user was rejected (status = 'rejected')
+        return events.where((e) => e.attendanceStatus == 'rejected').toList();
+      default:
+        return events;
+    }
   }
 
   // Filter seçildiğinde
@@ -70,9 +139,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     setState(() {
       _selectedFilter = option;
     });
-
-    // TODO: Burada servis çağrısı yapılacak
-    debugPrint('Filter selected: ${option.id} - ${option.label}');
   }
 
   // Filter bottom sheet'i aç
@@ -90,61 +156,146 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final navbarHeight = 60.h + statusBarHeight;
     final isFilterActive = !_selectedFilter.isDefault;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          SingleChildScrollView(
-            controller: scrollController,
-            padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 15.h, 0.w, 100.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: LobiSegmentedSwitch(
-                              isFirstSelected: _showUpcoming,
-                              firstLabel: 'Yaklaşan',
-                              secondLabel: 'Geçmiş',
-                              onChanged: (isFirst) {
-                                setState(() {
-                                  _showUpcoming = isFirst;
-                                });
-                              },
+          RefreshIndicator(
+            onRefresh: _loadEvents,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              padding: EdgeInsets.fromLTRB(
+                0.w,
+                navbarHeight + 15.h,
+                0.w,
+                100.h,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: LobiSegmentedSwitch(
+                                isFirstSelected: _showUpcoming,
+                                firstLabel: 'Yaklaşan',
+                                secondLabel: 'Geçmiş',
+                                onChanged: (isFirst) {
+                                  setState(() {
+                                    _showUpcoming = isFirst;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 10.w),
-                          NavbarFilterButton(
-                            isActive: isFilterActive,
-                            onTap: _openFilterSheet,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                      Text(
-                        'Seçili Filter: ${_selectedFilter.label}',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: AppTheme.getTextHeadColor(context),
+                            SizedBox(width: 10.w),
+                            NavbarFilterButton(
+                              isActive: isFilterActive,
+                              onTap: _openFilterSheet,
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: 10.h),
-                      Text(
-                        'Gösterilen: ${_showUpcoming ? 'Yaklaşan' : 'Geçmiş'} Etkinlikler',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: AppTheme.getTextDescColor(context),
-                        ),
-                      ),
-                    ],
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+
+                  // Event List
+                  if (_isLoading)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 50.h),
+                        child: const CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (_error != null)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.w),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Hata oluştu',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.red500,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              _error!,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: AppTheme.zinc600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 20.h),
+                            ElevatedButton(
+                              onPressed: _loadEvents,
+                              child: const Text('Tekrar Dene'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else if (_getFilteredEvents().isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(40.w),
+                        child: Text(
+                          'Henüz etkinlik yok',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppTheme.zinc600,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: ListView.separated(
+                        padding: EdgeInsets.only(bottom: 20.h),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _getFilteredEvents().length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 25.h),
+                        itemBuilder: (context, index) {
+                          final event = _getFilteredEvents()[index];
+                          final userId =
+                              getIt<AuthRepository>().currentUser?.id;
+
+                          return EventCardCompact(
+                            imageUrl: event.imageUrl,
+                            title: event.title,
+                            date: event.date,
+                            location: event.location,
+                            isOrganizer: event.organizerId == userId,
+                            // TODO: Get real organizer data from database
+                            organizerName: 'Mehmet Akan',
+                            organizerPhotoUrl: 'https://i.pravatar.cc/150?u=1',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      EventDetailScreen(event: event),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
           Positioned(
@@ -212,23 +363,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
               ],
             ),
           ),
-          // Positioned(
-          //   bottom: 120,
-          //   left: 20,
-          //   right: 20,
-          //   child: GradientButton(
-          //     icon: const Icon(
-          //       LucideIcons.circlePlus400,
-          //       color: Colors.white,
-          //       size: 20,
-          //     ),
-          //     label: 'Etkinlik Oluştur',
-          //     onPressed: () {},
-          //     begin: Alignment.topLeft,
-          //     end: Alignment.bottomRight,
-          //     textStyle: AppTextStyles.authbuttonLg,
-          //   ),
-          // ),
         ],
       ),
     );

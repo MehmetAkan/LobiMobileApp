@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
-/// İki seçenekli, pill tarzı switch
-/// Örnek kullanım:
-/// LobiSegmentedSwitch(
-///   isFirstSelected: true,
-///   firstLabel: 'Yaklaşan',
-///   secondLabel: 'Geçmiş',
-///   onChanged: (isFirst) { ... },
-/// )
 class LobiSegmentedSwitch extends StatelessWidget {
   final bool isFirstSelected;
   final String firstLabel;
@@ -47,7 +39,6 @@ class LobiSegmentedSwitch extends StatelessWidget {
           builder: (context, constraints) {
             return Stack(
               children: [
-                // 🔹 Kayan arka plan (pill)
                 AnimatedAlign(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeInOut,
@@ -55,7 +46,7 @@ class LobiSegmentedSwitch extends StatelessWidget {
                       ? Alignment.centerLeft
                       : Alignment.centerRight,
                   child: FractionallySizedBox(
-                    widthFactor: 0.5, // iki item olduğu için yarısı
+                    widthFactor: 0.5,
                     heightFactor: 1.0,
                     child: Container(
                       decoration: BoxDecoration(
@@ -65,8 +56,6 @@ class LobiSegmentedSwitch extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // 🔹 Üstte tıklanabilir label'lar
                 Row(
                   children: [
                     Expanded(
@@ -81,10 +70,9 @@ class LobiSegmentedSwitch extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: isFirstSelected
                                   ? AppTheme.getSwitchText(context)
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.7),
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.7),
                             ),
                           ),
                         ),
@@ -102,10 +90,9 @@ class LobiSegmentedSwitch extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: !isFirstSelected
                                   ? AppTheme.getSwitchText(context)
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.5),
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.5),
                             ),
                           ),
                         ),

@@ -17,6 +17,8 @@ class EventModel {
   final bool isCancelled; // Event cancellation status
   final DateTime? cancelledAt; // When event was cancelled
   final String? cancellationReason; // Optional reason for cancellation
+  final String?
+  attendanceStatus; // User's attendance status (null if organizer)
 
   EventModel({
     required this.id,
@@ -37,6 +39,7 @@ class EventModel {
     this.isCancelled = false, // Default to not cancelled
     this.cancelledAt,
     this.cancellationReason,
+    this.attendanceStatus, // Null if user is organizer
   });
 
   // Mock data için factory
@@ -95,6 +98,7 @@ class EventModel {
     bool? isCancelled,
     DateTime? cancelledAt,
     String? cancellationReason,
+    String? attendanceStatus,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -115,6 +119,7 @@ class EventModel {
       isCancelled: isCancelled ?? this.isCancelled,
       cancelledAt: cancelledAt ?? this.cancelledAt,
       cancellationReason: cancellationReason ?? this.cancellationReason,
+      attendanceStatus: attendanceStatus ?? this.attendanceStatus,
     );
   }
 }
