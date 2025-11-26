@@ -5,6 +5,7 @@ import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/data/models/event_attendance_status.dart';
+import 'package:lobi_application/data/models/event_attendance_model.dart';
 import 'package:lobi_application/data/services/event_attendance_service.dart';
 import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/screens/main/events/manage/event_manage_screen.dart';
@@ -30,6 +31,7 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/data/models/profile_model.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
+import 'package:lobi_application/screens/main/events/widgets/detail/qr_ticket_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
@@ -317,7 +319,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       return EventDetailOrganizerActions(
         onShare: _handleShare,
         onAnnouncement: _handleAnnouncement,
-        onRequests: _handleRequests,
+        onRequests: _handleViewRequests, // Fixed method name
+        showRequests:
+            widget.event.requiresApproval ==
+            true, // Only show if requires approval
         onManage: () async {
           final result = await Navigator.push(
             context,
@@ -354,6 +359,12 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       );
     }
 
+    // Attended veya DidNotAttend durumunda hiçbir buton gösterme
+    if (_attendanceStatus == EventAttendanceStatus.attended ||
+        _attendanceStatus == EventAttendanceStatus.didNotAttend) {
+      return const SizedBox.shrink();
+    }
+
     return EventDetailAttendButton(
       isAttending: false,
       isFull: false,
@@ -362,6 +373,12 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   }
 
   Widget _buildQuickAttendButton() {
+    // Attended veya DidNotAttend durumunda butonu gizle
+    if (_attendanceStatus == EventAttendanceStatus.attended ||
+        _attendanceStatus == EventAttendanceStatus.didNotAttend) {
+      return const SizedBox.shrink();
+    }
+
     return Padding(
       padding: EdgeInsets.only(left: 10.w),
       child: SizedBox(
@@ -415,14 +432,17 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     debugPrint('📢 Duyuru: ${widget.event.id}');
   }
 
-  void _handleRequests() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            EventManageRequestsScreen(eventId: widget.event.id),
-      ),
-    );
+  void _handleViewRequests() {
+    // Only show requests if event requires approval
+    if (widget.event.requiresApproval == true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              EventManageRequestsScreen(eventId: widget.event.id),
+        ),
+      );
+    }
   }
 
   void _handleManage() {
@@ -473,8 +493,40 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     }
   }
 
-  void _handleTicket() {
-    debugPrint('🎫 Biletim: ${widget.event.id}');
+  void _handleTicket() async {
+    try {
+      // Fetch attendance with verification code
+      final userId = Supabase.instance.client.auth.currentUser?.id;
+      if (userId == null) return;
+
+      final response = await Supabase.instance.client
+          .from('event_participants')
+          .select()
+          .eq('event_id', widget.event.id)
+          .eq('user_id', userId)
+          .single();
+
+      final attendance = EventAttendanceModel.fromJson(response);
+
+      // Get current user profile
+      final profileService = ProfileService();
+      final currentProfile = await profileService.getProfile(userId);
+
+      // Show QR modal
+      if (mounted) {
+        QRTicketModal.show(
+          context,
+          attendance: attendance,
+          event: widget.event,
+          userName: currentProfile?.fullName ?? 'Kullanıcı',
+          userAvatar: currentProfile?.avatarUrl,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('QR kod yüklenemedi');
+      }
+    }
   }
 
   void _handleContact() {

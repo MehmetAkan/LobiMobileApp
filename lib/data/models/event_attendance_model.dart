@@ -9,8 +9,9 @@ class EventAttendanceModel {
   final DateTime? approvedAt;
   final DateTime? rejectedAt;
   final DateTime? cancelledAt;
-  final DateTime? attendedAt; // ✅ NEW: Katıldı işareti zamanı
+  final DateTime? attendedAt;
   final String? cancellationReason;
+  final String? verificationCode; // ✅ NEW: QR verification token
 
   const EventAttendanceModel({
     required this.id,
@@ -23,6 +24,7 @@ class EventAttendanceModel {
     this.cancelledAt,
     this.attendedAt,
     this.cancellationReason,
+    this.verificationCode,
   });
 
   /// Supabase'den gelen JSON'u model'e çevir
@@ -46,6 +48,7 @@ class EventAttendanceModel {
           ? DateTime.parse(json['attended_at'] as String)
           : null,
       cancellationReason: json['cancellation_reason'] as String?,
+      verificationCode: json['verification_code'] as String?,
     );
   }
 
@@ -62,6 +65,7 @@ class EventAttendanceModel {
       if (cancelledAt != null) 'cancelled_at': cancelledAt!.toIso8601String(),
       if (attendedAt != null) 'attended_at': attendedAt!.toIso8601String(),
       if (cancellationReason != null) 'cancellation_reason': cancellationReason,
+      if (verificationCode != null) 'verification_code': verificationCode,
     };
   }
 
@@ -83,6 +87,7 @@ class EventAttendanceModel {
     DateTime? cancelledAt,
     DateTime? attendedAt,
     String? cancellationReason,
+    String? verificationCode,
   }) {
     return EventAttendanceModel(
       id: id ?? this.id,
@@ -95,6 +100,7 @@ class EventAttendanceModel {
       cancelledAt: cancelledAt ?? this.cancelledAt,
       attendedAt: attendedAt ?? this.attendedAt,
       cancellationReason: cancellationReason ?? this.cancellationReason,
+      verificationCode: verificationCode ?? this.verificationCode,
     );
   }
 

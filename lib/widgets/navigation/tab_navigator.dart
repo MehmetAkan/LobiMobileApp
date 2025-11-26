@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// TabNavigator provides independent navigation stack for each bottom tab
-/// Following Instagram/Twitter pattern for persistent bottom navigation
 class TabNavigator extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final Widget initialScreen;

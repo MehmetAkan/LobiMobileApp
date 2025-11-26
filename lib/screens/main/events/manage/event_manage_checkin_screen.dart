@@ -1,14 +1,21 @@
 import 'dart:ui';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/data/services/event_attendance_service.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class EventManageCheckinScreen extends StatefulWidget {
-  const EventManageCheckinScreen({super.key});
+  final EventModel event;
+
+  const EventManageCheckinScreen({super.key, required this.event});
 
   @override
   State<EventManageCheckinScreen> createState() =>
@@ -21,10 +28,12 @@ class _EventManageCheckinScreenState extends State<EventManageCheckinScreen>
     detectionSpeed: DetectionSpeed.noDuplicates,
     returnImage: false,
   );
+  final EventAttendanceService _attendanceService = EventAttendanceService();
 
   bool _isFlashOn = false;
   bool _hasPermission = false;
   bool _isPermissionPermanentlyDenied = false;
+  bool _isProcessing = false; // Prevent duplicate scans
 
   @override
   void initState() {
@@ -138,11 +147,15 @@ class _EventManageCheckinScreenState extends State<EventManageCheckinScreen>
           if (_hasPermission)
             MobileScanner(
               controller: _controller,
-              onDetect: (capture) {
-                final List<Barcode> barcodes = capture.barcodes;
+              onDetect: (capture) async {
+                if (_isProcessing) return;
+
+                final barcodes = capture.barcodes;
                 for (final barcode in barcodes) {
-                  debugPrint('Barcode found! ${barcode.rawValue}');
-                  // TODO: Implement check-in logic
+                  if (barcode.rawValue != null) {
+                    await _handleQRScan(barcode.rawValue!);
+                    break; // Process only first barcode
+                  }
                 }
               },
             )
@@ -286,6 +299,76 @@ class _EventManageCheckinScreenState extends State<EventManageCheckinScreen>
         ],
       ),
     );
+  }
+
+  /// Handle QR code scan
+  Future<void> _handleQRScan(String qrData) async {
+    setState(() => _isProcessing = true);
+
+    try {
+      // Parse JSON
+      final data = jsonDecode(qrData) as Map<String, dynamic>;
+      final attendanceId = data['attendance_id'] as String?;
+      final verificationCode = data['verification_code'] as String?;
+
+      if (attendanceId == null || verificationCode == null) {
+        throw Exception('Geçersiz QR kod formatı');
+      }
+
+      // Verify check-in
+      final result = await _attendanceService.verifyCheckIn(
+        attendanceId: attendanceId,
+        verificationCode: verificationCode,
+        eventId: widget.event.id,
+      );
+
+      // Show success modal
+      if (mounted) {
+        _showSuccessModal(
+          name: result['full_name'] as String? ?? 'İsimsiz',
+          avatarUrl: result['avatar_url'] as String?,
+        );
+      }
+    } catch (e) {
+      // Show error modal
+      if (mounted) {
+        _showErrorModal(e.toString());
+      }
+    } finally {
+      // Reset processing flag after delay
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
+  }
+
+  /// Show success modal
+  void _showSuccessModal({required String name, String? avatarUrl}) {
+    getIt<AppFeedbackService>().showSuccess(
+      '$name katıldı olarak işaretlendi ✅',
+    );
+
+    // Optional: Show detailed modal (can be implemented later)
+    // showDialog(...)
+  }
+
+  /// Show error modal
+  void _showErrorModal(String error) {
+    String message = error;
+
+    // Simplify error messages
+    if (error.contains('Bu kullanıcı zaten katıldı')) {
+      message = 'Bu kullanıcı zaten katıldı olarak işaretlendi';
+    } else if (error.contains('Geçersiz doğrulama kodu')) {
+      message = 'Geçersiz QR kodu';
+    } else if (error.contains('Bu QR kod bu etkinlik için geçerli değil')) {
+      message = 'Bu QR kod bu etkinlik için geçerli değil';
+    } else if (error.contains('katılım durumu uygun değil')) {
+      message = 'Kullanıcının katılım durumu uygun değil';
+    }
+
+    getIt<AppFeedbackService>().showError(message);
   }
 }
 

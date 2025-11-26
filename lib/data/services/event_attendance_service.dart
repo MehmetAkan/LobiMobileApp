@@ -2,6 +2,7 @@ import 'package:lobi_application/core/errors/app_exception.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/data/models/event_attendance_model.dart';
 import 'package:lobi_application/data/models/event_attendance_status.dart';
+import 'package:lobi_application/data/services/verification_token_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// EventAttendanceService - Etkinlik katılım işlemleri
@@ -116,13 +117,16 @@ class EventAttendanceService {
             .eq('event_id', eventId)
             .eq('user_id', userId);
       } else {
-        // Yeni kayıt
+        // Yeni kayıt → Generate verification token
+        final verificationCode = VerificationTokenService.generate();
+
         await _supabase.from(_tableName).insert({
           'event_id': eventId,
           'user_id': userId,
           'status': targetStatus.dbValue,
           'joined_at': now,
           'approved_at': requiresApproval ? null : now,
+          'verification_code': verificationCode, // ✅ QR token
         });
       }
 
@@ -360,10 +364,88 @@ class EventAttendanceService {
 
       await _supabase.from(_tableName).update(updates).eq('id', attendanceId);
 
-      AppLogger.success('Katılım durumu güncellendi: ${newStatus.dbValue}');
+      AppLogger.success(
+        'Kat\u0131l\u0131m durumu güncellendi: ${newStatus.dbValue}',
+      );
     } on PostgrestException catch (e) {
       AppLogger.error('Supabase error in updateAttendanceStatus', e);
       throw DatabaseException('Durum güncellenemedi: ${e.message}');
+    }
+  }
+
+  /// Verify QR code and mark as attended
+  ///
+  /// Returns user profile data on success
+  Future<Map<String, dynamic>> verifyCheckIn({
+    required String attendanceId,
+    required String verificationCode,
+    required String eventId,
+  }) async {
+    try {
+      // 1. Fetch attendance record
+      final response = await _supabase
+          .from(_tableName)
+          .select()
+          .eq('id', attendanceId)
+          .single();
+
+      final attendance = EventAttendanceModel.fromJson(response);
+
+      // 2. Validate event match
+      if (attendance.eventId != eventId) {
+        throw ValidationException('Bu QR kod bu etkinlik için geçerli değil');
+      }
+
+      // 3. Validate verification code
+      if (attendance.verificationCode != verificationCode) {
+        throw ValidationException('Geçersiz doğrulama kodu');
+      }
+
+      // 4. Check if already attended
+      if (attendance.status == EventAttendanceStatus.attended) {
+        throw ValidationException(
+          'Bu kullanıcı zaten katıldı olarak işaretlendi',
+        );
+      }
+
+      // 5. Check if status is attending
+      if (attendance.status != EventAttendanceStatus.attending) {
+        throw ValidationException(
+          'Bu kullanıcının katılım durumu uygun değil (${attendance.status.displayText})',
+        );
+      }
+
+      // 6. Update to attended
+      await _supabase
+          .from(_tableName)
+          .update({
+            'status': EventAttendanceStatus.attended.dbValue,
+            'attended_at': DateTime.now().toIso8601String(),
+          })
+          .eq('id', attendanceId);
+
+      // 7. Get user profile for feedback
+      final profileResponse = await _supabase
+          .from('profiles')
+          .select('first_name, last_name, avatar_url')
+          .eq('user_id', attendance.userId)
+          .single();
+
+      final firstName = profileResponse['first_name'] as String? ?? '';
+      final lastName = profileResponse['last_name'] as String? ?? '';
+      final fullName = '$firstName $lastName'.trim();
+
+      AppLogger.success('Check-in successful: $fullName');
+
+      return {
+        'success': true,
+        'full_name': fullName.isNotEmpty ? fullName : 'İsimsiz',
+        'avatar_url': profileResponse['avatar_url'] as String?,
+        'attendance_id': attendanceId,
+      };
+    } on PostgrestException catch (e) {
+      AppLogger.error('Supabase error in verifyCheckIn', e);
+      throw DatabaseException('Doğrulama başarısız: ${e.message}');
     }
   }
 }
