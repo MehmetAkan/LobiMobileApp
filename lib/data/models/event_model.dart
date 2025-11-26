@@ -13,6 +13,7 @@ class EventModel {
   final List<String> categories;
   final String? categoryId; // Added for category tracking
   final bool requiresApproval;
+  final bool isPublic; // Event visibility (true = public, false = private)
 
   EventModel({
     required this.id,
@@ -29,6 +30,7 @@ class EventModel {
     this.categories = const [],
     this.categoryId,
     this.requiresApproval = false,
+    this.isPublic = true, // Default to public
   });
 
   // Mock data için factory
@@ -83,6 +85,7 @@ class EventModel {
     List<String>? categories,
     String? categoryId,
     bool? requiresApproval,
+    bool? isPublic,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -99,6 +102,7 @@ class EventModel {
       categories: categories ?? this.categories,
       categoryId: categoryId ?? this.categoryId,
       requiresApproval: requiresApproval ?? this.requiresApproval,
+      isPublic: isPublic ?? this.isPublic,
     );
   }
 }

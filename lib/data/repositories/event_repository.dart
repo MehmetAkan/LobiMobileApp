@@ -198,6 +198,7 @@ class EventRepository {
     final String? organizerId = row['organizer_id'] as String?;
 
     final bool requiresApproval = row['requires_approval'] as bool? ?? false;
+    final bool isPublic = row['is_public'] as bool? ?? true;
 
     return EventModel(
       id: row['id']?.toString() ?? '',
@@ -213,6 +214,7 @@ class EventRepository {
       categories: const [],
       categoryId: row['category_id'] as String?, // Parse category_id
       requiresApproval: requiresApproval,
+      isPublic: isPublic,
     );
   }
 

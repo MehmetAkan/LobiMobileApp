@@ -168,6 +168,36 @@ class EventService {
     }
   }
 
+  /// Update event visibility (is_public)
+  Future<void> updateEventVisibility({
+    required String eventId,
+    required bool isPublic,
+  }) async {
+    try {
+      await _client
+          .from(AppConstants.eventsTable)
+          .update({'is_public': isPublic})
+          .eq('id', eventId);
+    } catch (e) {
+      throw _handleError(e, 'updateEventVisibility');
+    }
+  }
+
+  /// Update event approval requirement
+  Future<void> updateEventApprovalRequirement({
+    required String eventId,
+    required bool requiresApproval,
+  }) async {
+    try {
+      await _client
+          .from(AppConstants.eventsTable)
+          .update({'requires_approval': requiresApproval})
+          .eq('id', eventId);
+    } catch (e) {
+      throw _handleError(e, 'updateEventApprovalRequirement');
+    }
+  }
+
   /// Get single event by ID
   Future<Map<String, dynamic>> getEventById(String eventId) async {
     try {
