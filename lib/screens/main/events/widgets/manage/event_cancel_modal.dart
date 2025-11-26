@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
+import 'package:lobi_application/screens/main/events/widgets/manage/access/modals/event_access_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class EventCancelModal {
@@ -49,172 +49,270 @@ class _EventCancelContentState extends State<_EventCancelContent> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomModalSheet(
-      headerLeft: Row(
-        children: [
-          Container(
-            width: 40.w,
-            height: 40.w,
+    final viewInsets = MediaQuery.of(context).viewInsets;
+
+    return AnimatedPadding(
+      padding: EdgeInsets.only(
+        left: 5.w,
+        right: 5.w,
+        bottom: 5.h + viewInsets.bottom,
+      ),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.decelerate,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.getSwitchBg(context),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30.r),
+            topLeft: Radius.circular(30.r),
+            bottomLeft: Radius.circular(45.r),
+            bottomRight: Radius.circular(45.r),
+          ),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 15.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildIconCancelButton(
+                        context,
+                        LucideIcons.triangleAlert400,
+                      ),
+                      _buildIconButton(
+                        context,
+                        LucideIcons.x400,
+                        onTap: () => Navigator.of(context).pop(false),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Title + Description
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Etkinliği İptal Et',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.black800,
+                          height: 1.2,
+                        ),
+                      ),
+                      SizedBox(height: 5.h),
+                      Text(
+                        'Etkinlik iptal edildiğinde, tüm katılımcılara iptal edildiğini bildiren mesaj gönderilecek',
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppTheme.black800.withValues(alpha: 0.5),
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 10.h),
+
+                // Content
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Warning box
+                      Text(
+                        'Bu işlem geri alınamaz.',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.25,
+                          color: AppTheme.red900,
+                          height: 1.4,
+                        ),
+                      ),
+
+                      SizedBox(height: 20.h),
+
+                      // Input label
+                      Text(
+                        'Devam etmek için aşağıya "İptal" yazın',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppTheme.black800,
+                        ),
+                      ),
+
+                      SizedBox(height: 12.h),
+
+                      // Text input
+                      TextField(
+                        controller: _controller,
+                        autofocus: true,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'İptal',
+                          hintStyle: TextStyle(color: AppTheme.zinc400),
+                          filled: true,
+                          fillColor: AppTheme.zinc200,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.r),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.r),
+                            borderSide: BorderSide(
+                              color: _isValid
+                                  ? AppTheme.red500
+                                  : AppTheme.zinc300,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 14.h,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20.h),
+
+                      // Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: 50.h,
+                              child: ElevatedButton(
+                                onPressed: _isValid ? _confirm : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.red800,
+                                  disabledBackgroundColor: AppTheme.zinc600,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Etkinliği İptal Et',
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    letterSpacing: -0.25,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: SizedBox(
+                              height: 50.h,
+                              child: TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppTheme.black800,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Vazgeç',
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    letterSpacing: -0.25,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 30.h),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconButton(
+    BuildContext context,
+    IconData iconData, {
+    VoidCallback? onTap,
+  }) {
+    return SizedBox(
+      width: 45.w,
+      height: 45.w,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.zinc200,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Icon(iconData, size: 22.sp, color: AppTheme.zinc700),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIconCancelButton(
+    BuildContext context,
+    IconData iconData, {
+    VoidCallback? onTap,
+  }) {
+    return SizedBox(
+      width: 45.w,
+      height: 45.w,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: Container(
             decoration: BoxDecoration(
               color: AppTheme.red100,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              LucideIcons.triangleAlert,
-              color: AppTheme.red900,
-              size: 20.sp,
+            child: Center(
+              child: Icon(iconData, size: 22.sp, color: AppTheme.red800),
             ),
           ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Etkinliği İptal Et',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'Bu işlem geri alınamaz',
-                  style: TextStyle(fontSize: 14.sp, color: AppTheme.zinc700),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Warning message
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              color: AppTheme.zinc200,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: AppTheme.zinc300),
-            ),
-            child: Row(
-              children: [
-                Icon(LucideIcons.info400, color: AppTheme.red900, size: 20.sp),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Text(
-                    'Etkinlik iptal edildiğinde tüm katılımcılara bildirim gönderilecek ve etkinlik keşfet sayfasından kaldırılacaktır.',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppTheme.red900,
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 24.h),
-
-          // Confirmation text
-          Text(
-            'Devam etmek için aşağıya "İptal" yazın',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.black800,
-            ),
-          ),
-
-          SizedBox(height: 12.h),
-
-          // Text input
-          TextField(
-            controller: _controller,
-            autofocus: true,
-            style: TextStyle(
-              fontSize: 16.sp,
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-            ),
-            decoration: InputDecoration(
-              hintText: 'İptal',
-              hintStyle: TextStyle(color: AppTheme.zinc100),
-              filled: true,
-              fillColor: AppTheme.zinc200,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.r),
-                borderSide: BorderSide(
-                  color: _isValid ? AppTheme.red500 : AppTheme.zinc300,
-                  width: 2,
-                ),
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 14.h,
-              ),
-            ),
-          ),
-        ],
-      ),
-      footer: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 50.h,
-              child: ElevatedButton(
-                onPressed: _isValid ? _confirm : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.red800,
-                  disabledBackgroundColor: AppTheme.zinc600,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.r),
-                  ),
-                ),
-                child: Text(
-                  'Etkinliği İptal Et',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    letterSpacing: -0.25,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: SizedBox(
-              height: 50.h,
-              child: TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                style: TextButton.styleFrom(
-                  backgroundColor: AppTheme.black800,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.r),
-                  ),
-                ),
-                child: Text(
-                  'Vazgeç',
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    letterSpacing: -0.25,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
