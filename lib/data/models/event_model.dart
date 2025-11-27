@@ -8,6 +8,9 @@ class EventModel {
   final String? locationSecondary;
   final String imageUrl;
   final String? organizerId;
+  final String? organizerName; // Organizer full name
+  final String? organizerUsername; // Organizer username
+  final String? organizerPhotoUrl; // Organizer profile photo
   final int attendeeCount;
   final bool isLiked;
   final List<String> categories;
@@ -30,6 +33,9 @@ class EventModel {
     this.organizerId,
     this.endDate,
     required this.imageUrl,
+    this.organizerName,
+    this.organizerUsername,
+    this.organizerPhotoUrl,
     required this.attendeeCount,
     this.isLiked = false,
     this.categories = const [],
@@ -89,6 +95,9 @@ class EventModel {
     String? imageUrl,
     DateTime? endDate,
     String? organizerId,
+    String? organizerName,
+    String? organizerUsername,
+    String? organizerPhotoUrl,
     int? attendeeCount,
     bool? isLiked,
     List<String>? categories,
@@ -110,6 +119,9 @@ class EventModel {
       locationSecondary: locationSecondary ?? this.locationSecondary,
       imageUrl: imageUrl ?? this.imageUrl,
       organizerId: organizerId ?? this.organizerId,
+      organizerName: organizerName ?? this.organizerName,
+      organizerUsername: organizerUsername ?? this.organizerUsername,
+      organizerPhotoUrl: organizerPhotoUrl ?? this.organizerPhotoUrl,
       attendeeCount: attendeeCount ?? this.attendeeCount,
       isLiked: isLiked ?? this.isLiked,
       categories: categories ?? this.categories,

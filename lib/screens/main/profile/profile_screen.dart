@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_new_button.dart';
+import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -114,25 +115,11 @@ class _ProfileScreenState extends State<ProfileScreen>
         children: [
           Transform.translate(
             offset: Offset(0, -40.h),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 4.w),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(999),
-                child: AppImage(
-                  path: profilePhotoUrl,
-                  width: 80.w,
-                  height: 80.w,
-                  fit: BoxFit.cover,
-                  placeholder: Container(
-                    width: 80.w,
-                    height: 80.w,
-                    color: AppTheme.zinc300,
-                  ),
-                ),
-              ),
+            child: ProfileAvatar(
+              imageUrl: profilePhotoUrl,
+              name: fullName,
+              size: 80,
+              border: Border.all(color: Colors.white, width: 4.w),
             ),
           ),
           Transform.translate(

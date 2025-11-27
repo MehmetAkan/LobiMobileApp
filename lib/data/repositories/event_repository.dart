@@ -237,6 +237,11 @@ class EventRepository {
     final String? cancellationReason = row['cancellation_reason'] as String?;
     final String? attendanceStatus = row['attendance_status'] as String?;
 
+    // Organizer info
+    final String? organizerName = row['organizer_name'] as String?;
+    final String? organizerUsername = row['organizer_username'] as String?;
+    final String? organizerPhotoUrl = row['organizer_photo_url'] as String?;
+
     return EventModel(
       id: row['id']?.toString() ?? '',
       title: row['title'] as String? ?? '',
@@ -247,6 +252,9 @@ class EventRepository {
       locationSecondary: locationSecondary,
       imageUrl: row['cover_image_url'] as String? ?? '',
       organizerId: organizerId,
+      organizerName: organizerName,
+      organizerUsername: organizerUsername,
+      organizerPhotoUrl: organizerPhotoUrl,
       attendeeCount: attendeeCount,
       categories: const [],
       categoryId: row['category_id'] as String?,

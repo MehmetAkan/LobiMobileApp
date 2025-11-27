@@ -278,9 +278,8 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                             date: event.date,
                             location: event.location,
                             isOrganizer: event.organizerId == userId,
-                            // TODO: Get real organizer data from database
-                            organizerName: 'Mehmet Akan',
-                            organizerPhotoUrl: 'https://i.pravatar.cc/150?u=1',
+                            organizerName: event.organizerName,
+                            organizerPhotoUrl: event.organizerPhotoUrl,
                             onTap: () {
                               Navigator.push(
                                 context,

@@ -4,6 +4,7 @@ import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
+import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 
 class EventCardVertical extends StatelessWidget {
@@ -12,6 +13,9 @@ class EventCardVertical extends StatelessWidget {
   final String date; // Tarih string formatında (ISO 8601)
   final String location;
   final int attendeeCount;
+  final String? organizerName;
+  final String? organizerUsername;
+  final String? organizerPhotoUrl;
   final bool isLiked;
   final bool showLikeButton;
   final VoidCallback? onTap;
@@ -23,6 +27,9 @@ class EventCardVertical extends StatelessWidget {
     required this.date,
     required this.location,
     required this.attendeeCount,
+    this.organizerName,
+    this.organizerUsername,
+    this.organizerPhotoUrl,
     this.isLiked = false,
     this.showLikeButton = false,
     this.onTap,
@@ -40,26 +47,37 @@ class EventCardVertical extends StatelessWidget {
         children: [
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(999),
-                child: SizedBox(
-                  width: 30.w,
-                  height: 30.w,
-                  child: AppImage(
-                    path: 'https://i.pravatar.cc/150?u=1',
-                    fit: BoxFit.cover,
-                    placeholder: Container(color: AppTheme.zinc300),
-                  ),
-                ),
+              ProfileAvatar(
+                imageUrl: organizerPhotoUrl,
+                name: organizerName ?? '',
+                size: 30,
               ),
-              SizedBox(width: 5.w),
-              Text(
-                'Mehmet Akan', // Şimdilik sabit
-                style: AppTextStyles.titleSM.copyWith(
-                  color: AppTheme.getTextHeadColor(context),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      organizerName ?? 'Unknown',
+                      style: AppTextStyles.titleSM.copyWith(
+                        color: AppTheme.getTextHeadColor(context),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (organizerUsername != null)
+                      Text(
+                        '@$organizerUsername',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppTheme.zinc600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                  ],
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/core/utils/date_extensions.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
+import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class EventCardCompact extends StatelessWidget {
@@ -153,24 +154,17 @@ class EventCardCompact extends StatelessWidget {
             children: [
               // Profile photo
               if (organizerPhotoUrl != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: SizedBox(
-                    width: 20.w,
-                    height: 20.w,
-                    child: AppImage(
-                      path: organizerPhotoUrl!,
-                      fit: BoxFit.cover,
-                      placeholder: Container(color: AppTheme.zinc300),
-                    ),
-                  ),
+                ProfileAvatar(
+                  imageUrl: organizerPhotoUrl,
+                  name: organizerName ?? '',
+                  size: 20,
                 ),
               if (organizerPhotoUrl != null) SizedBox(width: 6.w),
               // Name
               Text(
                 organizerName!,
                 style: TextStyle(
-                  fontSize: 13.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: AppTheme.getTextHeadColor(
                     context,

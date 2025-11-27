@@ -1,48 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 
 /// EventDetailOrganizer - Etkinliği oluşturan kişinin bilgisi
-/// 
+///
 /// Küçük profil fotoğrafı + isim soyisim (beyaz renk)
 class EventDetailOrganizer extends StatelessWidget {
   final String name;
   final String? photoUrl;
 
-  const EventDetailOrganizer({
-    super.key,
-    required this.name,
-    this.photoUrl,
-  });
+  const EventDetailOrganizer({super.key, required this.name, this.photoUrl});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Profil fotoğrafı
+        // ProfileAvatar with custom white border
         Container(
-          width: 25.w,
-          height: 25.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               width: 1.5,
             ),
           ),
-          child: ClipOval(
-            child: photoUrl != null && photoUrl!.isNotEmpty
-                ? Image.network(
-                    photoUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return _buildDefaultAvatar();
-                    },
-                  )
-                : _buildDefaultAvatar(),
-          ),
+          child: ProfileAvatar(imageUrl: photoUrl, name: name, size: 25),
         ),
-        SizedBox(width: 5.w),
+        SizedBox(width: 8.w),
 
         // İsim soyisim
         Text(
@@ -55,17 +39,6 @@ class EventDetailOrganizer extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildDefaultAvatar() {
-    return Container(
-      color: AppTheme.dark_zinc800,
-      child: Icon(
-        Icons.person,
-        size: 18.sp,
-        color: Colors.white.withOpacity(0.5),
-      ),
     );
   }
 }
