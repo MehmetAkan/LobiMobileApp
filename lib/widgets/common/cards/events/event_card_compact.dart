@@ -13,6 +13,7 @@ class EventCardCompact extends StatelessWidget {
   final String location;
   final bool isOrganizer;
   final String? organizerName;
+  final String? organizerUsername;
   final String? organizerPhotoUrl;
   final VoidCallback? onTap;
 
@@ -24,6 +25,7 @@ class EventCardCompact extends StatelessWidget {
     required this.location,
     this.isOrganizer = false,
     this.organizerName,
+    this.organizerUsername,
     this.organizerPhotoUrl,
     this.onTap,
   });
@@ -148,39 +150,52 @@ class EventCardCompact extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        // Organizer info (if available)
         if (organizerName != null) ...[
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Profile photo
-              if (organizerPhotoUrl != null)
-                ProfileAvatar(
-                  imageUrl: organizerPhotoUrl,
-                  name: organizerName ?? '',
-                  size: 20,
-                ),
-              if (organizerPhotoUrl != null) SizedBox(width: 6.w),
-              // Name
-              Text(
-                organizerName!,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.getTextHeadColor(
-                    context,
-                  ).withValues(alpha: 0.6),
+              ProfileAvatar(
+                imageUrl: organizerPhotoUrl,
+                name: organizerName ?? '',
+                size: 25,
+              ),
+              SizedBox(width: 5.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      organizerName!,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        height: 1,
+                        letterSpacing: -0.25,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.black800,
+                      ),
+                    ),
+                    if (organizerUsername != null)
+                      Text(
+                        '@$organizerUsername',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          height: 1,
+                          letterSpacing: -0.25,
+                          fontWeight: FontWeight.w500,
+                          color: AppTheme.zinc600,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
           ),
           SizedBox(height: 6.h),
         ],
-
-        // Title
         Text(
           title,
           style: TextStyle(
-            fontSize: 16.sp,
+            fontSize: 17.sp,
             letterSpacing: -0.25,
             fontWeight: FontWeight.w600,
             color: AppTheme.getTextHeadColor(context),
@@ -190,7 +205,6 @@ class EventCardCompact extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 8.h),
-        // Time
         Row(
           children: [
             Icon(

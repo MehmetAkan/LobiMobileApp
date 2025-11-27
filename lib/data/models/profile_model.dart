@@ -3,6 +3,7 @@ class ProfileModel {
   final String firstName;
   final String lastName;
   final String? username;
+  final String? bio;
   final String? avatarUrl;
   final DateTime birthDate;
   final DateTime? createdAt;
@@ -13,6 +14,7 @@ class ProfileModel {
     required this.firstName,
     required this.lastName,
     this.username,
+    this.bio,
     this.avatarUrl,
     required this.birthDate,
     this.createdAt,
@@ -25,6 +27,7 @@ class ProfileModel {
       firstName: json['first_name'] as String,
       lastName: json['last_name'] as String,
       username: json['username'] as String?,
+      bio: json['bio'] as String?,
       avatarUrl: json['avatar_url'] as String?,
       birthDate: DateTime.parse(json['birth_date'] as String),
       createdAt: json['created_at'] != null
@@ -43,6 +46,7 @@ class ProfileModel {
       'first_name': firstName,
       'last_name': lastName,
       'username': username,
+      'bio': bio,
       'avatar_url': avatarUrl,
       'birth_date': birthDate.toIso8601String(),
     };
@@ -67,6 +71,7 @@ class ProfileModel {
     String? firstName,
     String? lastName,
     String? username,
+    String? bio,
     DateTime? birthDate,
     String? avatarUrl,
     DateTime? createdAt,
@@ -77,6 +82,7 @@ class ProfileModel {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       username: username ?? this.username,
+      bio: bio ?? this.bio,
       birthDate: birthDate ?? this.birthDate,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       createdAt: createdAt ?? this.createdAt,

@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
-import 'package:lobi_application/widgets/common/buttons/navbar_new_button.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
+import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
+class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  // Placeholder data
-  final String coverPhotoUrl = 'assets/images/system/profile-cover.png';
-  final String profilePhotoUrl = 'https://i.pravatar.cc/150?u=profile';
-  final String fullName = 'Mehmet Akan';
-  final String username = '@mehmetakan';
-  final String bio = 'Flutter Developer • Event Organizer';
-  final int attendedCount = 20;
-  final int organizedCount = 95;
 
   @override
   void initState() {
@@ -40,26 +32,40 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Main scrollable content
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildCoverPhoto(),
-                _buildProfileInfo(),
-                _buildTabs(),
-                _buildTabContent(),
-              ],
-            ),
-          ),
+    final profileAsync = ref.watch(currentUserProfileProvider);
 
-          // Settings button (positioned)
-          _buildSettingsButton(),
-        ],
-      ),
+    return profileAsync.when(
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, stack) =>
+          Scaffold(body: Center(child: Text('Profil yüklenemedi: $error'))),
+      data: (profile) {
+        if (profile == null) {
+          return const Scaffold(body: Center(child: Text('Profil bulunamadı')));
+        }
+
+        return Scaffold(
+          body: Stack(
+            children: [
+              // Main scrollable content
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCoverPhoto(),
+                    _buildProfileInfo(profile),
+                    _buildTabs(),
+                    _buildTabContent(),
+                  ],
+                ),
+              ),
+
+              // Settings button (positioned)
+              _buildSettingsButton(),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -68,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       height: 120.h,
       width: double.infinity,
       child: AppImage(
-        path: coverPhotoUrl,
+        path: 'assets/images/system/profile-cover.png',
         fit: BoxFit.cover,
         placeholder: Container(color: AppTheme.zinc200),
       ),
@@ -88,7 +94,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         child: Container(
           width: 40.w,
           height: 40.w,
-
           decoration: BoxDecoration(
             border: Border.all(
               color: AppTheme.getAppBarButtonBorder(context),
@@ -107,7 +112,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  Widget _buildProfileInfo() {
+  Widget _buildProfileInfo(profile) {
+    final fullName = '${profile.firstName} ${profile.lastName}';
+    final username = profile.username ?? '';
+    final bio = profile.bio ?? '';
+    final avatarUrl = profile.avatarUrl;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
@@ -116,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           Transform.translate(
             offset: Offset(0, -40.h),
             child: ProfileAvatar(
-              imageUrl: profilePhotoUrl,
+              imageUrl: avatarUrl,
               name: fullName,
               size: 80,
               border: Border.all(color: Colors.white, width: 4.w),
@@ -137,26 +147,31 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 ),
                 SizedBox(height: 2.h),
-                Text(
-                  username,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    letterSpacing: -0.25,
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.zinc700,
+                if (username.isNotEmpty)
+                  Text(
+                    '@$username',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      letterSpacing: -0.25,
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.zinc700,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10.h),
-                Text(
-                  bio,
-                  style: TextStyle(
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w400,
-                    color: AppTheme.getTextHeadColor(context),
-                    height: 1,
+                if (bio.isNotEmpty) ...[
+                  SizedBox(height: 10.h),
+                  Text(
+                    bio,
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppTheme.getTextHeadColor(context),
+                      height: 1,
+                    ),
                   ),
-                ),
+                ],
                 SizedBox(height: 20.h),
+
+                // Stats - TODO: Get from database
                 Row(
                   children: [
                     RichText(
@@ -165,12 +180,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                           fontSize: 15.sp,
                           color: AppTheme.getTextHeadColor(context),
                         ),
-                        children: [
+                        children: const [
                           TextSpan(
-                            text: '$attendedCount ',
-                            style: const TextStyle(fontWeight: FontWeight.w700),
+                            text: '0 ',
+                            style: TextStyle(fontWeight: FontWeight.w700),
                           ),
-                          const TextSpan(text: 'Katıldı'),
+                          TextSpan(text: 'Katıldı'),
                         ],
                       ),
                     ),
@@ -190,12 +205,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                           fontSize: 15.sp,
                           color: AppTheme.getTextHeadColor(context),
                         ),
-                        children: [
+                        children: const [
                           TextSpan(
-                            text: '$organizedCount ',
-                            style: const TextStyle(fontWeight: FontWeight.w700),
+                            text: '0 ',
+                            style: TextStyle(fontWeight: FontWeight.w700),
                           ),
-                          const TextSpan(text: 'Oluşturdu'),
+                          TextSpan(text: 'Oluşturdu'),
                         ],
                       ),
                     ),

@@ -279,6 +279,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                             location: event.location,
                             isOrganizer: event.organizerId == userId,
                             organizerName: event.organizerName,
+                            organizerUsername: event.organizerUsername,
                             organizerPhotoUrl: event.organizerPhotoUrl,
                             onTap: () {
                               Navigator.push(
