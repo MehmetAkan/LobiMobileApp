@@ -230,6 +230,38 @@ class EventService {
     }
   }
 
+  /// Get user's attended events for profile (status = 'attended')
+  Future<List<Map<String, dynamic>>> getUserAttendedEventsForProfile({
+    required String userId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_user_attended_events_for_profile',
+        params: {'user_id_in': userId},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getUserAttendedEventsForProfile');
+    }
+  }
+
+  /// Get user's organized events for profile (not cancelled)
+  Future<List<Map<String, dynamic>>> getUserOrganizedEventsForProfile({
+    required String userId,
+  }) async {
+    try {
+      final response = await _client.rpc(
+        'get_user_organized_events_for_profile',
+        params: {'user_id_in': userId},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getUserOrganizedEventsForProfile');
+    }
+  }
+
   /// Cancel event
   Future<void> cancelEvent({
     required String eventId,

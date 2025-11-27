@@ -199,6 +199,38 @@ class EventRepository {
     }
   }
 
+  Future<List<EventModel>> getUserAttendedEvents(String userId) async {
+    try {
+      final rows = await _eventService.getUserAttendedEventsForProfile(
+        userId: userId,
+      );
+      return rows.map((row) => _mapToEventModel(row)).toList();
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Katıldığınız etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
+  Future<List<EventModel>> getUserOrganizedEvents(String userId) async {
+    try {
+      final rows = await _eventService.getUserOrganizedEventsForProfile(
+        userId: userId,
+      );
+      return rows.map((row) => _mapToEventModel(row)).toList();
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Oluşturduğunuz etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
   EventModel _mapToEventModel(Map<String, dynamic> row) {
     // Tarih parse
     final dynamic startDateRaw = row['start_date'];

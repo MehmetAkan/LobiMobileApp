@@ -5,6 +5,11 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
+import 'package:lobi_application/data/services/profile_service.dart';
+import 'package:lobi_application/data/models/event_model.dart';
+import 'package:lobi_application/data/repositories/event_repository.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/widgets/common/cards/events/event_card_compact.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -17,11 +22,61 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Map<String, int>? _userStats;
+  bool _isLoadingStats = true;
+  List<EventModel> _attendedEvents = [];
+  List<EventModel> _organizedEvents = [];
+  bool _isLoadingEvents = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _loadUserStats();
+    _loadUserEvents();
+  }
+
+  Future<void> _loadUserStats() async {
+    try {
+      final profileService = ProfileService();
+      final userId = ref.read(currentUserProfileProvider).value?.userId;
+
+      if (userId != null) {
+        final stats = await profileService.getUserStats(userId);
+        if (mounted) {
+          setState(() {
+            _userStats = stats;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Stats yüklenemedi: $e');
+    }
+  }
+
+  Future<void> _loadUserEvents() async {
+    try {
+      final userId = ref.read(currentUserProfileProvider).value?.userId;
+      if (userId == null) return;
+
+      final eventRepository = getIt<EventRepository>();
+
+      final attended = await eventRepository.getUserAttendedEvents(userId);
+      final organized = await eventRepository.getUserOrganizedEvents(userId);
+
+      if (mounted) {
+        setState(() {
+          _attendedEvents = attended;
+          _organizedEvents = organized;
+          _isLoadingEvents = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Events yüklenemedi: $e');
+      if (mounted) {
+        setState(() => _isLoadingEvents = false);
+      }
+    }
   }
 
   @override
@@ -171,7 +226,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                 ],
                 SizedBox(height: 20.h),
 
-                // Stats - TODO: Get from database
+                // Stats
                 Row(
                   children: [
                     RichText(
@@ -180,12 +235,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           fontSize: 15.sp,
                           color: AppTheme.getTextHeadColor(context),
                         ),
-                        children: const [
+                        children: [
                           TextSpan(
-                            text: '0 ',
-                            style: TextStyle(fontWeight: FontWeight.w700),
+                            text: '${_userStats?['attended'] ?? 0} ',
+                            style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
-                          TextSpan(text: 'Katıldı'),
+                          const TextSpan(text: 'Katıldı'),
                         ],
                       ),
                     ),
@@ -205,12 +260,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           fontSize: 15.sp,
                           color: AppTheme.getTextHeadColor(context),
                         ),
-                        children: const [
+                        children: [
                           TextSpan(
-                            text: '0 ',
-                            style: TextStyle(fontWeight: FontWeight.w700),
+                            text: '${_userStats?['organized'] ?? 0} ',
+                            style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
-                          TextSpan(text: 'Oluşturdu'),
+                          const TextSpan(text: 'Oluşturdu'),
                         ],
                       ),
                     ),
@@ -252,36 +307,69 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   }
 
   Widget _buildTabContent() {
+    final userId = ref.watch(currentUserProfileProvider).value?.userId;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final tabHeight = screenHeight * 0.5; // Use 50% of screen height for tabs
+
     return SizedBox(
-      height: 400.h, // Placeholder height
+      height: tabHeight,
       child: TabBarView(
         controller: _tabController,
         children: [
           // Attended events
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(40.w),
-              child: Text(
-                'Katıldığı etkinlikler burada listelenecek',
-                style: TextStyle(fontSize: 14.sp, color: AppTheme.zinc600),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
+          _buildEventList(_attendedEvents, 'Henüz hiç etkinliğe katılmadınız'),
 
           // Organized events
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(40.w),
-              child: Text(
-                'Oluşturduğu etkinlikler burada listelenecek',
-                style: TextStyle(fontSize: 14.sp, color: AppTheme.zinc600),
-                textAlign: TextAlign.center,
-              ),
-            ),
+          _buildEventList(
+            _organizedEvents,
+            'Henüz hiç etkinlik oluşturmadınız',
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildEventList(List<EventModel> events, String emptyMessage) {
+    if (_isLoadingEvents) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (events.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(40.w),
+          child: Text(
+            emptyMessage,
+            style: TextStyle(fontSize: 14.sp, color: AppTheme.zinc600),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    final userId = ref.watch(currentUserProfileProvider).value?.userId;
+
+    return ListView.separated(
+      padding: EdgeInsets.all(20.w),
+      itemCount: events.length,
+      separatorBuilder: (context, index) => SizedBox(height: 16.h),
+      itemBuilder: (context, index) {
+        final event = events[index];
+        return EventCardCompact(
+          imageUrl: event.imageUrl,
+          title: event.title,
+          date: event.date,
+          location: event.location,
+          isOrganizer: event.organizerId == userId,
+          organizerName: event.organizerName,
+          organizerUsername: event.organizerUsername,
+          organizerPhotoUrl: event.organizerPhotoUrl,
+          onTap: () {
+            // TODO: Navigate to event detail
+            debugPrint('Event tapped: ${event.id}');
+          },
+        );
+      },
     );
   }
 }

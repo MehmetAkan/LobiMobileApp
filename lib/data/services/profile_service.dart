@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/core/errors/error_handler.dart';
 
-
 /// Profile Service: Sadece profiles tablosu ile işlemler
 class ProfileService {
   SupabaseClient get _supabase => SupabaseManager.instance.client;
@@ -29,7 +28,7 @@ class ProfileService {
 
       final profile = ProfileModel.fromJson(result);
       AppLogger.debug('Profil getirildi: ${profile.fullName}');
-      
+
       return profile;
     } catch (e, stackTrace) {
       AppLogger.error('Profil getirme hatası', e, stackTrace);
@@ -45,13 +44,10 @@ class ProfileService {
 
       await _supabase
           .from(AppConstants.profilesTable)
-          .upsert(
-            profile.toJson(),
-            onConflict: 'user_id',
-          );
+          .upsert(profile.toJson(), onConflict: 'user_id');
 
       AppLogger.info('✅ Profil kaydedildi: ${profile.fullName}');
-      
+
       return profile;
     } catch (e, stackTrace) {
       AppLogger.error('Profil kaydetme hatası', e, stackTrace);
@@ -75,6 +71,36 @@ class ProfileService {
       AppLogger.info('Profil güncellendi: $userId');
     } catch (e, stackTrace) {
       AppLogger.error('Profil güncelleme hatası', e, stackTrace);
+      throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// Kullanıcı istatistiklerini getir (katıldığı ve oluşturduğu etkinlik sayıları)
+  Future<Map<String, int>> getUserStats(String userId) async {
+    try {
+      AppLogger.debug('Kullanıcı istatistikleri getiriliyor: $userId');
+
+      // Katıldığı etkinlik sayısı
+      final attendedResult = await _supabase.rpc(
+        'get_user_attended_count',
+        params: {'user_id_in': userId},
+      );
+
+      // Oluşturduğu etkinlik sayısı
+      final organizedResult = await _supabase.rpc(
+        'get_user_organized_count',
+        params: {'user_id_in': userId},
+      );
+
+      final stats = {
+        'attended': attendedResult as int? ?? 0,
+        'organized': organizedResult as int? ?? 0,
+      };
+
+      AppLogger.debug('İstatistikler: $stats');
+      return stats;
+    } catch (e, stackTrace) {
+      AppLogger.error('İstatistik hatası', e, stackTrace);
       throw ErrorHandler.handle(e);
     }
   }
