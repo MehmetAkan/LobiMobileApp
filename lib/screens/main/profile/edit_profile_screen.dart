@@ -8,6 +8,7 @@ import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
+import 'package:lobi_application/screens/main/profile/widgets/profile_photo_modal.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -247,8 +248,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             right: 0,
             child: GestureDetector(
               onTap: () {
-                debugPrint('Change photo tapped');
-                // TODO: Photo picker
+                ProfilePhotoModal.show(
+                  context,
+                  onTakePhoto: () {
+                    debugPrint('Take photo');
+                    // TODO: Camera picker
+                  },
+                  onChoosePhoto: () {
+                    debugPrint('Choose photo');
+                    // TODO: Gallery picker
+                  },
+                  onDeletePhoto: () {
+                    debugPrint('Delete photo');
+                    // TODO: Delete photo
+                  },
+                );
               },
               child: Container(
                 width: 36.w,
