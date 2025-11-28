@@ -100,8 +100,8 @@ class ProfileService {
       AppLogger.debug('İstatistikler: $stats');
       return stats;
     } catch (e, stackTrace) {
-      AppLogger.error('İstatistik hatası', e, stackTrace);
-      throw ErrorHandler.handle(e);
+      AppLogger.error('İstatistikler getirme hatası', e, stackTrace);
+      return {'attended': 0, 'organized': 0};
     }
   }
 

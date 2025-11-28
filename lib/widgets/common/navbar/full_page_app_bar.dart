@@ -27,6 +27,9 @@ class FullPageAppBar extends StatefulWidget {
   /// Sağ taraf aksiyon butonu ikonu
   final IconData? actionIcon;
 
+  /// Sağ taraf aksiyon buton background rengi
+  final Color? actionIconBackgroundColor;
+
   /// Sağ taraf aksiyon butonu tıklama olayı
   final VoidCallback? onActionTap;
 
@@ -51,6 +54,7 @@ class FullPageAppBar extends StatefulWidget {
     this.scrollController,
     this.style = AppBarStyle.dark,
     this.actionIcon,
+    this.actionIconBackgroundColor,
     this.onActionTap,
     this.actions,
     this.onBackPressed,
@@ -434,7 +438,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: _getButtonBgColor(context),
+              color:
+                  widget.actionIconBackgroundColor ??
+                  _getButtonBgColor(context),
               shape: BoxShape.circle,
               border: Border.all(
                 color: _getButtonBorderColor(context),
@@ -445,7 +451,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
               child: Icon(
                 widget.actionIcon,
                 size: 22.sp,
-                color: _getButtonTextColor(context),
+                color: widget.actionIconBackgroundColor != null
+                    ? AppTheme.white
+                    : _getButtonTextColor(context),
               ),
             ),
           ),

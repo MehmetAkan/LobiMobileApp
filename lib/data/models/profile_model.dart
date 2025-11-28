@@ -8,6 +8,12 @@ class ProfileModel {
   final DateTime birthDate;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? instagram;
+  final String? twitter;
+  final String? youtube;
+  final String? tiktok;
+  final String? website;
+  final String? linkedin;
 
   ProfileModel({
     required this.userId,
@@ -19,6 +25,12 @@ class ProfileModel {
     required this.birthDate,
     this.createdAt,
     this.updatedAt,
+    this.instagram,
+    this.twitter,
+    this.youtube,
+    this.tiktok,
+    this.website,
+    this.linkedin,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +48,12 @@ class ProfileModel {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'] as String)
           : null,
+      instagram: json['instagram'] as String?,
+      twitter: json['twitter'] as String?,
+      youtube: json['youtube'] as String?,
+      tiktok: json['tiktok'] as String?,
+      website: json['website'] as String?,
+      linkedin: json['linkedin'] as String?,
     );
   }
 
@@ -49,6 +67,12 @@ class ProfileModel {
       'bio': bio,
       'avatar_url': avatarUrl,
       'birth_date': birthDate.toIso8601String(),
+      'instagram': instagram,
+      'twitter': twitter,
+      'youtube': youtube,
+      'tiktok': tiktok,
+      'website': website,
+      'linkedin': linkedin,
     };
   }
 
@@ -76,6 +100,12 @@ class ProfileModel {
     String? avatarUrl,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? instagram,
+    String? twitter,
+    String? youtube,
+    String? tiktok,
+    String? website,
+    String? linkedin,
   }) {
     return ProfileModel(
       userId: userId ?? this.userId,
@@ -87,6 +117,12 @@ class ProfileModel {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      instagram: instagram ?? this.instagram,
+      twitter: twitter ?? this.twitter,
+      youtube: youtube ?? this.youtube,
+      tiktok: tiktok ?? this.tiktok,
+      website: website ?? this.website,
+      linkedin: linkedin ?? this.linkedin,
     );
   }
 
