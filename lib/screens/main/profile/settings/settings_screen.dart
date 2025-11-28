@@ -8,6 +8,12 @@ import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/widgets/common/menu/menu_group.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/privacy_policy_modal.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/terms_of_service_modal.dart';
+import 'package:lobi_application/screens/main/profile/widgets/settings/support_modal.dart';
+import 'package:lobi_application/screens/main/profile/widgets/settings/logout_modal.dart';
+import 'package:lobi_application/app_entry.dart';
+import 'package:lobi_application/core/supabase_client.dart';
+import 'package:lobi_application/core/feedback/app_feedback_service.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -61,10 +67,7 @@ class SettingsScreen extends ConsumerWidget {
                 MenuItem(
                   icon: LucideIcons.headset,
                   title: 'Destek',
-                  onTap: () {
-                    debugPrint('Destek tapped');
-                    // TODO: Open support
-                  },
+                  onTap: () => SupportModal.show(context, ref),
                 ),
               ],
             ),
@@ -124,10 +127,10 @@ class SettingsScreen extends ConsumerWidget {
                   icon: LucideIcons.logOut,
                   title: 'Çıkış Yap',
                   isDestructive: true,
-                  onTap: () {
-                    debugPrint('Çıkış Yap tapped');
-                    // TODO: Handle logout
-                  },
+                  onTap: () => LogoutModal.show(
+                    context,
+                    onConfirm: () => _handleLogout(context, ref),
+                  ),
                 ),
               ],
             ),
@@ -135,6 +138,34 @@ class SettingsScreen extends ConsumerWidget {
         );
       },
     );
+  }
+
+  void _handleLogout(BuildContext context, WidgetRef ref) async {
+    try {
+      // Sign out from Supabase
+      await SupabaseManager.instance.client.auth.signOut();
+
+      // Invalidate profile provider
+      ref.invalidate(currentUserProfileProvider);
+
+      if (context.mounted) {
+        // Navigate to app entry (which handles routing) and remove all previous routes
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const AppEntry()),
+          (route) => false, // Remove all routes
+        );
+
+        // Show success message
+        Future.delayed(const Duration(milliseconds: 500), () {
+          getIt<AppFeedbackService>().showSuccess('Çıkış yapıldı');
+        });
+      }
+    } catch (e) {
+      debugPrint('Logout error: $e');
+      if (context.mounted) {
+        getIt<AppFeedbackService>().showError('Çıkış yapılırken hata oluştu');
+      }
+    }
   }
 
   Widget _buildProfileGroup(

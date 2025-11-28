@@ -124,7 +124,7 @@ class CustomModalSheet extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 20.h),
+                SizedBox(height: 0.h),
 
                 if (showDivider) ...[
                   Divider(
@@ -139,7 +139,10 @@ class CustomModalSheet extends StatelessWidget {
                 Flexible(
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 5.h,
+                      ),
                       child: child,
                     ),
                   ),
@@ -147,7 +150,7 @@ class CustomModalSheet extends StatelessWidget {
 
                 // Footer
                 if (footer != null) ...[
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 0.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: footer!,
