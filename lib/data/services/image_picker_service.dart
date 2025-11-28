@@ -83,6 +83,44 @@ class ImagePickerService {
     }
   }
 
+  /// Kamera ile resim çek ve yuvarlak kırp (1:1 - Profil fotoğrafı için)
+  ///
+  /// @returns Kırpılmış resmin File objesi veya null
+  Future<File?> takeAndCropCircularPhoto() async {
+    try {
+      AppLogger.debug('📸 Kamera ile profil resmi çekiliyor...');
+
+      // 1. Kamera ile resim çek
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 100,
+      );
+
+      if (image == null) {
+        AppLogger.debug('Resim çekilmedi (kullanıcı iptal etti)');
+        return null;
+      }
+
+      AppLogger.info('✅ Resim çekildi: ${image.name}');
+
+      // 2. Resmi yuvarlak kırp (1:1 oran)
+      final croppedFile = await _cropCircularImage(image.path);
+
+      if (croppedFile == null) {
+        AppLogger.debug('Resim kırpılmadı (kullanıcı iptal etti)');
+        return null;
+      }
+
+      final fileSize = await croppedFile.length();
+      AppLogger.info('✅ Profil resmi kırpıldı: ${_formatFileSize(fileSize)}');
+
+      return croppedFile;
+    } catch (e, stackTrace) {
+      AppLogger.error('Kamera resmi çekme/kırpma hatası', e, stackTrace);
+      return null;
+    }
+  }
+
   /// Resmi kırp (1:1 aspect ratio)
   Future<File?> _cropImage(String imagePath) async {
     try {

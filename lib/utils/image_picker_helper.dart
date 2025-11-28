@@ -97,6 +97,32 @@ class ImagePickerHelper {
     }
   }
 
+  /// Kamera ile yuvarlak profil resmi çek ve kırp
+  Future<ImagePickerResult> takeAndCropCircularPhoto() async {
+    try {
+      AppLogger.info('📸 Kamera ile profil fotoğrafı çekiliyor...');
+
+      // Resim çek ve yuvarlak kırp
+      final imageFile = await _service.takeAndCropCircularPhoto();
+
+      if (imageFile == null) {
+        return ImagePickerResult.cancelled();
+      }
+
+      // Dosya validasyonu
+      final validationResult = await _validateImage(imageFile);
+      if (!validationResult.isSuccess) {
+        return validationResult;
+      }
+
+      AppLogger.info('✅ Profil fotoğrafı başarıyla çekildi');
+      return ImagePickerResult.success(imageFile);
+    } catch (e, stackTrace) {
+      AppLogger.error('Kamera ile fotoğraf çekme hatası', e, stackTrace);
+      return ImagePickerResult.failure('Fotoğraf çekilirken bir hata oluştu.');
+    }
+  }
+
   /// Resim dosyasını validate et
   Future<ImagePickerResult> _validateImage(File imageFile) async {
     try {
