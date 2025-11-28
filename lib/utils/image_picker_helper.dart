@@ -15,29 +15,20 @@ class ImagePickerResult {
   });
 
   factory ImagePickerResult.success(File imageFile) {
-    return ImagePickerResult._(
-      isSuccess: true,
-      imageFile: imageFile,
-    );
+    return ImagePickerResult._(isSuccess: true, imageFile: imageFile);
   }
 
   factory ImagePickerResult.failure(String errorMessage) {
-    return ImagePickerResult._(
-      isSuccess: false,
-      errorMessage: errorMessage,
-    );
+    return ImagePickerResult._(isSuccess: false, errorMessage: errorMessage);
   }
 
   factory ImagePickerResult.cancelled() {
-    return ImagePickerResult._(
-      isSuccess: false,
-      errorMessage: null,
-    );
+    return ImagePickerResult._(isSuccess: false, errorMessage: null);
   }
 }
 
 /// ImagePickerHelper - Basitleştirilmiş resim seçme helper'ı
-/// 
+///
 /// Sorumluluklar:
 /// - Galeriden resim seç ve kırp
 /// - Dosya validasyonu
@@ -78,6 +69,34 @@ class ImagePickerHelper {
     }
   }
 
+  /// Galeriden yuvarlak profil resmi seç ve kırp
+  Future<ImagePickerResult> pickAndCropCircularImage() async {
+    try {
+      AppLogger.info('📸 Profil fotoğrafı seçiliyor...');
+
+      // Resim seç ve yuvarlak kırp
+      final imageFile = await _service.pickAndCropCircularImage();
+
+      if (imageFile == null) {
+        return ImagePickerResult.cancelled();
+      }
+
+      // Dosya validasyonu
+      final validationResult = await _validateImage(imageFile);
+      if (!validationResult.isSuccess) {
+        return validationResult;
+      }
+
+      AppLogger.info('✅ Profil fotoğrafı başarıyla seçildi');
+      return ImagePickerResult.success(imageFile);
+    } catch (e, stackTrace) {
+      AppLogger.error('Profil fotoğrafı seçme hatası', e, stackTrace);
+      return ImagePickerResult.failure(
+        'Profil fotoğrafı seçilirken bir hata oluştu.',
+      );
+    }
+  }
+
   /// Resim dosyasını validate et
   Future<ImagePickerResult> _validateImage(File imageFile) async {
     try {
@@ -88,7 +107,7 @@ class ImagePickerHelper {
 
       // Dosya boyutunu kontrol et
       final fileSize = await imageFile.length();
-      
+
       if (fileSize > maxFileSizeInBytes) {
         final sizeInMB = (fileSize / (1024 * 1024)).toStringAsFixed(1);
         return ImagePickerResult.failure(
@@ -96,8 +115,10 @@ class ImagePickerHelper {
         );
       }
 
-      AppLogger.debug('Dosya validasyonu başarılı (${_formatFileSize(fileSize)})');
-      
+      AppLogger.debug(
+        'Dosya validasyonu başarılı (${_formatFileSize(fileSize)})',
+      );
+
       return ImagePickerResult.success(imageFile);
     } catch (e, stackTrace) {
       AppLogger.error('Dosya validasyon hatası', e, stackTrace);

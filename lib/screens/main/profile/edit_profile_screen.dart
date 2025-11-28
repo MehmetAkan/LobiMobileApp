@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
+import 'package:lobi_application/data/services/storage_service.dart';
 import 'package:lobi_application/core/feedback/app_feedback_service.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/utils/image_picker_helper.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/screens/main/profile/widgets/profile_photo_modal.dart';
@@ -254,9 +257,57 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     debugPrint('Take photo');
                     // TODO: Camera picker
                   },
-                  onChoosePhoto: () {
-                    debugPrint('Choose photo');
-                    // TODO: Gallery picker
+                  onChoosePhoto: () async {
+                    final pickerHelper = ImagePickerHelper(getIt());
+                    final result = await pickerHelper
+                        .pickAndCropCircularImage();
+
+                    if (result.isSuccess && result.imageFile != null) {
+                      // Show loading
+                      getIt<AppFeedbackService>().showInfo(
+                        'Fotoğraf yükleniyor...',
+                      );
+
+                      try {
+                        final currentProfile = ref
+                            .read(currentUserProfileProvider)
+                            .value;
+                        if (currentProfile == null) {
+                          throw Exception('Profil bulunamadı');
+                        }
+
+                        // Upload to storage
+                        final storageService = StorageService();
+                        final newAvatarUrl = await storageService
+                            .uploadProfilePhoto(
+                              userId: currentProfile.userId,
+                              imageFile: result.imageFile!,
+                            );
+
+                        // Update profile with new avatar URL
+                        final profileService = ProfileService();
+                        await profileService.updateProfile(
+                          currentProfile.userId,
+                          {'avatar_url': newAvatarUrl},
+                        );
+
+                        // Refresh profile
+                        ref.invalidate(currentUserProfileProvider);
+
+                        getIt<AppFeedbackService>().showSuccess(
+                          'Profil fotoğrafı güncellendi',
+                        );
+                      } catch (e) {
+                        AppLogger.error('Profil fotoğrafı yükleme hatası', e);
+                        getIt<AppFeedbackService>().showError(
+                          'Fotoğraf yüklenemedi. Tekrar deneyin.',
+                        );
+                      }
+                    } else if (result.errorMessage != null) {
+                      getIt<AppFeedbackService>().showError(
+                        result.errorMessage!,
+                      );
+                    }
                   },
                   onDeletePhoto: () {
                     debugPrint('Delete photo');
