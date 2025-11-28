@@ -100,6 +100,11 @@ flutter:
     - assets/images/system/settings/setting-qr-icon.svg
     - assets/images/system/settings/setting-question-icon.svg
     - assets/images/system/settings/setting-user-icon.svg
+    - assets/images/system/settings/instagram.png
+    - assets/images/system/settings/tiktok.png
+    - assets/images/system/settings/youtube.png
+    - assets/images/system/settings/web.png
+    - assets/images/system/settings/linkedin.png
     - assets/images/system/profile-cover.png
   fonts:
     - family: Figtree

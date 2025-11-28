@@ -6,6 +6,7 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/widgets/common/menu/menu_group.dart';
+import 'package:lobi_application/screens/main/profile/edit_profile_screen.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/privacy_policy_modal.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/terms_of_service_modal.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/support_modal.dart';
@@ -237,8 +238,12 @@ class SettingsScreen extends ConsumerWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                debugPrint('Profili Düzenle tapped');
-                // TODO: Navigate to edit profile
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen(),
+                  ),
+                );
               },
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(18.r),

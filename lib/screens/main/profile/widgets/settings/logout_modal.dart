@@ -34,13 +34,14 @@ class LogoutModal {
               color: AppTheme.getTextHeadColor(context),
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 5.h),
           Text(
             'Hesabınızdan çıkış yapmak istediğinizden emin misiniz?',
             style: TextStyle(
-              fontSize: 13.sp,
+              fontSize: 14.sp,
+              letterSpacing: -0.25,
               fontWeight: FontWeight.w500,
-              color: AppTheme.zinc600,
+              color: AppTheme.zinc700,
             ),
           ),
         ],
@@ -48,30 +49,6 @@ class LogoutModal {
       showDivider: true,
       child: Row(
         children: [
-          // İptal button
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                side: BorderSide(color: AppTheme.zinc300, width: 1),
-                backgroundColor: Colors.transparent,
-              ),
-              child: Text(
-                'İptal',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.zinc700,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          // Çıkış Yap button
           Expanded(
             child: ElevatedButton(
               onPressed: () {
@@ -79,17 +56,39 @@ class LogoutModal {
                 onConfirm();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.red800,
-                foregroundColor: AppTheme.white,
+                backgroundColor: AppTheme.red100,
+                foregroundColor: AppTheme.red900,
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(25.r),
                 ),
                 elevation: 0,
               ),
               child: Text(
                 'Çıkış Yap',
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+                side: BorderSide(color: AppTheme.zinc400, width: 1),
+                backgroundColor: Colors.transparent,
+              ),
+              child: Text(
+                'İptal',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.black800,
+                ),
               ),
             ),
           ),
