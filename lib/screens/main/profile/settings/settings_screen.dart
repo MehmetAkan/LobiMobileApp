@@ -6,6 +6,8 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/widgets/common/menu/menu_group.dart';
+import 'package:lobi_application/screens/main/profile/widgets/settings/privacy_policy_modal.dart';
+import 'package:lobi_application/screens/main/profile/widgets/settings/terms_of_service_modal.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -44,18 +46,12 @@ class SettingsScreen extends ConsumerWidget {
                 MenuItem(
                   icon: LucideIcons.scrollText400,
                   title: 'Gizlilik Sözleşmesi',
-                  onTap: () {
-                    debugPrint('Gizlilik Sözleşmesi tapped');
-                    // TODO: Show privacy policy
-                  },
+                  onTap: () => PrivacyPolicyModal.show(context),
                 ),
                 MenuItem(
                   icon: LucideIcons.fileUser400,
                   title: 'Kullanıcı Sözleşmesi',
-                  onTap: () {
-                    debugPrint('Kullanıcı Sözleşmesi tapped');
-                    // TODO: Show terms of service
-                  },
+                  onTap: () => TermsOfServiceModal.show(context),
                 ),
               ],
             ),
