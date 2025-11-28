@@ -10,6 +10,7 @@ import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_compact.dart';
+import 'package:lobi_application/screens/main/profile/settings/settings_screen.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -144,7 +145,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       right: 20.w,
       child: GestureDetector(
         onTap: () {
-          debugPrint('Settings tapped');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
         },
         child: Container(
           width: 40.w,
