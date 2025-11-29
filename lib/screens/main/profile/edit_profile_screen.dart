@@ -162,6 +162,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             _buildSectionTitle('Sosyal Hesaplar'),
             SizedBox(height: 10.h),
             _buildSocialAccountsSection(),
+            SizedBox(height: 60),
           ],
         );
       },

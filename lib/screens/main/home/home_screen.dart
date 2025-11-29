@@ -17,6 +17,9 @@ import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
+import 'package:lobi_application/data/services/fcm_service.dart';
+import 'package:lobi_application/widgets/common/modals/notification_permission_modal.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -182,7 +185,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ],
                 );
               },
-              actions: (scrolled) => [NavbarNotificationButton(onTap: () {})],
+              actions: (scrolled) => [const NavbarNotificationButton()],
             ),
           ),
         ],

@@ -10,6 +10,10 @@ import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/sections/create_event_cover_section.dart';
 import 'package:lobi_application/screens/main/events/widgets/global/event_background.dart';
 import 'package:lobi_application/widgets/common/navbar/full_page_app_bar.dart';
+import 'package:lobi_application/core/utils/logger.dart';
+import 'package:lobi_application/data/services/fcm_service.dart';
+import 'package:lobi_application/widgets/common/modals/notification_permission_modal.dart';
+import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/forms/event_text_field.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/forms/event_datetime_field.dart';
 import 'package:lobi_application/screens/main/events/widgets/create/forms/event_location_field.dart';
@@ -176,7 +180,34 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       getIt<AppFeedbackService>().showSuccess(
         'Etkinlik başarıyla oluşturuldu!',
       );
+
+      // Check and request notification permission if needed
+      _checkNotificationPermission();
+
       Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _checkNotificationPermission() async {
+    try {
+      final userId = ref.read(currentUserProfileProvider).value?.userId;
+      if (userId == null) return;
+
+      // Check if permission is already granted
+      final fcmService = getIt<FCMService>();
+      final isGranted = await fcmService.isPermissionGranted();
+
+      if (!isGranted && mounted) {
+        // Show permission modal
+        await fcmService.requestPermissionAndSaveToken(
+          userId: userId,
+          context: context,
+          permissionContext: NotificationPermissionContext.eventApproved,
+        );
+      }
+    } catch (e) {
+      // Silently fail, permission is optional
+      AppLogger.debug('Permission check failed: $e');
     }
   }
 

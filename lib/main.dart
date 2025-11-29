@@ -5,10 +5,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
-import 'package:lobi_application/data/models/event_model.dart';
-import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
-
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   // Flutter binding'i başlat
@@ -20,6 +20,12 @@ Future<void> main() async {
     // 🗺️ Environment variables yükle - EKLENDI
     await dotenv.load(fileName: ".env");
     AppLogger.info('✅ Environment variables yüklendi');
+
+    // 🔥 Firebase initialize
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    AppLogger.info('✅ Firebase başlatıldı');
 
     await setupServiceLocator();
 
@@ -76,7 +82,6 @@ class LobiApp extends StatelessWidget {
           // home: const GoogleMapsTestScreen(),
           // home: const LocationTestScreen(),
           home: const AppEntry(),
-         
         );
       },
     );

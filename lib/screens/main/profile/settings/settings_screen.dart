@@ -16,6 +16,7 @@ import 'package:lobi_application/core/supabase_client.dart';
 import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:lobi_application/screens/main/notifications/notifications_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -65,6 +66,17 @@ class SettingsScreen extends ConsumerWidget {
             SizedBox(height: 20.h),
             MenuGroup(
               items: [
+                MenuItem(
+                  icon: LucideIcons.bell,
+                  title: 'Bildirimler',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(),
+                      ),
+                    );
+                  },
+                ),
                 MenuItem(
                   icon: LucideIcons.headset,
                   title: 'Destek',

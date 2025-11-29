@@ -11,6 +11,8 @@ import 'package:lobi_application/data/services/event_service.dart';
 import 'package:lobi_application/data/services/event_image_service.dart';
 import 'package:lobi_application/data/services/category_service.dart';
 import 'package:lobi_application/data/services/image_picker_service.dart';
+import 'package:lobi_application/data/services/fcm_service.dart';
+import 'package:lobi_application/data/services/notification_service.dart';
 
 import 'package:lobi_application/data/repositories/auth_repository.dart';
 import 'package:lobi_application/data/repositories/profile_repository.dart';
@@ -43,27 +45,26 @@ Future setupServiceLocator() async {
     getIt.registerLazySingleton(() => ImagePickerService());
     getIt.registerLazySingleton(() => EventService(getIt()));
 
+    // FCM Service
+    getIt.registerLazySingleton(() => FCMService());
+
+    // Notification Service
+    getIt.registerLazySingleton(() => NotificationService());
+
     // 3. Repositories
-    getIt.registerLazySingleton(
-      () => AuthRepository(getIt(), getIt()),
-    );
-    getIt.registerLazySingleton(
-      () => ProfileRepository(getIt(), getIt()),
-    );
-    getIt.registerLazySingleton(
-      () => EventImageRepository(getIt()),
-    );
-    getIt.registerLazySingleton(
-      () => CategoryRepository(getIt()),
-    );
-    getIt.registerLazySingleton(
-      () => EventRepository(getIt(), getIt()),
-    );
+    getIt.registerLazySingleton(() => AuthRepository(getIt(), getIt()));
+    getIt.registerLazySingleton(() => ProfileRepository(getIt(), getIt()));
+    getIt.registerLazySingleton(() => EventImageRepository(getIt()));
+    getIt.registerLazySingleton(() => CategoryRepository(getIt()));
+    getIt.registerLazySingleton(() => EventRepository(getIt(), getIt()));
 
     // 4. Global Feedback Service
     getIt.registerLazySingleton<AppFeedbackService>(
       () => AppFeedbackService(rootScaffoldMessengerKey),
     );
+
+    // 5. Initialize FCM
+    await getIt<FCMService>().initialize();
 
     AppLogger.info('✅ Dependency Injection kuruldu');
   } catch (e, stackTrace) {

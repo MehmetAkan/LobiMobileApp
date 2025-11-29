@@ -157,11 +157,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       },
                     ),
                     SizedBox(width: 10.w),
-                    NavbarNotificationButton(
-                      onTap: () {
-                        debugPrint('Bildirimler');
-                      },
-                    ),
+                    const NavbarNotificationButton(),
                   ],
                 ),
               ],
