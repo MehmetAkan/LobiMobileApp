@@ -9,6 +9,7 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
+import 'package:lobi_application/data/services/local_notification_service.dart';
 
 Future<void> main() async {
   // Flutter binding'i başlat
@@ -39,6 +40,9 @@ Future<void> main() async {
         rethrow; // Other Firebase errors should be handled
       }
     }
+
+    // 🔔 Initialize local notifications
+    await LocalNotificationService().initialize();
 
     await setupServiceLocator();
 

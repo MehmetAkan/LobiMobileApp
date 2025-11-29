@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lobi_application/core/supabase_client.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/widgets/common/modals/notification_permission_modal.dart';
+import 'package:lobi_application/data/services/local_notification_service.dart';
 
 /// FCM Service - Firebase Cloud Messaging yönetimi
 class FCMService {
@@ -203,9 +204,9 @@ class FCMService {
     AppLogger.debug('Body: ${message.notification?.body}');
     AppLogger.debug('Data: ${message.data}');
 
-    // Note: iOS foreground notifications need to be displayed manually
-    // For now, relying on Supabase realtime for instant updates
-    // Could add flutter_local_notifications for foreground display if needed
+    // Show local notification
+    final localNotificationService = LocalNotificationService();
+    localNotificationService.showNotificationFromFCM(message);
   }
 
   /// Handle message tap (navigation)

@@ -105,7 +105,7 @@ class NotificationService {
 
   /// Subscribe to notifications realtime
   Stream<List<NotificationModel>> subscribeToNotifications(String userId) {
-    AppLogger.debug('Bildirimlere realtime bağlanılıyor: $userId');
+    AppLogger.info('🔄 Bildirimlere realtime bağlan ılıyor: $userId');
 
     return _supabase
         .from(_tableName)
@@ -113,6 +113,7 @@ class NotificationService {
         .eq('user_id', userId)
         .order('created_at', ascending: false)
         .map((data) {
+          AppLogger.debug('📩 Realtime update alındı: ${data.length} bildirim');
           return data.map((json) => NotificationModel.fromJson(json)).toList();
         });
   }

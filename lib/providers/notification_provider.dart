@@ -3,6 +3,7 @@ import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/data/models/notification_model.dart';
 import 'package:lobi_application/data/services/notification_service.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 
 /// Notification Service Provider
 final notificationServiceProvider = Provider<NotificationService>((ref) {
@@ -12,6 +13,8 @@ final notificationServiceProvider = Provider<NotificationService>((ref) {
 /// Notifications Stream Provider
 final notificationsProvider = StreamProvider<List<NotificationModel>>((ref) {
   final userId = ref.watch(currentUserProfileProvider).value?.userId;
+
+  AppLogger.debug('📱 notificationsProvider rebuilt, userId: $userId');
 
   if (userId == null) {
     return Stream.value([]);
@@ -25,6 +28,8 @@ final notificationsProvider = StreamProvider<List<NotificationModel>>((ref) {
 final unreadNotificationCountProvider = StreamProvider<int>((ref) async* {
   final userId = ref.watch(currentUserProfileProvider).value?.userId;
 
+  AppLogger.debug('📱 unreadCountProvider rebuilt, userId: $userId');
+
   if (userId == null) {
     yield 0;
     return;
@@ -34,11 +39,13 @@ final unreadNotificationCountProvider = StreamProvider<int>((ref) async* {
 
   // Initial count
   final initialCount = await service.getUnreadCount(userId);
+  AppLogger.debug('Initial unread count: $initialCount');
   yield initialCount;
 
   // Listen to notifications stream and count unread
   await for (final notifications in service.subscribeToNotifications(userId)) {
     final unreadCount = notifications.where((n) => !n.isRead).length;
+    AppLogger.debug('Realtime unread count update: $unreadCount');
     yield unreadCount;
   }
 });

@@ -8,6 +8,7 @@ import 'package:lobi_application/screens/auth/welcome_screen.dart';
 import 'package:lobi_application/screens/auth/username_setup_screen.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
 import 'package:lobi_application/screens/main/main_navigation_screen.dart';
+import 'package:lobi_application/providers/notification_provider.dart';
 
 /// App Entry Point
 /// Neden ConsumerWidget: Riverpod provider'ları dinlemek için
@@ -19,6 +20,11 @@ class AppEntry extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Auth state'i dinle
     final authState = ref.watch(authStateProvider);
+
+    // Force initialize notification providers for realtime subscription
+    // This ensures realtime subscription starts even if notification button not rendered yet
+    ref.watch(notificationsProvider);
+    ref.watch(unreadNotificationCountProvider);
 
     return authState.when(
       // Loading: Auth state yüklenirken
