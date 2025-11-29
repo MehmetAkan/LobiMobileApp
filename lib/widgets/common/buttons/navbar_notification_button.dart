@@ -5,6 +5,10 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/screens/main/notifications/notifications_screen.dart';
 import 'package:lobi_application/providers/notification_provider.dart';
+import 'package:lobi_application/providers/profile_provider.dart';
+import 'package:lobi_application/data/services/fcm_service.dart';
+import 'package:lobi_application/widgets/common/modals/notification_permission_modal.dart';
+import 'package:lobi_application/core/di/service_locator.dart';
 
 class NavbarNotificationButton extends ConsumerWidget {
   final VoidCallback? onTap;
@@ -14,6 +18,7 @@ class NavbarNotificationButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final unreadCount = ref.watch(unreadNotificationCountProvider).value ?? 0;
+    final userId = ref.watch(currentUserProfileProvider).value?.userId;
 
     return SizedBox(
       width: 40.w,
@@ -28,12 +33,31 @@ class NavbarNotificationButton extends ConsumerWidget {
             child: InkWell(
               onTap:
                   onTap ??
-                  () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const NotificationsScreen(),
-                      ),
-                    );
+                  () async {
+                    // Check permission before navigating
+                    if (userId != null) {
+                      final fcmService = getIt<FCMService>();
+                      final isGranted = await fcmService.isPermissionGranted();
+
+                      if (!isGranted && context.mounted) {
+                        // Show permission modal
+                        await fcmService.requestPermissionAndSaveToken(
+                          userId: userId,
+                          context: context,
+                          permissionContext:
+                              NotificationPermissionContext.general,
+                        );
+                      }
+                    }
+
+                    // Navigate to notifications screen
+                    if (context.mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen(),
+                        ),
+                      );
+                    }
                   },
               customBorder: const CircleBorder(),
               child: Container(

@@ -6,6 +6,9 @@ import 'package:flutter/foundation.dart'
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
+/// IMPORTANT: Set FIREBASE_IOS_API_KEY environment variable before running:
+/// flutter run --dart-define=FIREBASE_IOS_API_KEY=your-api-key-here
+///
 /// Example:
 /// ```dart
 /// import 'firebase_options.dart';
@@ -65,7 +68,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC9cBKEpEHN4c8f1UbsbbcIVuQg3fU5-5c',
+    apiKey: String.fromEnvironment('FIREBASE_IOS_API_KEY', defaultValue: ''),
     appId: '1:330478606781:ios:091230c0dd8dcbadb81ad4',
     messagingSenderId: '330478606781',
     projectId: 'lobi-mobileapp',

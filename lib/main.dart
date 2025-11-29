@@ -21,11 +21,24 @@ Future<void> main() async {
     await dotenv.load(fileName: ".env");
     AppLogger.info('✅ Environment variables yüklendi');
 
-    // 🔥 Firebase initialize
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    AppLogger.info('✅ Firebase başlatıldı');
+    // 🔥 Firebase initialize (with duplicate app error handling)
+    try {
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+        AppLogger.info('✅ Firebase başlatıldı');
+      } else {
+        AppLogger.info('✅ Firebase zaten başlatılmış (Dart)');
+      }
+    } catch (e) {
+      // If already initialized natively, this is fine
+      if (e.toString().contains('duplicate-app')) {
+        AppLogger.info('✅ Firebase zaten başlatılmış (Native)');
+      } else {
+        rethrow; // Other Firebase errors should be handled
+      }
+    }
 
     await setupServiceLocator();
 

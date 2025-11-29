@@ -198,19 +198,23 @@ class FCMService {
 
   /// Handle foreground message
   void _handleMessage(RemoteMessage message) {
-    // TODO: Show in-app notification
-    AppLogger.debug('Message data: ${message.data}');
+    AppLogger.info('📩 Foreground notification received');
+    AppLogger.debug('Title: ${message.notification?.title}');
+    AppLogger.debug('Body: ${message.notification?.body}');
+    AppLogger.debug('Data: ${message.data}');
+
+    // Note: iOS foreground notifications need to be displayed manually
+    // For now, relying on Supabase realtime for instant updates
+    // Could add flutter_local_notifications for foreground display if needed
   }
 
   /// Handle message tap (navigation)
   void _handleMessageTap(RemoteMessage message) {
-    // TODO: Navigate to appropriate screen based on message data
-    AppLogger.debug('Message tap data: ${message.data}');
+    AppLogger.info('📱 Notification tapped');
+    AppLogger.debug('Message data: ${message.data}');
 
-    // Example navigation logic:
-    // if (message.data['type'] == 'event_reminder') {
-    //   navigateToEvent(message.data['event_id']);
-    // }
+    // Navigation is handled by notification screen when user taps notification
+    // The notification will be in Supabase and shown via realtime subscription
   }
 
   /// Check if permission is granted

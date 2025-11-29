@@ -181,33 +181,45 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         'Etkinlik başarıyla oluşturuldu!',
       );
 
-      // Check and request notification permission if needed
-      _checkNotificationPermission();
+      // Check and request notification permission if needed (await to show modal before navigation)
+      await _checkNotificationPermission();
 
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
   Future<void> _checkNotificationPermission() async {
     try {
+      AppLogger.info('🔔 Event created - checking notification permission');
+
       final userId = ref.read(currentUserProfileProvider).value?.userId;
-      if (userId == null) return;
+      if (userId == null) {
+        AppLogger.debug('No userId, skipping permission check');
+        return;
+      }
 
       // Check if permission is already granted
       final fcmService = getIt<FCMService>();
       final isGranted = await fcmService.isPermissionGranted();
 
+      AppLogger.debug('Permission granted: $isGranted');
+
       if (!isGranted && mounted) {
+        AppLogger.info('Showing permission modal...');
         // Show permission modal
         await fcmService.requestPermissionAndSaveToken(
           userId: userId,
           context: context,
           permissionContext: NotificationPermissionContext.eventApproved,
         );
+      } else {
+        AppLogger.debug('Permission already granted or context not mounted');
       }
     } catch (e) {
       // Silently fail, permission is optional
-      AppLogger.debug('Permission check failed: $e');
+      AppLogger.error('Permission check failed', e);
     }
   }
 

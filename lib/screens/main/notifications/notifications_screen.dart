@@ -97,6 +97,10 @@ class NotificationsScreen extends ConsumerWidget {
         if (!notification.isRead) {
           final service = ref.read(notificationServiceProvider);
           await service.markAsRead(notification.id);
+
+          // Invalidate providers to refresh UI
+          ref.invalidate(notificationsProvider);
+          ref.invalidate(unreadNotificationCountProvider);
         }
 
         // Navigate to event detail if event_id exists

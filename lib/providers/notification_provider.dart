@@ -10,22 +10,19 @@ final notificationServiceProvider = Provider<NotificationService>((ref) {
 });
 
 /// Notifications Stream Provider
-final notificationsProvider =
-    StreamProvider.autoDispose<List<NotificationModel>>((ref) {
-      final userId = ref.watch(currentUserProfileProvider).value?.userId;
+final notificationsProvider = StreamProvider<List<NotificationModel>>((ref) {
+  final userId = ref.watch(currentUserProfileProvider).value?.userId;
 
-      if (userId == null) {
-        return Stream.value([]);
-      }
+  if (userId == null) {
+    return Stream.value([]);
+  }
 
-      final service = ref.watch(notificationServiceProvider);
-      return service.subscribeToNotifications(userId);
-    });
+  final service = ref.watch(notificationServiceProvider);
+  return service.subscribeToNotifications(userId);
+});
 
 /// Unread Count Provider
-final unreadNotificationCountProvider = StreamProvider.autoDispose<int>((
-  ref,
-) async* {
+final unreadNotificationCountProvider = StreamProvider<int>((ref) async* {
   final userId = ref.watch(currentUserProfileProvider).value?.userId;
 
   if (userId == null) {
