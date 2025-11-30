@@ -353,11 +353,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       },
                     ),
                     SizedBox(width: 10.w),
-                    NavbarNotificationButton(
-                      onTap: () {
-                        debugPrint('Bildirimler');
-                      },
-                    ),
+                    const NavbarNotificationButton(),
                   ],
                 ),
               ],

@@ -9,7 +9,7 @@ class NotificationService {
   final _supabase = SupabaseManager.instance.client;
   static const String _tableName = 'notifications';
 
-  /// Get user notifications (ordered by created_at desc)
+  /// Get user notifications (ordered by created_at desc) with sender profiles
   Future<List<NotificationModel>> getNotifications(String userId) async {
     try {
       AppLogger.debug('Bildirimler getiriliyor: $userId');
@@ -20,9 +20,9 @@ class NotificationService {
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
-      final notifications = (response as List)
-          .map((json) => NotificationModel.fromJson(json))
-          .toList();
+      final notifications = await Future.wait(
+        (response as List).map((json) => _enrichNotificationWithProfile(json)),
+      );
 
       AppLogger.info('✅ ${notifications.length} bildirim getirildi');
       return notifications;
@@ -112,9 +112,73 @@ class NotificationService {
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)
         .order('created_at', ascending: false)
-        .map((data) {
+        .asyncMap((data) async {
           AppLogger.debug('📩 Realtime update alındı: ${data.length} bildirim');
-          return data.map((json) => NotificationModel.fromJson(json)).toList();
+
+          // Enrich each notification with sender profile
+          final notifications = await Future.wait(
+            data.map((json) => _enrichNotificationWithProfile(json)),
+          );
+
+          return notifications;
         });
+  }
+
+  /// Helper: Enrich notification with sender profile
+  Future<NotificationModel> _enrichNotificationWithProfile(
+    Map<String, dynamic> json,
+  ) async {
+    var notification = NotificationModel.fromJson(json);
+
+    // Determine sender user ID
+    String? senderUserId;
+
+    // If participant_id exists (new_participant notification)
+    final participantId = notification.data?['participant_id'] as String?;
+    if (participantId != null && participantId.isNotEmpty) {
+      senderUserId = participantId;
+    }
+    // Otherwise, get event organizer
+    else if (notification.eventId != null) {
+      try {
+        final eventResponse = await _supabase
+            .from('events')
+            .select('created_by')
+            .eq('id', notification.eventId!)
+            .single();
+
+        senderUserId = eventResponse['created_by'] as String?;
+      } catch (e) {
+        AppLogger.debug('Event not found: ${notification.eventId}');
+      }
+    }
+
+    // Fetch sender profile
+    if (senderUserId != null && senderUserId.isNotEmpty) {
+      try {
+        final profileResponse = await _supabase
+            .from('profiles')
+            .select('first_name, last_name, avatar_url')
+            .eq('user_id', senderUserId)
+            .single();
+
+        // Create updated data map
+        final updatedData = Map<String, dynamic>.from(notification.data ?? {});
+
+        // Combine first_name and last_name
+        final fullName =
+            '${profileResponse['first_name']} ${profileResponse['last_name']}';
+        updatedData['profile_name'] = fullName;
+        updatedData['profile_image_url'] = profileResponse['avatar_url'];
+
+        AppLogger.debug('Sender profile loaded: $fullName');
+
+        notification = notification.copyWith(data: updatedData);
+      } catch (e) {
+        AppLogger.debug('Sender profile not found: $senderUserId');
+      }
+    }
+
+    return notification;
   }
 }

@@ -65,9 +65,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final profileState = ref.watch(currentUserProfileProvider);
-    final profile = profileState.value; // Şimdilik kullanılmıyor
-
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final navbarHeight = 60.h + statusBarHeight;
 

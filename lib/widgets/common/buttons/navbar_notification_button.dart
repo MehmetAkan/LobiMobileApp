@@ -83,11 +83,11 @@ class NavbarNotificationButton extends ConsumerWidget {
           // Unread Badge
           if (unreadCount > 0)
             Positioned(
-              top: -2,
-              right: -2,
+              top: 0,
+              right: 0,
               child: Container(
-                width: 10.w,
-                height: 10.w,
+                width: 12.w,
+                height: 12.w,
                 decoration: BoxDecoration(
                   color: AppTheme.green900,
                   shape: BoxShape.circle,
