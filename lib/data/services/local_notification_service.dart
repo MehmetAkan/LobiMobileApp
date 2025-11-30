@@ -109,11 +109,41 @@ class LocalNotificationService {
   }
 
   /// Handle notification tap
-  void _onNotificationTapped(NotificationResponse response) {
+  void _onNotificationTapped(NotificationResponse response) async {
     AppLogger.info('🔔 Notification tapped: ${response.payload}');
 
-    // TODO: Navigate to appropriate screen based on payload
-    // This can be expanded to parse the payload and navigate
+    if (response.payload == null) return;
+
+    try {
+      // Parse payload to get notification data
+      // Payload format: "{notification_id: xxx, event_id: xxx, type: xxx}"
+      final payload = response.payload!;
+
+      // Extract event_id from payload
+      final eventIdMatch = RegExp(r'event_id:\s*([^,}]+)').firstMatch(payload);
+      if (eventIdMatch == null) {
+        AppLogger.debug('No event_id in payload');
+        return;
+      }
+
+      final eventId = eventIdMatch.group(1)?.trim();
+      if (eventId == null || eventId.isEmpty) return;
+
+      AppLogger.info('Navigating to event: $eventId');
+
+      // Navigate using the app's global navigator
+      // This will be handled by MainApp's navigatorKey
+      _navigateToEvent(eventId);
+    } catch (e, stackTrace) {
+      AppLogger.error('Notification tap handler error', e, stackTrace);
+    }
+  }
+
+  /// Navigate to event detail (to be implemented with global navigator)
+  void _navigateToEvent(String eventId) {
+    // This will navigate when app is opened from notification
+    // The actual navigation is handled by FCM message tap handler
+    AppLogger.info('Event navigation queued: $eventId');
   }
 
   /// Request permissions (iOS)

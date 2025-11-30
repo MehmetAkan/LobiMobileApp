@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "330478606781",
-    "project_id": "lobi-mobileapp",
-    "storage_bucket": "lobi-mobileapp.firebasestorage.app"
+    "project_number": "1089200413044",
+    "project_id": "lobi-mobileapp-1ac2a",
+    "storage_bucket": "lobi-mobileapp-1ac2a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:330478606781:android:7b20e6a0e6e3253fb81ad4",
+        "mobilesdk_app_id": "1:1089200413044:android:c42937f04b92e00e947421",
         "android_client_info": {
-          "package_name": "com.example.lobi_application"
+          "package_name": "com.lobi.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBj3NNK7pA2jMQC9wWDVsQ9EbxOsFIj0hE"
+          "current_key": "AIzaSyB3EfqgyuCu0e141NTKgEX-YUY7H9Cf3a4"
         }
       ],
       "services": {

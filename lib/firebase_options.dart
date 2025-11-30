@@ -60,19 +60,20 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBj3NNK7pA2jMQC9wWDVsQ9EbxOsFIj0hE',
-    appId: '1:330478606781:android:7b20e6a0e6e3253fb81ad4',
-    messagingSenderId: '330478606781',
-    projectId: 'lobi-mobileapp',
-    storageBucket: 'lobi-mobileapp.firebasestorage.app',
+    apiKey: 'AIzaSyB3EfqgyuCu0e141NTKgEX-YUY7H9Cf3a4',
+    appId: '1:1089200413044:android:c42937f04b92e00e947421',
+    messagingSenderId: '1089200413044',
+    projectId: 'lobi-mobileapp-1ac2a',
+    storageBucket: 'lobi-mobileapp-1ac2a.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_IOS_API_KEY', defaultValue: ''),
-    appId: '1:330478606781:ios:091230c0dd8dcbadb81ad4',
-    messagingSenderId: '330478606781',
-    projectId: 'lobi-mobileapp',
-    storageBucket: 'lobi-mobileapp.firebasestorage.app',
-    iosBundleId: 'com.example.lobiApplication',
+    apiKey: 'AIzaSyCAPdbNJuMWcbGvv7iYzBBHOtA-wImwKOA',
+    appId: '1:1089200413044:ios:471688b4ae38c2e4947421',
+    messagingSenderId: '1089200413044',
+    projectId: 'lobi-mobileapp-1ac2a',
+    storageBucket: 'lobi-mobileapp-1ac2a.firebasestorage.app',
+    iosBundleId: 'com.lobi.app',
   );
+
 }

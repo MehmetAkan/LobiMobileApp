@@ -56,3 +56,11 @@ ios/build/ios
 # API Keys (ekstra güvenlik)
 **/google_maps_api_key.txt
 **/api_keys.txt
+
+# Firebase Config Files - Private Keys
+ios/Runner/GoogleService-Info.plist
+android/app/google-services.json
+
+# Supabase Config
+supabase/.temp/
+supabase/config.toml

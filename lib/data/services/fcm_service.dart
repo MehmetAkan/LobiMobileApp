@@ -46,7 +46,7 @@ class FCMService {
       _fcmToken = await _messaging.getToken();
 
       if (_fcmToken != null) {
-        AppLogger.info('📱 FCM Token: ${_fcmToken!.substring(0, 20)}...');
+        AppLogger.info('📱 FCM Token (TAM): $_fcmToken');
       } else {
         AppLogger.warning('FCM Token alınamadı (Simulator\'da normal)');
       }
@@ -210,12 +210,36 @@ class FCMService {
   }
 
   /// Handle message tap (navigation)
-  void _handleMessageTap(RemoteMessage message) {
+  void _handleMessageTap(RemoteMessage message) async {
     AppLogger.info('📱 Notification tapped');
     AppLogger.debug('Message data: ${message.data}');
 
-    // Navigation is handled by notification screen when user taps notification
-    // The notification will be in Supabase and shown via realtime subscription
+    // Get event_id from notification data
+    final eventId = message.data['event_id'] as String?;
+
+    if (eventId == null || eventId.isEmpty) {
+      AppLogger.debug('No event_id in notification data');
+      return;
+    }
+
+    AppLogger.info('Navigating to event from notification: $eventId');
+
+    // Wait a bit for app to initialize
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Navigate to event detail
+    // This requires global navigator key which we'll add to main app
+    _navigateToEventDetail(eventId);
+  }
+
+  /// Navigate to event detail screen
+  void _navigateToEventDetail(String eventId) {
+    // Import at top: import 'package:lobi_application/main.dart';
+    // Use: navigatorKey.currentState?.push(...)
+
+    // For now, just log - we'll implement global navigation
+    AppLogger.info('Event detail navigation: $eventId');
+    // TODO: Implement with global navigator key
   }
 
   /// Check if permission is granted
