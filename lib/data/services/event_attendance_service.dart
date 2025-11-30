@@ -102,6 +102,7 @@ class EventAttendanceService {
           .maybeSingle();
 
       final now = DateTime.now().toIso8601String();
+      final isNewParticipant = existing == null;
 
       if (existing != null) {
         // Güncelle (iptal edilmişse yeniden aktif et)
@@ -130,6 +131,11 @@ class EventAttendanceService {
         });
       }
 
+      // Send notification to organizer if requires approval and new participant
+      if (requiresApproval && isNewParticipant) {
+        await _notifyOrganizerNewParticipant(eventId, userId);
+      }
+
       AppLogger.success('Katılım başarılı: ${targetStatus.dbValue}');
       return targetStatus;
     } on PostgrestException catch (e) {
@@ -138,6 +144,55 @@ class EventAttendanceService {
     } catch (e, stackTrace) {
       AppLogger.error('attendEvent error', e, stackTrace);
       rethrow;
+    }
+  }
+
+  /// Notify organizer about new participant request
+  Future<void> _notifyOrganizerNewParticipant(
+    String eventId,
+    String participantId,
+  ) async {
+    try {
+      // Get event details and organizer
+      final eventResponse = await _supabase
+          .from('events')
+          .select('title, cover_image_url, organizer_id')
+          .eq('id', eventId)
+          .single();
+
+      final eventTitle = eventResponse['title'] as String;
+      final eventImage = eventResponse['cover_image_url'] as String?;
+      final organizerId = eventResponse['organizer_id'] as String;
+
+      // Get participant name
+      final participantResponse = await _supabase
+          .from('profiles')
+          .select('first_name, last_name')
+          .eq('user_id', participantId)
+          .single();
+
+      final participantName =
+          '${participantResponse['first_name']} ${participantResponse['last_name']}';
+
+      // Create notification for organizer
+      await _supabase.from('notifications').insert({
+        'user_id': organizerId,
+        'event_id': eventId,
+        'type': 'new_participant',
+        'title': 'Yeni Katılım Talebi',
+        'body': '$participantName "$eventTitle" etkinliğine katılmak istiyor.',
+        'is_read': false,
+        'data': {
+          'event_id': eventId,
+          'participant_id': participantId,
+          'event_image_url': eventImage,
+        },
+      });
+
+      AppLogger.info('✅ Organizer bildirimi gönderildi: $organizerId');
+    } catch (e) {
+      // Don't fail the main operation if notification fails
+      AppLogger.warning('Organizer bildirimi gönderilemedi: $e');
     }
   }
 
