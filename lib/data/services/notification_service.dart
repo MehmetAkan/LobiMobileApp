@@ -143,11 +143,11 @@ class NotificationService {
       try {
         final eventResponse = await _supabase
             .from('events')
-            .select('created_by')
+            .select('organizer_id')
             .eq('id', notification.eventId!)
             .single();
 
-        senderUserId = eventResponse['created_by'] as String?;
+        senderUserId = eventResponse['organizer_id'] as String?;
       } catch (e) {
         AppLogger.debug('Event not found: ${notification.eventId}');
       }

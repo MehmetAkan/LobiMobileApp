@@ -289,6 +289,7 @@ class EventAttendanceService {
     required String userId,
   }) async {
     try {
+      // Update attendance status
       await _supabase
           .from(_tableName)
           .update({
@@ -299,6 +300,29 @@ class EventAttendanceService {
           .eq('user_id', userId);
 
       AppLogger.success('Katılım onaylandı');
+
+      // Get event details for notification
+      final eventResponse = await _supabase
+          .from('events')
+          .select('title, cover_image_url')
+          .eq('id', eventId)
+          .single();
+
+      final eventTitle = eventResponse['title'] as String;
+      final eventImage = eventResponse['cover_image_url'] as String?;
+
+      // Create notification for approved user
+      await _supabase.from('notifications').insert({
+        'user_id': userId,
+        'event_id': eventId,
+        'type': 'attendance_approved',
+        'title': 'Katılım Talebiniz Onaylandı! 🎉',
+        'body': '"$eventTitle" etkinliğine katılım talebiniz onaylandı.',
+        'is_read': false,
+        'data': {'event_id': eventId, 'event_image_url': eventImage},
+      });
+
+      AppLogger.info('✅ Onay bildirimi gönderildi: $userId');
     } on PostgrestException catch (e) {
       AppLogger.error('Supabase error in approveAttendance', e);
       throw DatabaseException('Onaylama başarısız: ${e.message}');
@@ -312,6 +336,7 @@ class EventAttendanceService {
     String? reason,
   }) async {
     try {
+      // Update attendance status
       await _supabase
           .from(_tableName)
           .update({
@@ -323,6 +348,34 @@ class EventAttendanceService {
           .eq('user_id', userId);
 
       AppLogger.success('Katılım reddedildi');
+
+      // Get event details for notification
+      final eventResponse = await _supabase
+          .from('events')
+          .select('title, cover_image_url')
+          .eq('id', eventId)
+          .single();
+
+      final eventTitle = eventResponse['title'] as String;
+      final eventImage = eventResponse['cover_image_url'] as String?;
+
+      // Create notification for rejected user
+      await _supabase.from('notifications').insert({
+        'user_id': userId,
+        'event_id': eventId,
+        'type': 'event_rejected',
+        'title': 'Katılım Talebin Reddedildi',
+        'body':
+            '"$eventTitle" etkinliğine katılım talebin organizatör tarafından reddedildi.',
+        'is_read': false,
+        'data': {
+          'event_id': eventId,
+          'status': 'rejected',
+          'event_image_url': eventImage,
+        },
+      });
+
+      AppLogger.info('✅ Red bildirimi gönderildi: $userId');
     } on PostgrestException catch (e) {
       AppLogger.error('Supabase error in rejectAttendance', e);
       throw DatabaseException('Reddetme başarısız: ${e.message}');

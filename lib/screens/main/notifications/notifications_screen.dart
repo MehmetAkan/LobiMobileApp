@@ -291,6 +291,8 @@ class NotificationsScreen extends ConsumerWidget {
         return AppTheme.orange900;
       case NotificationType.eventAnnouncement:
         return AppTheme.purple900;
+      case NotificationType.eventRejected:
+        return AppTheme.red800;
       default:
         return AppTheme.zinc700;
     }
@@ -306,6 +308,8 @@ class NotificationsScreen extends ConsumerWidget {
         return LucideIcons.clock;
       case NotificationType.eventAnnouncement:
         return LucideIcons.megaphone;
+      case NotificationType.eventRejected:
+        return LucideIcons.x;
       default:
         return LucideIcons.bell;
     }

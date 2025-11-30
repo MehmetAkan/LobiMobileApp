@@ -6,7 +6,8 @@ enum NotificationType {
   eventReminder('event_reminder'),
   newParticipant('new_participant'),
   eventAnnouncement('event_announcement'),
-  newEventsInCategory('new_events_in_category');
+  newEventsInCategory('new_events_in_category'),
+  eventRejected('event_rejected');
 
   const NotificationType(this.value);
   final String value;
