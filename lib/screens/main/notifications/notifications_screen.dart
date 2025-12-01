@@ -124,7 +124,7 @@ class NotificationsScreen extends ConsumerWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Etkinlik bulunamadı: $e'),
-                  backgroundColor: AppTheme.red900,
+                  backgroundColor: AppTheme.red600,
                 ),
               );
             }
@@ -197,7 +197,7 @@ class NotificationsScreen extends ConsumerWidget {
                           width: 8.w,
                           height: 8.w,
                           decoration: BoxDecoration(
-                            color: AppTheme.green900,
+                            color: AppTheme.green500,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -284,15 +284,15 @@ class NotificationsScreen extends ConsumerWidget {
   Color _getNotificationBadgeColor(NotificationType type) {
     switch (type) {
       case NotificationType.attendanceApproved:
-        return AppTheme.green900;
+        return AppTheme.green500;
       case NotificationType.newParticipant:
-        return AppTheme.red800;
+        return AppTheme.green500;
       case NotificationType.eventReminder:
-        return AppTheme.orange900;
+        return AppTheme.purple900;
       case NotificationType.eventAnnouncement:
         return AppTheme.purple900;
       case NotificationType.eventRejected:
-        return AppTheme.red800;
+        return AppTheme.red600;
       default:
         return AppTheme.zinc700;
     }

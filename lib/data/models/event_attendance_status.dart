@@ -40,13 +40,13 @@ enum EventAttendanceStatus {
       case EventAttendanceStatus.pending:
         return AppTheme.orange600;
       case EventAttendanceStatus.attending:
-        return AppTheme.green900;
+        return AppTheme.green500;
       case EventAttendanceStatus.attended:
         return AppTheme.green500; // Katıldı - yeşil
       case EventAttendanceStatus.didNotAttend:
-        return AppTheme.red500; // Katılmadı - kırmızı
+        return AppTheme.red600; // Katılmadı - kırmızı
       case EventAttendanceStatus.rejected:
-        return AppTheme.red900;
+        return AppTheme.red600;
     }
   }
 
