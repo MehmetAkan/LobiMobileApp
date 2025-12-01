@@ -110,14 +110,52 @@ class EventService {
 
   Future<List<Map<String, dynamic>>> getPopularEvents({
     required int limit,
+    String? excludeUserId,
   }) async {
     try {
-      final response = await _client.rpc(
-        'get_popular_events',
-        params: {'limit_in': limit},
+      print(
+        '⭐ POPULAR EVENTS: Being called with limit: $limit, excludeUserId: $excludeUserId',
       );
 
-      return (response as List).cast<Map<String, dynamic>>();
+      final response = await _client.rpc(
+        'get_popular_events',
+        params: {
+          'limit_in': excludeUserId != null ? limit * 5 : limit,
+        }, // Fetch 5x more if filtering
+      );
+
+      var events = (response as List).cast<Map<String, dynamic>>();
+
+      // If userId provided, exclude user's organized and participated events
+      if (excludeUserId != null) {
+        // Get user's participated events
+        final userEvents = await _client
+            .from('event_participants')
+            .select('event_id')
+            .eq('user_id', excludeUserId);
+
+        final excludedEventIds = (userEvents as List)
+            .map((e) => e['event_id'] as String)
+            .toList();
+
+        print(
+          '⭐ POPULAR EVENTS: Excluding ${excludedEventIds.length} participant events',
+        );
+
+        // Filter out user's organized and participated events
+        events = events
+            .where((event) {
+              final isOrganizer = event['organizer_id'] == excludeUserId;
+              final isParticipant = excludedEventIds.contains(event['id']);
+              return !isOrganizer && !isParticipant;
+            })
+            .take(limit)
+            .toList();
+      }
+
+      print('⭐ POPULAR EVENTS: Returned ${events.length} events');
+
+      return events;
     } catch (e) {
       throw _handleError(e, 'getPopularEvents');
     }
@@ -125,57 +163,23 @@ class EventService {
 
   /// Get recommended events based on user's interests
   /// Returns events from user's favorite categories, fallback to popular events
+  /// Uses Supabase RPC for efficient server-side filtering
   Future<List<Map<String, dynamic>>> getRecommendedEvents({
     required String userId,
     int limit = 5,
   }) async {
     try {
-      // 1. Get user's interested categories
-      final interests = await _client
-          .from('user_interests')
-          .select('category_id')
-          .eq('user_id', userId);
+      final response = await _client.rpc(
+        'get_recommended_events_for_user',
+        params: {'p_user_id': userId, 'p_limit': limit},
+      );
 
-      final categoryIds = (interests as List)
-          .map((i) => i['category_id'] as String)
-          .toList();
+      final events = (response as List).cast<Map<String, dynamic>>();
 
-      // 2. If no interests, return popular events
-      if (categoryIds.isEmpty) {
-        return await getPopularEvents(limit: limit);
-      }
+      if (events.isNotEmpty) {}
 
-      // 3. Get user's attending/pending event IDs to exclude
-      final userEvents = await _client
-          .from('event_participants')
-          .select('event_id')
-          .eq('user_id', userId)
-          .inFilter('status', ['attending', 'pending']);
-
-      final excludedEventIds = (userEvents as List)
-          .map((e) => e['event_id'] as String)
-          .toList();
-
-      // 4. Fetch events from interested categories, excluding user's events
-      var query = _client
-          .from('events')
-          .select('*, categories(*)')
-          .inFilter('category_id', categoryIds)
-          .eq('status', 'upcoming')
-          .eq('is_public', true)
-          .gte('start_date', DateTime.now().toIso8601String());
-
-      // Exclude user's events if any exist
-      if (excludedEventIds.isNotEmpty) {
-        query = query.not('id', 'in', '(${excludedEventIds.join(',')})');
-      }
-
-      final response = await query
-          .order('start_date', ascending: true)
-          .limit(limit);
-
-      return (response as List).cast<Map<String, dynamic>>();
-    } catch (e) {
+      return events;
+    } catch (e, stackTrace) {
       throw _handleError(e, 'getRecommendedEvents');
     }
   }
@@ -191,21 +195,20 @@ class EventService {
     }
   }
 
-  /// Get upcoming events by category
+  /// Get upcoming events by category (uses Supabase RPC for performance)
   Future<List<Map<String, dynamic>>> getEventsByCategory(
     String categoryId,
   ) async {
     try {
-      final response = await _client
-          .from(AppConstants.eventsTable)
-          .select()
-          .eq('category_id', categoryId)
-          .gte('start_date', DateTime.now().toIso8601String())
-          .order('start_date', ascending: true)
-          .limit(20);
+      final response = await _client.rpc(
+        'get_events_by_category',
+        params: {'category_id_in': categoryId, 'limit_in': 20},
+      );
+
+      if ((response as List).isNotEmpty) {}
 
       return (response as List).cast<Map<String, dynamic>>();
-    } catch (e) {
+    } catch (e, stackTrace) {
       throw _handleError(e, 'getEventsByCategory');
     }
   }
@@ -225,7 +228,6 @@ class EventService {
     }
   }
 
-  /// Update event visibility (is_public)
   Future<void> updateEventVisibility({
     required String eventId,
     required bool isPublic,

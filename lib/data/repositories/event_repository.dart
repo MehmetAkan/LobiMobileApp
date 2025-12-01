@@ -149,19 +149,26 @@ class EventRepository {
     int limit = 5,
   }) async {
     try {
+      print('📦 REPOSITORY: getRecommendedEvents called for user: $userId');
+
       final rows = await _eventService.getRecommendedEvents(
         userId: userId,
         limit: limit,
       );
 
+      print('📦 REPOSITORY: Received ${rows.length} events from service');
+
       final events = rows
           .map<EventModel>((row) => _mapToEventModel(row))
           .toList();
+
+      print('📦 REPOSITORY: Mapped to ${events.length} EventModel objects');
 
       return events;
     } on AppException {
       rethrow;
     } catch (e) {
+      print('📦 REPOSITORY ERROR: $e');
       throw UnknownException(
         'Önerilen etkinlikler alınırken bir hata oluştu',
         originalError: e,
@@ -278,7 +285,7 @@ class EventRepository {
 
     // Diğer alanlar
     final String locationName = (row['location_name'] as String?) ?? '';
-    final String? locationSecondary = row['location_secondary_text'] as String?;
+    final String? locationSecondary = row['location_address'] as String?;
     final int attendeeCount = _parseInt(row['participant_count']);
 
     final String? organizerId = row['organizer_id'] as String?;

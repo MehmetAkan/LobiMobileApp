@@ -275,6 +275,10 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                       date: event['start_date'] as String? ?? '',
                       location: event['location_name'] as String? ?? '',
                       attendeeCount: event['participant_count'] as int? ?? 0,
+                      organizerName: event['organizer_name'] as String?,
+                      organizerUsername: event['organizer_username'] as String?,
+                      organizerPhotoUrl:
+                          event['organizer_photo_url'] as String?,
                       onTap: () {
                         // Parse to EventModel and navigate
                         final eventModel = EventModel(
@@ -286,6 +290,13 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                           imageUrl: event['cover_image_url'] as String? ?? '',
                           attendeeCount:
                               event['participant_count'] as int? ?? 0,
+                          // Add organizer fields
+                          organizerId: event['organizer_id'] as String?,
+                          organizerName: event['organizer_name'] as String?,
+                          organizerUsername:
+                              event['organizer_username'] as String?,
+                          organizerPhotoUrl:
+                              event['organizer_photo_url'] as String?,
                         );
 
                         Navigator.of(context).push(
