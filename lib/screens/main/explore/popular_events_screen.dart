@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/providers/event_provider.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
@@ -49,8 +48,8 @@ class PopularEventsScreen extends ConsumerWidget {
             }
 
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 20.h),
               child: ListView.separated(
+                padding: const EdgeInsets.only(top: 0, bottom: 50),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: events.length,

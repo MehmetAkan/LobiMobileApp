@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-
 /// ```
 class EventDetailAttendButton extends StatelessWidget {
   final bool isAttending;
@@ -37,9 +36,9 @@ class EventDetailAttendButton extends StatelessWidget {
         context: context,
         label: 'Katılıyor',
         icon: LucideIcons.badgeCheck400,
-        backgroundColor: AppTheme.green900.withValues(alpha: 0.2),
-        textColor: AppTheme.green900,
-        borderColor: AppTheme.green900.withValues(alpha: 0.3),
+        backgroundColor: AppTheme.green500.withValues(alpha: 0.2),
+        textColor: AppTheme.green500,
+        borderColor: AppTheme.green500.withValues(alpha: 0.3),
         onTap: onPressed,
       );
     }
@@ -82,11 +81,7 @@ class EventDetailAttendButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 22.sp,
-                color: textColor,
-              ),
+              Icon(icon, size: 22.sp, color: textColor),
               SizedBox(width: 10.w),
               Text(
                 label,

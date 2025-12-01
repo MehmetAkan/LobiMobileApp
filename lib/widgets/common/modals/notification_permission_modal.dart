@@ -133,9 +133,9 @@ class NotificationPermissionModal {
       case NotificationPermissionContext.favoriteCategories:
         return _ModalConfig(
           icon: LucideIcons.star,
-          iconColor: AppTheme.green900,
+          iconColor: AppTheme.green500,
           iconBackgroundColor: AppTheme.green100,
-          iconBorderColor: AppTheme.green800.withOpacity(0.3),
+          iconBorderColor: AppTheme.green200,
           title: 'Yeni Etkinlik Bildirimleri',
           description:
               'İlgilendiğin kategorilerde yeni etkinlikler olduğunda seni bilgilendirelim',
@@ -176,7 +176,7 @@ class NotificationPermissionModal {
             margin: EdgeInsets.only(top: 2.h),
             padding: EdgeInsets.all(3.w),
             decoration: BoxDecoration(
-              color: AppTheme.green1000,
+              color: AppTheme.green600,
               shape: BoxShape.circle,
             ),
             child: Icon(

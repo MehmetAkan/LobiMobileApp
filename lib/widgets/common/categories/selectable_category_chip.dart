@@ -30,7 +30,7 @@ class SelectableCategoryChip extends StatelessWidget {
               : AppTheme.white,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: isSelected ? AppTheme.green1000 : AppTheme.zinc300,
+            color: isSelected ? AppTheme.green600 : AppTheme.zinc300,
             width: isSelected ? 1 : 1,
           ),
         ),
@@ -45,7 +45,7 @@ class SelectableCategoryChip extends StatelessWidget {
                 fontSize: 14.sp,
                 letterSpacing: -0.20,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? AppTheme.green1000 : AppTheme.zinc800,
+                color: isSelected ? AppTheme.green600 : AppTheme.zinc800,
               ),
             ),
           ],

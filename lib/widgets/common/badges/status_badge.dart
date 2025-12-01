@@ -48,11 +48,11 @@ class StatusBadge extends StatelessWidget {
   Color _getTextColor() {
     switch (type) {
       case BadgeType.green:
-        return AppTheme.green900;
+        return AppTheme.green500;
       case BadgeType.red:
-        return AppTheme.red800;
+        return AppTheme.red600;
       case BadgeType.orange:
-        return AppTheme.orange900;
+        return AppTheme.orange600;
       case BadgeType.purple:
         return AppTheme.purple900;
       case BadgeType.black:

@@ -111,11 +111,11 @@ class AppFeedbackService {
     switch (type) {
       case AppFeedbackType.success:
         // Başarı: genelde aksiyon rengi / secondary
-        return AppTheme.green900;
+        return AppTheme.green500;
       case AppFeedbackType.error:
-        return AppTheme.red800;
+        return AppTheme.red700;
       case AppFeedbackType.warning:
-        return AppTheme.orange900;
+        return AppTheme.orange600;
       case AppFeedbackType.info:
       default:
         return AppTheme.purple900;

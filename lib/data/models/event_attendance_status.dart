@@ -38,7 +38,7 @@ enum EventAttendanceStatus {
       case EventAttendanceStatus.notAttending:
         return AppTheme.zinc500;
       case EventAttendanceStatus.pending:
-        return AppTheme.orange900;
+        return AppTheme.orange600;
       case EventAttendanceStatus.attending:
         return AppTheme.green900;
       case EventAttendanceStatus.attended:

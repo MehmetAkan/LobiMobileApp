@@ -42,7 +42,7 @@ class AppTextStyles {
   static TextStyle get cardTitle => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w600,
-    height: 1,
+    height: 1.3,
     letterSpacing: -0.20,
   );
 

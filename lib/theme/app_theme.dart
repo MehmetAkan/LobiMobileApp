@@ -5,9 +5,6 @@ import 'package:lobi_application/theme/app_text_styles.dart';
 class AppTheme {
   /*Sabit Renkler*/
   static const Color white = Color(0xFFFFFFFF);
-  static const Color purple100 = Color(0xFFF4F2FB);
-  static const Color purple900 = Color(0xFF2E00A7);
-  static const Color purple800 = Color(0xFF6412C6);
   static const Color zinc100 = Color(0xFFFAFAFA);
   static const Color zinc200 = Color(0xFFF7F7F7);
   static const Color zinc300 = Color(0xFFEDEDED);
@@ -18,20 +15,120 @@ class AppTheme {
   static const Color zinc800 = Color(0xFF636363);
   static const Color zinc900 = Color(0xFF3E3E3E);
   static const Color zinc1000 = Color(0xFF292929);
-  static const Color green100 = Color(0xFFE5F7E8);
-  static const Color green500 = Color(0xFF22C55E);
-  static const Color green800 = Color(0xFF06df73);
-  static const Color green900 = Color(0xFF33BA20);
-  static const Color green1000 = Color(0xFF35A80C);
-  static const Color red100 = Color(0xFFFEF2F2);
-  static const Color red500 = Color(0xFFEF4444);
-  static const Color red800 = Color(0xFFE00303);
-  static const Color red900 = Color(0xFFCB0200);
-  static const Color orange100 = Color(0xFFFFFBEA);
-  static const Color orange200 = Color(0xFFffedd4);
-  static const Color orange900 = Color(0xFFF46400);
-  static const Color blue100 = Color(0xFFE0F2FE);
-  static const Color blue800 = Color(0xFF075985);
+  // GREEN
+  static const Color green50 = Color(0xFFF2FDF0);
+  static const Color green100 = Color(0xFFE1FCDC);
+  static const Color green200 = Color(0xFFC3F7BB);
+  static const Color green300 = Color(0xFF94EF86);
+  static const Color green400 = Color(0xFF5DDE4A);
+  static const Color green500 = Color(0xFF33BA20);
+  static const Color green600 = Color(0xFF27A316);
+  static const Color green700 = Color(0xFF228015);
+  static const Color green800 = Color(0xFF1F6516);
+  static const Color green900 = Color(0xFF1A5314);
+  static const Color green950 = Color(0xFF082E05);
+
+  // RED
+  static const Color red50 = Color(0xFFFFF0F0);
+  static const Color red100 = Color(0xFFFFDDDD);
+  static const Color red200 = Color(0xFFFFC1C2);
+  static const Color red300 = Color(0xFFFF9798);
+  static const Color red400 = Color(0xFFFF5B5C);
+  static const Color red500 = Color(0xFFFF282A);
+  static const Color red600 = Color(0xFFFA080A);
+  static const Color red700 = Color(0xFFE00204);
+  static const Color red800 = Color(0xFFAE0608);
+  static const Color red900 = Color(0xFF8F0D0E);
+  static const Color red950 = Color(0xFF4F0001);
+
+  // ORANGE
+  static const Color orange50 = Color(0xFFFFF8EC);
+  static const Color orange100 = Color(0xFFFFF0D3);
+  static const Color orange200 = Color(0xFFFFDDA5);
+  static const Color orange300 = Color(0xFFFFC46D);
+  static const Color orange400 = Color(0xFFFF9F32);
+  static const Color orange500 = Color(0xFFFF810A);
+  static const Color orange600 = Color(0xFFF06200);
+  static const Color orange700 = Color(0xFFCC4A02);
+  static const Color orange800 = Color(0xFFA13A0B);
+  static const Color orange900 = Color(0xFF82320C);
+  static const Color orange950 = Color(0xFF461604);
+
+  // PURPLE
+  static const Color purple50 = Color(0xFFF1F0FF);
+  static const Color purple100 = Color(0xFFE7E4FF);
+  static const Color purple200 = Color(0xFFD1CCFF);
+  static const Color purple300 = Color(0xFFAFA4FF);
+  static const Color purple400 = Color(0xFF8970FF);
+  static const Color purple500 = Color(0xFF6637FF);
+  static const Color purple600 = Color(0xFF550FFF);
+  static const Color purple700 = Color(0xFF4600FF);
+  static const Color purple800 = Color(0xFF3A00DA);
+  static const Color purple900 = Color(0xFF2E00A7);
+  static const Color purple950 = Color(0xFF1A007A);
+
+  // BERMUDA
+  static const Color bermuda50 = Color(0xFFECFDF7);
+  static const Color bermuda100 = Color(0xFFD2F9EA);
+  static const Color bermuda200 = Color(0xFFA8F2D9);
+  static const Color bermuda300 = Color(0xFF67E4C2);
+  static const Color bermuda400 = Color(0xFF36D1AB);
+  static const Color bermuda500 = Color(0xFF12B795);
+  static const Color bermuda600 = Color(0xFF07947A);
+  static const Color bermuda700 = Color(0xFF057764);
+  static const Color bermuda800 = Color(0xFF075E51);
+  static const Color bermuda900 = Color(0xFF074D44);
+  static const Color bermuda950 = Color(0xFF032B27);
+
+  // AZURE
+  static const Color azure50 = Color(0xFFF0F7FE);
+  static const Color azure100 = Color(0xFFDDEDFC);
+  static const Color azure200 = Color(0xFFC3E0FA);
+  static const Color azure300 = Color(0xFF99CEF7);
+  static const Color azure400 = Color(0xFF69B3F1);
+  static const Color azure500 = Color(0xFF4695EB);
+  static const Color azure600 = Color(0xFF3B7FE1);
+  static const Color azure700 = Color(0xFF2863CD);
+  static const Color azure800 = Color(0xFF2651A7);
+  static const Color azure900 = Color(0xFF244684);
+  static const Color azure950 = Color(0xFF1B2C50);
+  // BLUE
+  static const Color blue50 = Color(0xFFEFF8FF);
+  static const Color blue100 = Color(0xFFDAEEFF);
+  static const Color blue200 = Color(0xFFBEE2FF);
+  static const Color blue300 = Color(0xFF91D1FF);
+  static const Color blue400 = Color(0xFF5DB6FD);
+  static const Color blue500 = Color(0xFF3092F9);
+  static const Color blue600 = Color(0xFF2278EE);
+  static const Color blue700 = Color(0xFF1A61DB);
+  static const Color blue800 = Color(0xFF1B4FB2);
+  static const Color blue900 = Color(0xFF1C458C);
+  static const Color blue950 = Color(0xFF162B55);
+  // CRETE
+  static const Color crete50 = Color(0xFFF7F7EE);
+  static const Color crete100 = Color(0xFFEDECDA);
+  static const Color crete200 = Color(0xFFDCDCBA);
+  static const Color crete300 = Color(0xFFC5C690);
+  static const Color crete400 = Color(0xFFAEAF6C);
+  static const Color crete500 = Color(0xFF91934F);
+  static const Color crete600 = Color(0xFF72753C);
+  static const Color crete700 = Color(0xFF575A31);
+  static const Color crete800 = Color(0xFF47492B);
+  static const Color crete900 = Color(0xFF3C3F28);
+  static const Color crete950 = Color(0xFF1F2112);
+  // CITRON
+  static const Color citron50 = Color(0xFFFFFDE5);
+  static const Color citron100 = Color(0xFFFFFFC8);
+  static const Color citron200 = Color(0xFFFEFF97);
+  static const Color citron300 = Color(0xFFF5FB5B);
+  static const Color citron400 = Color(0xFFE9F229);
+  static const Color citron500 = Color(0xFFCAD80A);
+  static const Color citron600 = Color(0xFF96A303);
+  static const Color citron700 = Color(0xFF778308);
+  static const Color citron800 = Color(0xFF5E670D);
+  static const Color citron900 = Color(0xFF4E5710);
+  static const Color citron950 = Color(0xFF2A3102);
+
   static const Color black800 = Color(0xFF090A0A);
   static const Color backgroundLight = Color.fromARGB(255, 255, 255, 255);
   static const Color backgroundDark = Color(0xFF090A0A);
@@ -40,7 +137,6 @@ class AppTheme {
   static const Color dark_zinc800 = Color(0xFF1D1D1F);
   static const Color navbarLight = Color(0xFFFFFFFF);
   static const Color navbarDark = Color.fromARGB(255, 0, 0, 0);
-  /*Sabit Renkler*/
 
   static Color getButtonIconBg(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark

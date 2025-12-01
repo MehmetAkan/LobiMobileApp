@@ -315,7 +315,7 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: isPrimary
-              ? AppTheme.green900
+              ? AppTheme.green500
               : isDestructive
               ? AppTheme.red900
               : AppTheme.zinc200,
