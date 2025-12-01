@@ -215,6 +215,12 @@ final discoverPopularEventsProvider = FutureProvider<List<EventModel>>((
   return repository.getPopularEvents(limit: 5);
 });
 
+/// Popular events page provider (15-20 items)
+final popularEventsPageProvider = FutureProvider<List<EventModel>>((ref) async {
+  final repository = ref.read(eventRepositoryProvider);
+  return repository.getPopularEvents(limit: 20);
+});
+
 /// Recommended events based on user's interests
 final recommendedEventsProvider =
     FutureProvider.family<List<EventModel>, String>((ref, userId) async {

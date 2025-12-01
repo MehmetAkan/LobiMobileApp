@@ -16,6 +16,7 @@ import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dar
 import 'package:lobi_application/widgets/common/categories/categories_grid.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
+import 'package:lobi_application/screens/main/explore/popular_events_screen.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -202,7 +203,9 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       child: EventsSection(
         title: 'Popüler Etkinlikler',
         onSeeAll: () {
-          debugPrint('Tümünü gör: Popüler Etkinlikler');
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PopularEventsScreen()),
+          );
         },
         child: state.when(
           loading: () => SizedBox(
