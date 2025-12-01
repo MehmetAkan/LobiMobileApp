@@ -78,30 +78,76 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Recommended events section
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 0),
-                  child: EventsSection(
-                    title: 'Beğenebileceğin ve fazlası',
-                    onSeeAll: () {
-                      debugPrint('Tümünü gör: Beğenebileceğin ve fazlası');
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final profile = ref.watch(currentUserProfileProvider);
+
+                      return profile.when(
+                        data: (userProfile) {
+                          if (userProfile == null) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final recommendedEvents = ref.watch(
+                            recommendedEventsProvider(userProfile.userId),
+                          );
+
+                          return recommendedEvents.when(
+                            data: (events) {
+                              if (events.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+
+                              return EventsSection(
+                                title: 'Beğenebileceğin ve fazlası',
+                                onSeeAll: () {
+                                  debugPrint(
+                                    'Tümünü gör: Beğenebileceğin ve fazlası',
+                                  );
+                                },
+                                child: EventCardList<EventModel>(
+                                  items: events,
+                                  itemBuilder: (event, index) {
+                                    return EventCardHorizontal(
+                                      imageUrl: event.imageUrl,
+                                      title: event.title,
+                                      date: event.date
+                                          .toTodayTomorrowWithTime(),
+                                      location: event.location,
+                                      attendeeCount: event.attendeeCount,
+                                      isLiked: false,
+                                      showLikeButton: false,
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                EventDetailScreen(event: event),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            loading: () => const SizedBox(
+                              height: 200,
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                            error: (error, stack) => const SizedBox.shrink(),
+                          );
+                        },
+                        loading: () => const SizedBox(
+                          height: 200,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        error: (error, stack) => const SizedBox.shrink(),
+                      );
                     },
-                    child: EventCardList<Map<String, dynamic>>(
-                      items: _mockRecommendedEvents,
-                      itemBuilder: (event, index) {
-                        return EventCardHorizontal(
-                          imageUrl: event['imageUrl'] as String,
-                          title: event['title'] as String,
-                          date: event['date'] as String,
-                          location: event['location'] as String,
-                          attendeeCount: event['attendeeCount'] as int,
-                          isLiked: false,
-                          showLikeButton: false,
-                          onTap: () {
-                            debugPrint('Etkinliğe tıklandı: ${event['title']}');
-                          },
-                        );
-                      },
-                    ),
                   ),
                 ),
 

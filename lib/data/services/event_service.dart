@@ -123,6 +123,63 @@ class EventService {
     }
   }
 
+  /// Get recommended events based on user's interests
+  /// Returns events from user's favorite categories, fallback to popular events
+  Future<List<Map<String, dynamic>>> getRecommendedEvents({
+    required String userId,
+    int limit = 5,
+  }) async {
+    try {
+      // 1. Get user's interested categories
+      final interests = await _client
+          .from('user_interests')
+          .select('category_id')
+          .eq('user_id', userId);
+
+      final categoryIds = (interests as List)
+          .map((i) => i['category_id'] as String)
+          .toList();
+
+      // 2. If no interests, return popular events
+      if (categoryIds.isEmpty) {
+        return await getPopularEvents(limit: limit);
+      }
+
+      // 3. Get user's attending/pending event IDs to exclude
+      final userEvents = await _client
+          .from('event_participants')
+          .select('event_id')
+          .eq('user_id', userId)
+          .inFilter('status', ['attending', 'pending']);
+
+      final excludedEventIds = (userEvents as List)
+          .map((e) => e['event_id'] as String)
+          .toList();
+
+      // 4. Fetch events from interested categories, excluding user's events
+      var query = _client
+          .from('events')
+          .select('*, categories(*)')
+          .inFilter('category_id', categoryIds)
+          .eq('status', 'upcoming')
+          .eq('is_public', true)
+          .gte('start_date', DateTime.now().toIso8601String());
+
+      // Exclude user's events if any exist
+      if (excludedEventIds.isNotEmpty) {
+        query = query.not('id', 'in', '(${excludedEventIds.join(',')})');
+      }
+
+      final response = await query
+          .order('start_date', ascending: true)
+          .limit(limit);
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getRecommendedEvents');
+    }
+  }
+
   Future<void> incrementEventViewCount(String eventId) async {
     try {
       await _client.rpc(

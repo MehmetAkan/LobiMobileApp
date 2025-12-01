@@ -143,6 +143,32 @@ class EventRepository {
     }
   }
 
+  /// Get recommended events based on user's interests
+  Future<List<EventModel>> getRecommendedEvents({
+    required String userId,
+    int limit = 5,
+  }) async {
+    try {
+      final rows = await _eventService.getRecommendedEvents(
+        userId: userId,
+        limit: limit,
+      );
+
+      final events = rows
+          .map<EventModel>((row) => _mapToEventModel(row))
+          .toList();
+
+      return events;
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Önerilen etkinlikler alınırken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
   Future<void> incrementEventViewCount(String eventId) async {
     try {
       await _eventService.incrementEventViewCount(eventId);
