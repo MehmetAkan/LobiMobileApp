@@ -45,14 +45,14 @@ class EventAttendeeActionDropdown extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
           child: Row(
             children: [
-              Icon(LucideIcons.userX400, size: 20.sp, color: AppTheme.red900),
+              Icon(LucideIcons.userX400, size: 20.sp, color: AppTheme.red700),
               SizedBox(width: 12.w),
               Text(
                 'Katılımı İptal Et',
                 style: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.red900,
+                  color: AppTheme.red700,
                 ),
               ),
             ],

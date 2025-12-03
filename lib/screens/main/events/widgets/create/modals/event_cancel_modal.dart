@@ -80,7 +80,7 @@ class _CancelContent extends StatelessWidget {
 
     if (isDanger) {
       // Kırmızı buton
-      bgColor = AppTheme.red900;
+      bgColor = AppTheme.red700;
       textColor = AppTheme.white;
     } else if (isPrimary) {
       // Normal primary buton

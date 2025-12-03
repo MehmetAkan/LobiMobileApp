@@ -16,6 +16,8 @@ import 'package:lobi_application/widgets/common/filters/filter_option.dart';
 import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
+enum ModalButtonType { primary, secondary }
+
 class EventManageGuestsScreen extends StatefulWidget {
   final EventModel event;
 
@@ -282,19 +284,26 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
             ],
           ),
           SizedBox(height: 24.h),
-          _buildModalButton(
-            context: context,
-            label: 'Katıldı Olarak İşaretle',
-            onPressed: () => _markAsAttended(guest),
-            isPrimary: guest.status != EventAttendanceStatus.attended,
-          ),
-          SizedBox(height: 10.h),
-          _buildModalButton(
-            context: context,
-            label: 'Katılmadı Olarak İşaretle',
-            onPressed: () => _markAsDidNotAttend(guest),
-            isPrimary: false,
-            isDestructive: guest.status != EventAttendanceStatus.didNotAttend,
+          Row(
+            children: [
+              Expanded(
+                child: _buildModalButton(
+                  context: context,
+                  label: 'Katılmadı',
+                  onPressed: () => _markAsDidNotAttend(guest),
+                  type: ModalButtonType.secondary,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: _buildModalButton(
+                  context: context,
+                  label: 'Katıldı',
+                  onPressed: () => _markAsAttended(guest),
+                  type: ModalButtonType.primary,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -305,26 +314,36 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
     required BuildContext context,
     required String label,
     required VoidCallback onPressed,
-    bool isPrimary = false,
-    bool isDestructive = false,
+    required ModalButtonType type,
   }) {
+    late final Color backgroundColor;
+    late final Color textColor;
+    late final Color borderColor;
+
+    switch (type) {
+      case ModalButtonType.primary:
+        backgroundColor = AppTheme.black800;
+        textColor = AppTheme.white;
+        borderColor = AppTheme.black800;
+        break;
+      case ModalButtonType.secondary:
+        backgroundColor = AppTheme.zinc200;
+        textColor = AppTheme.zinc700;
+        borderColor = AppTheme.zinc300;
+        break;
+    }
+
     return SizedBox(
-      width: double.infinity,
       height: 50.h,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isPrimary
-              ? AppTheme.green500
-              : isDestructive
-              ? AppTheme.red900
-              : AppTheme.zinc200,
-          foregroundColor: isPrimary || isDestructive
-              ? Colors.white
-              : AppTheme.getTextHeadColor(context),
+          backgroundColor: backgroundColor,
+          foregroundColor: textColor,
           elevation: 0,
+          side: BorderSide(color: borderColor),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(25.r),
           ),
         ),
         child: Text(
