@@ -12,6 +12,7 @@ import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_compact.dart';
 import 'package:lobi_application/screens/main/profile/settings/settings_screen.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -110,8 +111,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   children: [
                     _buildCoverPhoto(),
                     _buildProfileInfo(profile),
-                    _buildTabs(),
-                    _buildTabContent(),
+                    Transform.translate(
+                      offset: Offset(0, -20.h),
+                      child: _buildTabs(),
+                    ),
+                    Transform.translate(
+                      offset: Offset(0, -20.h),
+                      child: _buildTabContent(),
+                    ),
                   ],
                 ),
               ),
@@ -178,7 +185,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final avatarUrl = profile.avatarUrl;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -228,11 +235,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     ),
                   ),
                 ],
-                SizedBox(height: 10.h),
-                Row(children: [
-    
-  ],
-),
+                SizedBox(height: 15.h),
                 Row(
                   children: [
                     RichText(
@@ -277,6 +280,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     ),
                   ],
                 ),
+                SizedBox(height: 20.h),
+                _buildSocialMediaRow(profile),
               ],
             ),
           ),
@@ -301,7 +306,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           indicatorColor: AppTheme.getTextHeadColor(context),
           indicatorWeight: 2.h,
           overlayColor: WidgetStateProperty.all(Colors.transparent),
-          labelPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0.h),
+          labelPadding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 0.h),
           tabs: const [
             Tab(text: 'Katıldığı Etkinlikler'),
             Tab(text: 'Oluşturduğu Etkinlikler'),
@@ -356,7 +361,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final userId = ref.watch(currentUserProfileProvider).value?.userId;
 
     return ListView.separated(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.only(
+        left: 15.w,
+        top: 20.h,
+        right: 15.w,
+        bottom: 65.h,
+      ),
       itemCount: events.length,
       separatorBuilder: (context, index) => SizedBox(height: 16.h),
       itemBuilder: (context, index) {
@@ -377,5 +387,73 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         );
       },
     );
+  }
+
+  /// Build social media icons row
+  Widget _buildSocialMediaRow(profile) {
+    final List<Map<String, dynamic>> socialMedia = [
+      if (profile.instagram != null && profile.instagram!.isNotEmpty)
+        {
+          'icon': LucideIcons.instagram,
+          'url': 'https://instagram.com/${profile.instagram}',
+        },
+      if (profile.twitter != null && profile.twitter!.isNotEmpty)
+        {
+          'icon': LucideIcons.twitter,
+          'url': 'https://twitter.com/${profile.twitter}',
+        },
+      if (profile.youtube != null && profile.youtube!.isNotEmpty)
+        {
+          'icon': LucideIcons.youtube,
+          'url': 'https://youtube.com/@${profile.youtube}',
+        },
+      if (profile.tiktok != null && profile.tiktok!.isNotEmpty)
+        {
+          'icon': LucideIcons.music, // TikTok icon (Lucide doesn't have tiktok)
+          'url': 'https://tiktok.com/@${profile.tiktok}',
+        },
+      if (profile.linkedin != null && profile.linkedin!.isNotEmpty)
+        {
+          'icon': LucideIcons.linkedin,
+          'url': 'https://linkedin.com/in/${profile.linkedin}',
+        },
+      if (profile.website != null && profile.website!.isNotEmpty)
+        {
+          'icon': LucideIcons.globe,
+          'url': profile.website!.startsWith('http')
+              ? profile.website!
+              : 'https://${profile.website}',
+        },
+    ];
+
+    if (socialMedia.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      children: socialMedia
+          .map(
+            (social) => Padding(
+              padding: EdgeInsets.only(right: 12.w),
+              child: GestureDetector(
+                onTap: () => _launchUrl(social['url'] as String),
+                child: Icon(
+                  social['icon'] as IconData,
+                  size: 22.sp,
+                  color: AppTheme.zinc700,
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  /// Launch URL helper
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not launch $urlString');
+    }
   }
 }
