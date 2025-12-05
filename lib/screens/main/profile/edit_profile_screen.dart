@@ -536,7 +536,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           _buildDivider(),
           _buildSocialRow(
             'Twitter',
-            'assets/images/system/settings/linkedin.png', // Placeholder icon
+            'assets/images/system/settings/twitter.png',
             _twitterController,
           ),
           _buildDivider(),

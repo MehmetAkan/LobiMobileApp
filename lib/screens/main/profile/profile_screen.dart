@@ -228,9 +228,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     ),
                   ),
                 ],
-                SizedBox(height: 20.h),
-
-                // Stats
+                SizedBox(height: 10.h),
+                Row(children: [
+    
+  ],
+),
                 Row(
                   children: [
                     RichText(

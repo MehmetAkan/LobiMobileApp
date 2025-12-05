@@ -22,6 +22,7 @@ class EventModel {
   final String? cancellationReason; // Optional reason for cancellation
   final String?
   attendanceStatus; // User's attendance status (null if organizer)
+  final DateTime? serverCurrentTime; // Server UTC time from PostgreSQL NOW()
 
   EventModel({
     required this.id,
@@ -46,6 +47,7 @@ class EventModel {
     this.cancelledAt,
     this.cancellationReason,
     this.attendanceStatus, // Null if user is organizer
+    this.serverCurrentTime, // Server time for state calculations
   });
 
   // Mock data için factory
@@ -108,6 +110,7 @@ class EventModel {
     DateTime? cancelledAt,
     String? cancellationReason,
     String? attendanceStatus,
+    DateTime? serverCurrentTime,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -132,6 +135,7 @@ class EventModel {
       cancelledAt: cancelledAt ?? this.cancelledAt,
       cancellationReason: cancellationReason ?? this.cancellationReason,
       attendanceStatus: attendanceStatus ?? this.attendanceStatus,
+      serverCurrentTime: serverCurrentTime ?? this.serverCurrentTime,
     );
   }
 }

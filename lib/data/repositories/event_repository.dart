@@ -307,6 +307,12 @@ class EventRepository {
     final String? organizerUsername = row['organizer_username'] as String?;
     final String? organizerPhotoUrl = row['organizer_photo_url'] as String?;
 
+    // Server current time for state calculations
+    DateTime? serverCurrentTime;
+    if (row['server_current_time'] != null) {
+      serverCurrentTime = _parseDateTime(row['server_current_time']);
+    }
+
     return EventModel(
       id: row['id']?.toString() ?? '',
       title: row['title'] as String? ?? '',
@@ -329,6 +335,7 @@ class EventRepository {
       cancelledAt: cancelledAt,
       cancellationReason: cancellationReason,
       attendanceStatus: attendanceStatus,
+      serverCurrentTime: serverCurrentTime,
     );
   }
 

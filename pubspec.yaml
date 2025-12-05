@@ -105,6 +105,7 @@ flutter:
     - assets/images/system/settings/setting-user-icon.svg
     - assets/images/system/settings/instagram.png
     - assets/images/system/settings/tiktok.png
+    - assets/images/system/settings/twitter.png
     - assets/images/system/settings/youtube.png
     - assets/images/system/settings/web.png
     - assets/images/system/settings/linkedin.png
