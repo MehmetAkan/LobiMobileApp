@@ -8,9 +8,9 @@ import 'package:lobi_application/data/services/profile_service.dart';
 
 /// Auth durumlarını temsil eden enum
 enum AuthStatus {
-  authenticated,      // Kullanıcı giriş yapmış
-  unauthenticated,   // Kullanıcı giriş yapmamış
-  needsProfile,      // Giriş yapmış ama profil eksik
+  authenticated, // Kullanıcı giriş yapmış
+  unauthenticated, // Kullanıcı giriş yapmamış
+  needsProfile, // Giriş yapmış ama profil eksik
 }
 
 /// Auth işlemlerinin sonucunu tutan model
@@ -43,10 +43,7 @@ class AuthResult {
   }
 
   factory AuthResult.failure(String errorMessage) {
-    return AuthResult._(
-      isSuccess: false,
-      errorMessage: errorMessage,
-    );
+    return AuthResult._(isSuccess: false, errorMessage: errorMessage);
   }
 }
 
@@ -98,19 +95,16 @@ class AuthRepository {
       }
 
       AppLogger.info('🔐 OTP doğrulanıyor...');
-      
+
       // 1. Kodu doğrula
       final user = await _authService.verifyOtp(email: email, token: code);
-      
+
       // 2. Profil var mı kontrol et
       final profile = await _profileService.getProfile(user.id);
 
       if (profile == null) {
         AppLogger.info('⚠️ Profil bulunamadı, oluşturulması gerekiyor');
-        return AuthResult.success(
-          status: AuthStatus.needsProfile,
-          user: user,
-        );
+        return AuthResult.success(status: AuthStatus.needsProfile, user: user);
       }
 
       AppLogger.info('✅ Giriş başarılı: ${profile.fullName}');
@@ -152,18 +146,16 @@ class AuthRepository {
     }
   }
 
-  /// Kullanıcının mevcut auth durumunu kontrol et
-  /// Business logic: User + Profile kontrolü birlikte
   Future<AuthStatus> checkAuthStatus() async {
     try {
       final user = currentUser;
-      
+
       if (user == null) {
         return AuthStatus.unauthenticated;
       }
 
       final profile = await _profileService.getProfile(user.id);
-      
+
       if (profile == null) {
         return AuthStatus.needsProfile;
       }
@@ -171,6 +163,15 @@ class AuthRepository {
       return AuthStatus.authenticated;
     } catch (e) {
       AppLogger.error('Auth status kontrolü hatası', e);
+
+      // Server error (500, network issue, etc.) - sign out user
+      // to prevent being stuck in create profile screen
+      if (e.toString().contains('500') ||
+          e.toString().contains('Internal Server Error')) {
+        AppLogger.warning('Server error detected, signing out user');
+        await signOut();
+      }
+
       return AuthStatus.unauthenticated;
     }
   }
@@ -179,9 +180,9 @@ class AuthRepository {
   Future<AuthResult> signOut() async {
     try {
       AppLogger.info('👋 Çıkış yapılıyor...');
-      
+
       await _authService.signOut();
-      
+
       return AuthResult.success(status: AuthStatus.unauthenticated);
     } on AppException catch (e) {
       return AuthResult.failure(e.message);
