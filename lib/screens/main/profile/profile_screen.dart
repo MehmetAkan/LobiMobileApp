@@ -434,13 +434,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       children: socialMedia
           .map(
             (social) => Padding(
-              padding: EdgeInsets.only(right: 12.w),
+              padding: EdgeInsets.only(right: 15.w),
               child: GestureDetector(
                 onTap: () => _launchUrl(social['url'] as String),
                 child: Icon(
                   social['icon'] as IconData,
-                  size: 22.sp,
-                  color: AppTheme.zinc700,
+                  size: 20.sp,
+                  color: AppTheme.zinc600,
                 ),
               ),
             ),
