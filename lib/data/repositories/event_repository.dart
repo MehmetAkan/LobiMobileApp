@@ -143,6 +143,26 @@ class EventRepository {
     }
   }
 
+  /// Get event by share slug (for deep linking)
+  Future<EventModel?> getEventBySlug(String shareSlug) async {
+    try {
+      final rows = await _eventService.getEventBySlug(shareSlug);
+
+      if (rows.isEmpty) {
+        return null; // Event not found
+      }
+
+      return _mapToEventModel(rows.first);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw UnknownException(
+        'Etkinlik yüklenirken bir hata oluştu',
+        originalError: e,
+      );
+    }
+  }
+
   /// Get recommended events based on user's interests
   Future<List<EventModel>> getRecommendedEvents({
     required String userId,
@@ -336,6 +356,7 @@ class EventRepository {
       cancellationReason: cancellationReason,
       attendanceStatus: attendanceStatus,
       serverCurrentTime: serverCurrentTime,
+      shareSlug: row['share_slug'] as String? ?? '', // Deep link slug
     );
   }
 

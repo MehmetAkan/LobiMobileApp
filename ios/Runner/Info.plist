@@ -34,6 +34,21 @@
 				<string>lobi</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>deep-link</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lobiapp</string>
+			</array>
+		</dict>
+	</array>
+	<!-- Universal Links for go.lobiapp.co -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:go.lobiapp.co</string>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>

@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'package:lobi_application/data/services/local_notification_service.dart';
+import 'package:lobi_application/data/services/deep_link_service.dart';
 
 Future<void> main() async {
   // Flutter binding'i başlat
@@ -80,8 +81,31 @@ Future<void> main() async {
   }
 }
 
-class LobiApp extends StatelessWidget {
+// Global navigator key for deep linking
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+class LobiApp extends StatefulWidget {
   const LobiApp({super.key});
+
+  @override
+  State<LobiApp> createState() => _LobiAppState();
+}
+
+class _LobiAppState extends State<LobiApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Deep link service'i başlat
+    _initializeDeepLinks();
+  }
+
+  Future<void> _initializeDeepLinks() async {
+    try {
+      await DeepLinkService().initialize(navigatorKey);
+    } catch (e, stackTrace) {
+      AppLogger.error('Deep link initialization failed', e, stackTrace);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +115,7 @@ class LobiApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
+          navigatorKey: navigatorKey, // Deep linking için gerekli
           title: 'Lobi',
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: rootScaffoldMessengerKey,

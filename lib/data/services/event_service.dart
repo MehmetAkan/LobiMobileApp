@@ -195,6 +195,20 @@ class EventService {
     }
   }
 
+  /// Get event by share slug (for deep linking)
+  Future<List<Map<String, dynamic>>> getEventBySlug(String shareSlug) async {
+    try {
+      final response = await _client.rpc(
+        'get_event_by_share_slug',
+        params: {'slug_param': shareSlug},
+      );
+
+      return (response as List).cast<Map<String, dynamic>>();
+    } catch (e) {
+      throw _handleError(e, 'getEventBySlug');
+    }
+  }
+
   /// Get upcoming events by category (uses Supabase RPC for performance)
   Future<List<Map<String, dynamic>>> getEventsByCategory(
     String categoryId,

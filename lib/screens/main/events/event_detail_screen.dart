@@ -33,6 +33,7 @@ import 'package:lobi_application/data/models/profile_model.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/qr_ticket_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:lobi_application/data/services/share_service.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final EventModel event;
@@ -471,8 +472,16 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     );
   }
 
-  void _handleShare() {
-    debugPrint('🔗 Paylaş: ${widget.event.id}');
+  void _handleShare() async {
+    try {
+      final shareService = ShareService();
+      await shareService.shareEvent(_currentEvent);
+    } catch (e) {
+      debugPrint('⚠️ Share error: $e');
+      if (mounted) {
+        getIt<AppFeedbackService>().showError('Paylaşım başarısız');
+      }
+    }
   }
 
   void _handleAnnouncement() {

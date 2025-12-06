@@ -297,6 +297,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                               event['organizer_username'] as String?,
                           organizerPhotoUrl:
                               event['organizer_photo_url'] as String?,
+                          shareSlug: event['share_slug'] as String? ?? '',
                         );
 
                         Navigator.of(context).push(

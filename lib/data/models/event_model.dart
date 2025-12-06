@@ -23,6 +23,7 @@ class EventModel {
   final String?
   attendanceStatus; // User's attendance status (null if organizer)
   final DateTime? serverCurrentTime; // Server UTC time from PostgreSQL NOW()
+  final String shareSlug; // Deep linking slug (10 chars alphanumeric)
 
   EventModel({
     required this.id,
@@ -48,6 +49,7 @@ class EventModel {
     this.cancellationReason,
     this.attendanceStatus, // Null if user is organizer
     this.serverCurrentTime, // Server time for state calculations
+    required this.shareSlug, // Required for deep linking
   });
 
   // Mock data için factory
@@ -61,6 +63,7 @@ class EventModel {
       imageUrl: 'https://picsum.photos/seed/$id/400/300',
       attendeeCount: 50 + int.parse(id) * 10,
       categories: ['Müzik', 'Konser'],
+      shareSlug: 'mock${id.padLeft(6, '0')}', // Mock share slug
     );
   }
 
@@ -111,6 +114,7 @@ class EventModel {
     String? cancellationReason,
     String? attendanceStatus,
     DateTime? serverCurrentTime,
+    String? shareSlug,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -136,6 +140,7 @@ class EventModel {
       cancellationReason: cancellationReason ?? this.cancellationReason,
       attendanceStatus: attendanceStatus ?? this.attendanceStatus,
       serverCurrentTime: serverCurrentTime ?? this.serverCurrentTime,
+      shareSlug: shareSlug ?? this.shareSlug,
     );
   }
 }

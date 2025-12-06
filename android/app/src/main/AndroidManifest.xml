@@ -34,6 +34,27 @@
             android:scheme="lobi"
             android:host="auth-callback" />
     </intent-filter>
+            
+            <!-- Deep Link: Custom Scheme -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                
+                <data android:scheme="lobiapp" />
+            </intent-filter>
+            
+            <!-- Deep Link: HTTPS App Links -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                
+                <data
+                    android:scheme="https"
+                    android:host="go.lobiapp.co"
+                    android:pathPrefix="/" />
+            </intent-filter>
            
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
