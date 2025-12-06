@@ -6,13 +6,13 @@ import 'event_attendee_action_dropdown.dart';
 
 class EventAttendeeActionButtons extends StatelessWidget {
   final VoidCallback onTicket;
-  final VoidCallback onContact;
+  final VoidCallback? onContact; // Optional - Phase 2 feature
   final VoidCallback onCancelAttendance;
 
   const EventAttendeeActionButtons({
     super.key,
     required this.onTicket,
-    required this.onContact,
+    this.onContact, // No longer required
     required this.onCancelAttendance,
   });
 
@@ -30,14 +30,17 @@ class EventAttendeeActionButtons extends StatelessWidget {
         ),
         SizedBox(width: 10.w),
 
-        Expanded(
-          child: EventDetailActionButton(
-            icon: LucideIcons.messageCircle400,
-            label: 'İletişim',
-            onTap: onContact,
+        // Conditionally show contact button (Phase 2)
+        if (onContact != null) ...[
+          Expanded(
+            child: EventDetailActionButton(
+              icon: LucideIcons.messageCircle400,
+              label: 'İletişim',
+              onTap: onContact!,
+            ),
           ),
-        ),
-        SizedBox(width: 10.w),
+          SizedBox(width: 10.w),
+        ],
 
         // Daha Fazla - Dropdown
         Expanded(

@@ -6,7 +6,7 @@ import 'event_detail_action_button.dart';
 
 class EventDetailOrganizerActions extends StatelessWidget {
   final VoidCallback onShare;
-  final VoidCallback onAnnouncement;
+  final VoidCallback? onAnnouncement; // Optional - Phase 2 feature
   final VoidCallback? onRequests; // Optional now
   final VoidCallback onManage;
   final bool showRequests; // Control visibility
@@ -14,7 +14,7 @@ class EventDetailOrganizerActions extends StatelessWidget {
   const EventDetailOrganizerActions({
     super.key,
     required this.onShare,
-    required this.onAnnouncement,
+    this.onAnnouncement, // No longer required
     this.onRequests,
     required this.onManage,
     this.showRequests = true, // Default true for backwards compatibility
@@ -44,14 +44,17 @@ class EventDetailOrganizerActions extends StatelessWidget {
           ),
         ),
         SizedBox(width: 5.w),
-        Expanded(
-          child: EventDetailActionButton(
-            icon: LucideIcons.megaphone400,
-            label: 'Duyuru',
-            onTap: onAnnouncement,
+        // Conditionally show announcement button (Phase 2)
+        if (onAnnouncement != null) ...[
+          Expanded(
+            child: EventDetailActionButton(
+              icon: LucideIcons.megaphone400,
+              label: 'Duyuru',
+              onTap: onAnnouncement!,
+            ),
           ),
-        ),
-        SizedBox(width: 5.w),
+          SizedBox(width: 5.w),
+        ],
 
         Expanded(
           child: EventDetailActionButton(

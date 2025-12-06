@@ -361,7 +361,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     if (_isOrganizer) {
       return EventDetailOrganizerActions(
         onShare: _handleShare,
-        onAnnouncement: _handleAnnouncement,
+        // onAnnouncement: _handleAnnouncement, // TODO: Phase 2 feature
         onRequests: _handleViewRequests, // Fixed method name
         showRequests:
             widget.event.requiresApproval ==
@@ -397,7 +397,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     if (_attendanceStatus.canLeaveEvent) {
       return EventAttendeeActionButtons(
         onTicket: _handleTicket,
-        onContact: _handleContact,
+        // onContact: _handleContact, // TODO: Phase 2 feature
         onCancelAttendance: _handleCancelAttendance,
       );
     }
@@ -484,9 +484,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     }
   }
 
-  void _handleAnnouncement() {
-    debugPrint('📢 Duyuru: ${widget.event.id}');
-  }
+  // TODO: Phase 2 - Announcement feature
+  // void _handleAnnouncement() {
+  //   debugPrint('📢 Duyuru: ${widget.event.id}');
+  // }
 
   void _handleViewRequests() {
     // Only show requests if event requires approval
@@ -585,9 +586,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     }
   }
 
-  void _handleContact() {
-    debugPrint('💬 İletişim: ${widget.event.id}');
-  }
+  // TODO: Phase 2 - Contact feature
+  // void _handleContact() {
+  //   debugPrint('💬 İletişim: ${widget.event.id}');
+  // }
 
   Future<void> _handleCancelAttendance() async {
     final confirmed = await EventCancelModal.show(context: context);
