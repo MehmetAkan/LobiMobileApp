@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -27,22 +28,10 @@ class PrivacyPolicyModal {
             ),
           ),
           SizedBox(height: 15.h),
-          // Title
           Text(
             'Gizlilik Sözleşmesi',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.titleHead_XL.copyWith(
               color: AppTheme.getTextHeadColor(context),
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            'Son güncelleme: 28 Kasım 2024',
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.zinc600,
             ),
           ),
         ],

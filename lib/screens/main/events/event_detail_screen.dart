@@ -219,7 +219,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 20.w,
                 appBarHeight + 10.h,
                 20.w,
-                40.h,
+                80.h,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

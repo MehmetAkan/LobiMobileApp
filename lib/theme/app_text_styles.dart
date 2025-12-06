@@ -77,6 +77,24 @@ class AppTextStyles {
     height: 1.1,
     letterSpacing: -0.20,
   );
+  static TextStyle get titleHead_2XL => TextStyle(
+    fontSize: 22.sp,
+    fontWeight: FontWeight.w600,
+    height: 1.1,
+    letterSpacing: -0.20,
+  );
+  static TextStyle get titleHead_XL => TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.w700,
+    height: 1.1,
+    letterSpacing: -0.40,
+  );
+  static TextStyle get titleDesc_MD => TextStyle(
+    fontSize: 15.sp,
+    fontWeight: FontWeight.w400,
+    height: 1.1,
+    letterSpacing: -0.30,
+  );
   static TextStyle get titleLG => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w600,
@@ -87,7 +105,7 @@ class AppTextStyles {
     fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     height: 1.1,
-    letterSpacing: -0.20,
+    letterSpacing: -0.40,
   );
   static TextStyle get titleSM => TextStyle(
     fontSize: 15.sp,

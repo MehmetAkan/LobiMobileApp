@@ -328,7 +328,7 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
         break;
       case ModalButtonType.secondary:
         backgroundColor = AppTheme.zinc200;
-        textColor = AppTheme.zinc700;
+        textColor = AppTheme.red700;
         borderColor = AppTheme.zinc300;
         break;
     }

@@ -224,6 +224,12 @@ class AppTheme {
         : zinc600;
   }
 
+  static Color getTextModalDescColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? dark_zinc600
+        : zinc700;
+  }
+
   static Color getCardColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? dark_zinc600

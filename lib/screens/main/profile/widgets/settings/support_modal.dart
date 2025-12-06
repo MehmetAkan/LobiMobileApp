@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lobi_application/data/services/support_service.dart';
@@ -122,19 +123,15 @@ class _SupportModalContentState extends State<_SupportModalContent> {
           SizedBox(height: 15.h),
           Text(
             'Destek',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w700,
+            style: AppTextStyles.titleHead_XL.copyWith(
               color: AppTheme.getTextHeadColor(context),
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 5.h),
           Text(
-            'Sorunuz veya geri bildiriminizi paylaşın',
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.zinc600,
+            'Lütfen sorunuz veya geri bildiriminizi bizimle paylaşın.',
+            style: AppTextStyles.titleDesc_MD.copyWith(
+              color: AppTheme.getTextModalDescColor(context),
             ),
           ),
         ],
@@ -162,7 +159,8 @@ class _SupportModalContentState extends State<_SupportModalContent> {
               decoration: InputDecoration(
                 hintText: 'Lütfen mesajınızı buraya yazın',
                 hintStyle: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 16.sp,
+                  letterSpacing: -0.20,
                   fontWeight: FontWeight.w400,
                   color: AppTheme.zinc500,
                 ),

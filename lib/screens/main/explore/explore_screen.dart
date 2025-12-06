@@ -150,17 +150,12 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                 );
               },
               actions: (scrolled) => [
-                Row(
-                  children: [
-                    NavbarSearchButton(
-                      onTap: () {
-                        debugPrint('Arama');
-                      },
-                    ),
-                    SizedBox(width: 10.w),
-                    const NavbarNotificationButton(),
-                  ],
-                ),
+                const NavbarNotificationButton(),
+                // NavbarSearchButton(
+                //   onTap: () {
+                //     debugPrint('Arama');
+                //   },
+                // ),
               ],
             ),
           ),

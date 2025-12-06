@@ -112,11 +112,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     _buildCoverPhoto(),
                     _buildProfileInfo(profile),
                     Transform.translate(
-                      offset: Offset(0, -20.h),
+                      offset: Offset(0, -10.h),
                       child: _buildTabs(),
                     ),
                     Transform.translate(
-                      offset: Offset(0, -20.h),
+                      offset: Offset(0, -10.h),
                       child: _buildTabContent(),
                     ),
                   ],
@@ -134,7 +134,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Widget _buildCoverPhoto() {
     return SizedBox(
-      height: 120.h,
+      height: 110.h,
       width: double.infinity,
       child: AppImage(
         path: 'assets/images/system/profile-cover.png',
@@ -148,7 +148,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Positioned(
-      top: statusBarHeight + 10.h,
+      top: statusBarHeight + 0.h,
       right: 20.w,
       child: GestureDetector(
         onTap: () {
@@ -190,52 +190,51 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Transform.translate(
-            offset: Offset(0, -40.h),
-            child: ProfileAvatar(
-              imageUrl: avatarUrl,
-              name: fullName,
-              size: 80,
-              border: Border.all(color: Colors.white, width: 4.w),
+            offset: Offset(0, -25.h),
+            child: Row(
+              children: [
+                ProfileAvatar(
+                  imageUrl: avatarUrl,
+                  name: fullName,
+                  size: 100,
+                  border: Border.all(color: Colors.white, width: 4.w),
+                ),
+                SizedBox(width: 10.h),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20.h),
+                    Text(
+                      fullName,
+                      style: TextStyle(
+                        fontSize: 17.sp,
+                        letterSpacing: -0.30,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.getTextHeadColor(context),
+                      ),
+                    ),
+                    SizedBox(height: 0.h),
+                    if (username.isNotEmpty)
+                      Text(
+                        '@$username',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          letterSpacing: -0.10,
+                          fontWeight: FontWeight.w400,
+                          color: AppTheme.zinc800,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
             ),
           ),
           Transform.translate(
-            offset: Offset(0, -30.h),
+            offset: Offset(0, -20.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  fullName,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    letterSpacing: -0.25,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.getTextHeadColor(context),
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                if (username.isNotEmpty)
-                  Text(
-                    '@$username',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      letterSpacing: -0.25,
-                      fontWeight: FontWeight.w500,
-                      color: AppTheme.zinc700,
-                    ),
-                  ),
-                if (bio.isNotEmpty) ...[
-                  SizedBox(height: 10.h),
-                  Text(
-                    bio,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w400,
-                      color: AppTheme.getTextHeadColor(context),
-                      height: 1,
-                    ),
-                  ),
-                ],
-                SizedBox(height: 15.h),
+                SizedBox(height: 5.h),
                 Row(
                   children: [
                     RichText(
@@ -280,6 +279,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     ),
                   ],
                 ),
+                if (bio.isNotEmpty) ...[
+                  SizedBox(height: 10.h),
+                  Text(
+                    bio,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w400,
+                      color: AppTheme.getTextHeadColor(context),
+                      height: 1,
+                    ),
+                  ),
+                ],
                 SizedBox(height: 20.h),
                 _buildSocialMediaRow(profile),
               ],

@@ -56,7 +56,7 @@ class MenuGroup extends StatelessWidget {
                   item.icon,
                   size: 22.sp,
                   color: item.isDestructive
-                      ? AppTheme.red800
+                      ? AppTheme.red700
                       : AppTheme.black800,
                 ),
 
@@ -74,7 +74,7 @@ class MenuGroup extends StatelessWidget {
                         height: 1.2,
                         letterSpacing: -0.20,
                         color: item.isDestructive
-                            ? AppTheme.red800
+                            ? AppTheme.red700
                             : AppTheme.black800,
                       ),
                     ),

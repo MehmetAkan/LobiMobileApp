@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -37,19 +38,15 @@ class ProfilePhotoModal {
             SizedBox(height: 15.h),
             Text(
               'Profil Fotoğrafı',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
+              style: AppTextStyles.titleHead_XL.copyWith(
                 color: AppTheme.getTextHeadColor(context),
               ),
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 5.h),
             Text(
-              'Fotoğrafınızı değiştirin veya silin',
-              style: TextStyle(
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w500,
-                color: AppTheme.zinc600,
+              'Fotoğrafınızı değiştirebilir veya silebilirsiniz.',
+              style: AppTextStyles.titleDesc_MD.copyWith(
+                color: AppTheme.getTextModalDescColor(context),
               ),
             ),
           ],
@@ -93,9 +90,9 @@ class ProfilePhotoModal {
             // Fotoğrafı Sil (Separate - Destructive)
             Container(
               decoration: BoxDecoration(
-                color: AppTheme.red100,
+                color: AppTheme.red50,
                 borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppTheme.zinc200),
+                border: Border.all(color: AppTheme.red100),
               ),
               child: _buildOption(
                 context,
@@ -134,7 +131,7 @@ class ProfilePhotoModal {
               Icon(
                 icon,
                 size: 20.sp,
-                color: isDestructive ? AppTheme.red800 : AppTheme.zinc700,
+                color: isDestructive ? AppTheme.red700 : AppTheme.zinc700,
               ),
               SizedBox(width: 12.w),
               // Title
@@ -145,7 +142,7 @@ class ProfilePhotoModal {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: isDestructive
-                        ? AppTheme.red800
+                        ? AppTheme.red700
                         : AppTheme.getTextHeadColor(context),
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/screens/main/events/widgets/manage/access/modals/event_access_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -104,21 +105,15 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                     children: [
                       Text(
                         'Etkinliği İptal Et',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.black800,
-                          height: 1.2,
+                        style: AppTextStyles.titleHead_XL.copyWith(
+                          color: AppTheme.getTextHeadColor(context),
                         ),
                       ),
                       SizedBox(height: 5.h),
                       Text(
                         'Etkinlik iptal edildiğinde, tüm katılımcılara iptal edildiğini bildiren mesaj gönderilecek',
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.black800.withValues(alpha: 0.5),
-                          height: 1.3,
+                        style: AppTextStyles.titleDesc_MD.copyWith(
+                          color: AppTheme.getTextModalDescColor(context),
                         ),
                       ),
                     ],
@@ -140,21 +135,41 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           letterSpacing: -0.25,
-                          color: AppTheme.red900,
+                          color: AppTheme.red700,
                           height: 1.4,
                         ),
                       ),
 
                       SizedBox(height: 20.h),
-
-                      // Input label
-                      Text(
-                        'Devam etmek için aşağıya "İptal" yazın',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.black800,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            'Devam etmek için aşağıya',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppTheme.zinc800,
+                            ),
+                          ),
+                          SizedBox(width: 3.w),
+                          Text(
+                            '"İptal"',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.black800,
+                            ),
+                          ),
+                          SizedBox(width: 3.w),
+                          Text(
+                            'yazın',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppTheme.zinc800,
+                            ),
+                          ),
+                        ],
                       ),
 
                       SizedBox(height: 12.h),
@@ -305,11 +320,12 @@ class _EventCancelContentState extends State<_EventCancelContent> {
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.red100,
+              color: AppTheme.red50,
+              border: Border.all(color: AppTheme.red100, width: 1.w),
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(iconData, size: 22.sp, color: AppTheme.red800),
+              child: Icon(iconData, size: 22.sp, color: AppTheme.red700),
             ),
           ),
         ),
