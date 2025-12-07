@@ -1,9 +1,11 @@
 /// CategoryModel - Etkinlik kategorisi modeli
-/// 
+///
 /// Supabase'deki event_categories tablosundan gelen verileri temsil eder.
 /// Icon ve renk bilgileri kod tarafında yönetilir.
+import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/material.dart';
+
 class CategoryModel {
   final String id;
   final String name;
@@ -31,7 +33,7 @@ class CategoryModel {
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
-          iconName: json['icon_name'] as String?,
+      iconName: json['icon_name'] as String?,
     );
   }
 
@@ -46,7 +48,8 @@ class CategoryModel {
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
     };
   }
-IconData get iconData {
+
+  IconData get iconData {
     switch (iconName) {
       case 'LucideIcons.dumbbell400':
         return LucideIcons.dumbbell400; // Spor & Aktivite
@@ -72,6 +75,7 @@ IconData get iconData {
         return LucideIcons.tag400; // Varsayılan icon
     }
   }
+
   CategoryModel copyWith({
     String? id,
     String? name,
@@ -89,6 +93,7 @@ IconData get iconData {
       iconName: iconName ?? this.iconName,
     );
   }
+
   /// Kategori icon path'i (kod tarafında mapping)
   String get svgPath {
     switch (name) {
@@ -118,46 +123,86 @@ IconData get iconData {
   }
 
   /// Kategori rengi (kod tarafında mapping)
-  int get colorValue {
+  Color get colorValue {
     switch (name) {
       case 'Spor & Aktivite':
-        return 0xFFFF5733;
+        return AppTheme.red700;
       case 'Sanat & Kültür':
-        return 0xFFC70039;
+        return AppTheme.green600;
       case 'Eğitim & Workshop':
-        return 0xFF900C3F;
+        return AppTheme.azure600;
       case 'Müzik & Konser':
-        return 0xFF581845;
+        return AppTheme.orange500;
       case 'Yemek & İçecek':
-        return 0xFFFFC300;
+        return AppTheme.orange800;
       case 'Oyun & Eğlence':
-        return 0xFFDAF7A6;
+        return AppTheme.purple700;
       case 'Sağlık & Wellness':
-        return 0xFF33FF57;
+        return AppTheme.bermuda700;
       case 'İş & Networking':
-        return 0xFF3357FF;
+        return AppTheme.orange600;
       case 'Doğa & Açık Hava':
-        return 0xFF57FF33;
+        return AppTheme.citron500;
       case 'Tiyatro & Gösteri':
-        return 0xFFFF33F5;
+        return AppTheme.purple900;
       default:
-        return 0xFF888888; // Default gray
+        return const Color(0xFF888888); // Default gray
     }
   }
 
   /// Mock kategoriler (test için - SADECE FALLBACK)
   static List<CategoryModel> getMockCategories() {
     return [
-      CategoryModel(id: 'a8b42e30-db72-4145-b8df-bd533fdda910', name: 'Spor & Aktivite', displayOrder: 1),
-      CategoryModel(id: '62887dd5-0aef-4fb7-be89-b0ff764289bd', name: 'Sanat & Kültür', displayOrder: 2),
-      CategoryModel(id: '920556ac-fd78-4018-af3c-61af54d251b6', name: 'Eğitim & Workshop', displayOrder: 3),
-      CategoryModel(id: 'd1e1952c-f91d-41e2-9201-a41ea483ae36', name: 'Müzik & Konser', displayOrder: 4),
-      CategoryModel(id: '07c2a00e-64d6-4b80-a2ae-8097e902a1fd', name: 'Yemek & İçecek', displayOrder: 5),
-      CategoryModel(id: '673f18b8-a1ff-4b02-8b65-57c7266a2216', name: 'Oyun & Eğlence', displayOrder: 6),
-      CategoryModel(id: '05a073c1-5c63-4946-93b9-287f667fad4b', name: 'Sağlık & Wellness', displayOrder: 7),
-      CategoryModel(id: 'df0fb212-de15-4182-b123-0f90275ea642', name: 'İş & Networking', displayOrder: 8),
-      CategoryModel(id: 'cf32c59d-6361-4100-8504-39e17a106f49', name: 'Doğa & Açık Hava', displayOrder: 9),
-      CategoryModel(id: 'c38224ba-7309-43a3-bc59-1485060291b8', name: 'Tiyatro & Gösteri', displayOrder: 10),
+      CategoryModel(
+        id: 'a8b42e30-db72-4145-b8df-bd533fdda910',
+        name: 'Spor & Aktivite',
+        displayOrder: 1,
+      ),
+      CategoryModel(
+        id: '62887dd5-0aef-4fb7-be89-b0ff764289bd',
+        name: 'Sanat & Kültür',
+        displayOrder: 2,
+      ),
+      CategoryModel(
+        id: '920556ac-fd78-4018-af3c-61af54d251b6',
+        name: 'Eğitim & Workshop',
+        displayOrder: 3,
+      ),
+      CategoryModel(
+        id: 'd1e1952c-f91d-41e2-9201-a41ea483ae36',
+        name: 'Müzik & Konser',
+        displayOrder: 4,
+      ),
+      CategoryModel(
+        id: '07c2a00e-64d6-4b80-a2ae-8097e902a1fd',
+        name: 'Yemek & İçecek',
+        displayOrder: 5,
+      ),
+      CategoryModel(
+        id: '673f18b8-a1ff-4b02-8b65-57c7266a2216',
+        name: 'Oyun & Eğlence',
+        displayOrder: 6,
+      ),
+      CategoryModel(
+        id: '05a073c1-5c63-4946-93b9-287f667fad4b',
+        name: 'Sağlık & Wellness',
+        displayOrder: 7,
+      ),
+      CategoryModel(
+        id: 'df0fb212-de15-4182-b123-0f90275ea642',
+        name: 'İş & Networking',
+        displayOrder: 8,
+      ),
+      CategoryModel(
+        id: 'cf32c59d-6361-4100-8504-39e17a106f49',
+        name: 'Doğa & Açık Hava',
+        displayOrder: 9,
+      ),
+      CategoryModel(
+        id: 'c38224ba-7309-43a3-bc59-1485060291b8',
+        name: 'Tiyatro & Gösteri',
+        displayOrder: 10,
+      ),
     ];
   }
 

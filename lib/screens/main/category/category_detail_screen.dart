@@ -135,7 +135,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                   width: 80.w,
                   height: 80.h,
                   decoration: BoxDecoration(
-                    color: Color(widget.category.colorValue).withOpacity(0.1),
+                    color: widget.category.colorValue.withAlpha(15),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
