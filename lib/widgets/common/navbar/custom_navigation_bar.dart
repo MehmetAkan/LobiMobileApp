@@ -48,15 +48,15 @@ class CustomNavigationBar extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.5),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.6),
                   AppTheme.getnNavigationBg(context).withValues(alpha: 0.7),
                   AppTheme.getnNavigationBg(context).withValues(alpha: 0.8),
-                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.9),
-                  AppTheme.getnNavigationBg(context).withValues(alpha: 1),
                 ],
               ),
               // boxShadow: [
               //   BoxShadow(
-              //     color: AppTheme.red900.withValues(alpha: 0.5),
+              //     color: AppTheme.zinc300.withValues(alpha: 0.5),
               //     blurRadius: 5,
               //     offset: const Offset(0, 7),
               //   ),
@@ -96,11 +96,11 @@ class CustomNavigationBar extends StatelessWidget {
                       child: Container(
                         width: bgWidth,
                         decoration: BoxDecoration(
-                          color: AppTheme.white,
+                          color: AppTheme.zinc100,
                           borderRadius: BorderRadius.circular(35),
                           border: Border.all(
-                            color: AppTheme.getNavbarBtnBorder(context),
-                            width: 0.8,
+                            color: AppTheme.getNavigationBtnBorder(context),
+                            width: 1,
                           ),
                         ),
                       ),
