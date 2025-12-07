@@ -23,6 +23,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final _eventsNavigatorKey = GlobalKey<NavigatorState>();
   final _profileNavigatorKey = GlobalKey<NavigatorState>();
 
+  // GlobalKeys for accessing screen states (tab retap)
+  // Using dynamic State since we can't access private _HomeScreenState class
+  final _homeScreenKey = GlobalKey();
+  final _exploreScreenKey = GlobalKey();
+
   late final List<Widget> _screens;
 
   @override
@@ -32,12 +37,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     _screens = [
       TabNavigator(
         navigatorKey: _homeNavigatorKey,
-        initialScreen: const HomeScreen(),
+        initialScreen: HomeScreen(key: _homeScreenKey),
         tabName: 'Home',
       ),
       TabNavigator(
         navigatorKey: _exploreNavigatorKey,
-        initialScreen: const ExploreScreen(),
+        initialScreen: ExploreScreen(key: _exploreScreenKey),
         tabName: 'Explore',
       ),
       TabNavigator(
@@ -98,12 +103,50 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         bottomNavigationBar: CustomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+            // Tab retap - scroll to top + refresh
+            if (_currentIndex == index) {
+              _handleTabRetap(index);
+            } else {
+              // Normal tab change
+              setState(() {
+                _currentIndex = index;
+              });
+            }
           },
         ),
       ),
     );
+  }
+
+  /// Handle tab retap - scroll to top + refresh
+  void _handleTabRetap(int index) {
+    switch (index) {
+      case 0: // Home
+        // Safe dynamic call since we can't access private state class
+        final homeState = _homeScreenKey.currentState;
+        if (homeState != null) {
+          try {
+            (homeState as dynamic).triggerScrollToTopAndRefresh();
+          } catch (e) {
+            debugPrint('⚠️ Tab retap failed for Home: $e');
+          }
+        }
+        break;
+
+      case 1: // Explore
+        final exploreState = _exploreScreenKey.currentState;
+        if (exploreState != null) {
+          try {
+            (exploreState as dynamic).triggerScrollToTopAndRefresh();
+          } catch (e) {
+            debugPrint('⚠️ Tab retap failed for Explore: $e');
+          }
+        }
+        break;
+
+      // case 2: // Events
+      // case 3: // Profile
+      // Gelecekte eklenebilir
+    }
   }
 }

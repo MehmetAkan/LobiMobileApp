@@ -10,13 +10,15 @@ import 'package:lobi_application/screens/main/explore/widgets/all_events_list.da
 import 'package:lobi_application/screens/main/explore/widgets/popular_events_list.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/buttons/navbar_notification_button.dart';
-import 'package:lobi_application/widgets/common/buttons/navbar_search_button.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
+import 'package:lobi_application/widgets/common/mixins/refreshable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/categories/categories_grid.dart';
+import 'package:lobi_application/widgets/common/indicators/app_refresh_indicator.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 import 'package:lobi_application/screens/main/explore/popular_events_screen.dart';
+import 'package:flutter/services.dart';
 
 class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
@@ -25,9 +27,32 @@ class ExploreScreen extends ConsumerStatefulWidget {
 }
 
 class _ExploreScreenState extends ConsumerState<ExploreScreen>
-    with ScrollablePageMixin {
+    with ScrollablePageMixin, RefreshablePageMixin {
   DateTime? activeDate;
   final List<CategoryModel> _categories = CategoryModel.getMockCategories();
+
+  @override
+  List<ProviderOrFamily> getProvidersToRefresh() {
+    return [discoverPopularEventsProvider, discoverEventsControllerProvider];
+  }
+
+  /// Tab retap handler - scroll to top + refresh
+  Future<void> triggerScrollToTopAndRefresh() async {
+    // Scroll to top with smooth animation
+    if (scrollController.hasClients) {
+      await scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+
+    // Haptic feedback
+    HapticFeedback.lightImpact();
+
+    // Trigger refresh
+    await handleRefresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,53 +63,63 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          SingleChildScrollView(
-            controller: scrollController,
-            padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 100.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CategoriesGrid(
-                  categories: _categories,
-                  onCategoryTap: (category) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            CategoryDetailScreen(category: category),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 25.h),
-
-                _buildPopularEventsSection(),
-                SizedBox(height: 25.h),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: EventsSection(
-                    title: 'Tüm etkinlikler',
-                    onSeeAll: () {
-                      debugPrint('Tümünü gör: Tüm Etkinlikler');
+          AppRefreshIndicator(
+            onRefresh: handleRefresh,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              physics:
+                  const AlwaysScrollableScrollPhysics(), // Pull-to-refresh için zorunlu
+              padding: EdgeInsets.fromLTRB(
+                0.w,
+                navbarHeight + 20.h,
+                0.w,
+                100.h,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CategoriesGrid(
+                    categories: _categories,
+                    onCategoryTap: (category) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              CategoryDetailScreen(category: category),
+                        ),
+                      );
                     },
-                    child: AllEventsList(
-                      scrollController: scrollController,
-                      navbarHeight: navbarHeight,
-                      onActiveDateChanged: (date) {
-                        setState(() {
-                          activeDate = date;
-                        });
+                  ),
+                  SizedBox(height: 25.h),
+
+                  _buildPopularEventsSection(),
+                  SizedBox(height: 25.h),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: EventsSection(
+                      title: 'Tüm etkinlikler',
+                      onSeeAll: () {
+                        debugPrint('Tümünü gör: Tüm Etkinlikler');
                       },
-                      onEventTap: (event) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => EventDetailScreen(event: event),
-                          ),
-                        );
-                      },
+                      child: AllEventsList(
+                        scrollController: scrollController,
+                        navbarHeight: navbarHeight,
+                        onActiveDateChanged: (date) {
+                          setState(() {
+                            activeDate = date;
+                          });
+                        },
+                        onEventTap: (event) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => EventDetailScreen(event: event),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Positioned(

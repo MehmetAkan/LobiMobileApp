@@ -13,13 +13,16 @@ import 'package:lobi_application/widgets/common/buttons/navbar_notification_butt
 import 'package:lobi_application/widgets/common/cards/events/event_card_horizontal.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_list.dart';
 import 'package:lobi_application/widgets/common/mixins/scrollable_page_mixin.dart';
+import 'package:lobi_application/widgets/common/mixins/refreshable_page_mixin.dart';
 import 'package:lobi_application/widgets/common/navbar/custom_navbar.dart';
+import 'package:lobi_application/widgets/common/indicators/app_refresh_indicator.dart';
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 import 'package:lobi_application/data/services/fcm_service.dart';
 import 'package:lobi_application/widgets/common/modals/notification_permission_modal.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:flutter/services.dart'; // Haptic feedback
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -29,7 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with ScrollablePageMixin {
+    with ScrollablePageMixin, RefreshablePageMixin {
   DateTime? activeDate;
 
   /// Yatay liste (mock) - "Beğenebileceğin ve fazlası"
@@ -64,6 +67,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   ];
 
   @override
+  List<ProviderOrFamily> getProvidersToRefresh() {
+    final providers = <ProviderOrFamily>[homeThisWeekEventsProvider];
+
+    // Recommended events için current user lazım
+    final profile = ref.read(currentUserProfileProvider).value;
+    if (profile != null) {
+      providers.add(recommendedEventsProvider(profile.userId));
+    }
+
+    return providers;
+  }
+
+  /// Tab retap handler - scroll to top + refresh
+  Future<void> triggerScrollToTopAndRefresh() async {
+    // Scroll to top with smooth animation
+    if (scrollController.hasClients) {
+      await scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+
+    // Haptic feedback
+    HapticFeedback.lightImpact();
+
+    // Trigger refresh
+    await handleRefresh();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final navbarHeight = 60.h + statusBarHeight;
@@ -72,97 +106,106 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          SingleChildScrollView(
-            controller: scrollController, // Mixin'den geliyor
-            padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 60.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Recommended events section
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 0),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final profile = ref.watch(currentUserProfileProvider);
+          AppRefreshIndicator(
+            onRefresh: handleRefresh,
+            child: SingleChildScrollView(
+              controller: scrollController, // Mixin'den geliyor
+              physics:
+                  const AlwaysScrollableScrollPhysics(), // Pull-to-refresh için zorunlu
+              padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 60.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Recommended events section
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 0),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final profile = ref.watch(currentUserProfileProvider);
 
-                      return profile.when(
-                        data: (userProfile) {
-                          if (userProfile == null) {
-                            return const SizedBox.shrink();
-                          }
+                        return profile.when(
+                          data: (userProfile) {
+                            if (userProfile == null) {
+                              return const SizedBox.shrink();
+                            }
 
-                          final recommendedEvents = ref.watch(
-                            recommendedEventsProvider(userProfile.userId),
-                          );
+                            final recommendedEvents = ref.watch(
+                              recommendedEventsProvider(userProfile.userId),
+                            );
 
-                          return recommendedEvents.when(
-                            data: (events) {
-                              if (events.isEmpty) {
-                                return const SizedBox.shrink();
-                              }
+                            return recommendedEvents.when(
+                              data: (events) {
+                                if (events.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
 
-                              return EventsSection(
-                                title: 'Beğenebileceğin ve fazlası',
-                                onSeeAll: () {
-                                  debugPrint(
-                                    'Tümünü gör: Beğenebileceğin ve fazlası',
-                                  );
-                                },
-                                child: EventCardList<EventModel>(
-                                  items: events,
-                                  itemBuilder: (event, index) {
-                                    return EventCardHorizontal(
-                                      imageUrl: event.imageUrl,
-                                      title: event.title,
-                                      date: event.date
-                                          .toTodayTomorrowWithTime(),
-                                      location: event.location,
-                                      attendeeCount: event.attendeeCount,
-                                      isLiked: false,
-                                      showLikeButton: false,
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                EventDetailScreen(event: event),
-                                          ),
-                                        );
-                                      },
+                                return EventsSection(
+                                  title: 'Beğenebileceğin ve fazlası',
+                                  onSeeAll: () {
+                                    debugPrint(
+                                      'Tümünü gör: Beğenebileceğin ve fazlası',
                                     );
                                   },
+                                  child: EventCardList<EventModel>(
+                                    items: events,
+                                    itemBuilder: (event, index) {
+                                      return EventCardHorizontal(
+                                        imageUrl: event.imageUrl,
+                                        title: event.title,
+                                        date: event.date
+                                            .toTodayTomorrowWithTime(),
+                                        location: event.location,
+                                        attendeeCount: event.attendeeCount,
+                                        isLiked: false,
+                                        showLikeButton: false,
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EventDetailScreen(
+                                                    event: event,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              loading: () => const SizedBox(
+                                height: 200,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                              );
-                            },
-                            loading: () => const SizedBox(
-                              height: 200,
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
-                            error: (error, stack) => const SizedBox.shrink(),
-                          );
-                        },
-                        loading: () => const SizedBox(
-                          height: 200,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                        error: (error, stack) => const SizedBox.shrink(),
-                      );
-                    },
+                              ),
+                              error: (error, stack) => const SizedBox.shrink(),
+                            );
+                          },
+                          loading: () => const SizedBox(
+                            height: 200,
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                          error: (error, stack) => const SizedBox.shrink(),
+                        );
+                      },
+                    ),
                   ),
-                ),
 
-                SizedBox(height: 5.h),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: EventsSection(
-                    title: 'Bu haftaki etkinlikler',
-                    onSeeAll: () {
-                      debugPrint('Tümünü gör: Bu haftakiler');
-                    },
-                    child: _buildThisWeekEvents(navbarHeight),
+                  SizedBox(height: 5.h),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: EventsSection(
+                      title: 'Bu haftaki etkinlikler',
+                      onSeeAll: () {
+                        debugPrint('Tümünü gör: Bu haftakiler');
+                      },
+                      child: _buildThisWeekEvents(navbarHeight),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 

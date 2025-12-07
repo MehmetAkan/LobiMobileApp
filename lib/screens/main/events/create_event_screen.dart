@@ -177,6 +177,17 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         );
 
     if (success && mounted) {
+      // ✅ Invalidate event providers to refresh lists
+      ref.invalidate(homeThisWeekEventsProvider);
+      ref.invalidate(discoverPopularEventsProvider);
+      ref.invalidate(discoverEventsControllerProvider);
+
+      // Recommended events (kategori bazlı)
+      final userId = ref.read(currentUserProfileProvider).value?.userId;
+      if (userId != null) {
+        ref.invalidate(recommendedEventsProvider(userId));
+      }
+
       getIt<AppFeedbackService>().showSuccess(
         'Etkinlik başarıyla oluşturuldu!',
       );
