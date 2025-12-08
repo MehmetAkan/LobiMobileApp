@@ -12,7 +12,7 @@ class GradientButton extends StatelessWidget {
     this.begin = Alignment.topCenter,
     this.end = Alignment.bottomCenter,
     this.borderRadius = 100,
-    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
     this.textStyle,
     this.icon, // 🔹 opsiyonel icon
     this.iconGap = 8, // 🔹 icon ile yazı arası boşluk
@@ -69,7 +69,7 @@ class GradientButton extends StatelessWidget {
       style:
           (textStyle ??
           const TextStyle(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w500,
             fontSize: 18,
             color: Colors.white,
           )),

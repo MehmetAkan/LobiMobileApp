@@ -114,7 +114,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                             fontWeight: FontWeight.w800,
                             fontSize: 45,
                             color: AppTheme.black800,
-                            height: 1.2,
+                            height: 1,
                           ),
                         ),
                         Text(
@@ -124,7 +124,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                             fontWeight: FontWeight.w800,
                             fontSize: 45,
                             color: AppTheme.black800,
-                            height: 1.2,
+                            height: 1,
                           ),
                         ),
                         const SizedBox(height: 15),
@@ -134,8 +134,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                           textAlign: TextAlign.center,
                           style: text.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w500,
-                            color: AppTheme.zinc900,
-                            height: 1.2,
+                            color: AppTheme.zinc800,
+                            height: 1.1,
                             fontSize: 17,
                           ),
                         ),

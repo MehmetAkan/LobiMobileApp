@@ -7,7 +7,7 @@ class AppTextStyles {
   AppTextStyles._();
   static final authbuttonLg = GoogleFonts.figtree(
     fontSize: 18,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w600,
     color: Colors.white,
   );
 
