@@ -121,7 +121,7 @@ class AuthRepository {
     }
   }
 
-  /// Google ile giriş yap ve kullanıcı durumunu belirle
+  /// Google ile giriş yap ve kullan ICT durumunu belirle
   /// Business logic: OAuth flow + profil kontrolü
   Future<AuthResult> signInWithGoogle() async {
     try {
@@ -143,6 +143,28 @@ class AuthRepository {
     } catch (e) {
       AppLogger.error('Google giriş hatası', e);
       return AuthResult.failure('Google girişi başarısız. Tekrar deneyin.');
+    }
+  }
+
+  /// Apple ile giriş yap
+  /// Business logic: Apple OAuth flow + profil kontrolü
+  Future<AuthResult> signInWithApple() async {
+    try {
+      AppLogger.info('🍎 Apple ile giriş başlatılıyor...');
+
+      final success = await _authService.signInWithApple();
+
+      if (!success) {
+        return AuthResult.failure('Apple girişi iptal edildi');
+      }
+
+      // OAuth sonrası kullanıcı bilgisi auth state change'den gelecek
+      return AuthResult.success(status: AuthStatus.authenticated);
+    } on AppException catch (e) {
+      return AuthResult.failure(e.message);
+    } catch (e) {
+      AppLogger.error('Apple giriş hatası', e);
+      return AuthResult.failure('Apple girişi başarısız. Tekrar deneyin.');
     }
   }
 

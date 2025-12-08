@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:lobi_application/core/supabase_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/core/errors/app_exception.dart';
 import 'package:lobi_application/core/errors/error_handler.dart';
 import 'package:lobi_application/data/models/user_model.dart';
-
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService {
   SupabaseClient get _supabase => SupabaseManager.instance.client;
@@ -25,15 +26,11 @@ class AuthService {
     });
   }
 
-
   Future<void> requestOtp({required String email}) async {
     try {
       AppLogger.logAuthEvent('otp_request_started', params: {'email': email});
 
-      await _supabase.auth.signInWithOtp(
-        email: email,
-        emailRedirectTo: null,
-      );
+      await _supabase.auth.signInWithOtp(email: email, emailRedirectTo: null);
 
       AppLogger.logAuthEvent('otp_request_success');
     } catch (e, stackTrace) {
@@ -41,7 +38,6 @@ class AuthService {
       throw ErrorHandler.handle(e);
     }
   }
-
 
   Future<UserModel> verifyOtp({
     required String email,
@@ -60,8 +56,10 @@ class AuthService {
         throw AuthenticationException('Kullanıcı oluşturulamadı');
       }
 
-      AppLogger.logAuthEvent('otp_verify_success', 
-        params: {'userId': response.user!.id});
+      AppLogger.logAuthEvent(
+        'otp_verify_success',
+        params: {'userId': response.user!.id},
+      );
 
       return UserModel.fromSupabaseUser(response.user!);
     } catch (e, stackTrace) {
@@ -93,13 +91,66 @@ class AuthService {
     }
   }
 
+  /// Apple ile giriş yap
+  Future<bool> signInWithApple() async {
+    try {
+      // Platform kontrolü
+      if (!Platform.isIOS && !Platform.isMacOS) {
+        throw AuthenticationException(
+          'Apple Sign In sadece iOS ve macOS\'ta desteklenir',
+        );
+      }
+
+      AppLogger.logAuthEvent('apple_signin_started');
+
+      // Apple credential al
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final idToken = credential.identityToken;
+      if (idToken == null) {
+        throw AuthenticationException(
+          'Apple Sign In başarısız: ID token alınamadı',
+        );
+      }
+
+      // Supabase ile giriş yap
+      final authResponse = await _supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: idToken,
+      );
+
+      if (authResponse.user == null) {
+        throw AuthenticationException(
+          'Apple Sign In başarısız: Kullanıcı oluşturulamadı',
+        );
+      }
+
+      AppLogger.logAuthEvent('apple_signin_success');
+      return true;
+    } catch (e, stackTrace) {
+      if (e is SignInWithAppleAuthorizationException) {
+        if (e.code == AuthorizationErrorCode.canceled) {
+          AppLogger.warning('Apple signin cancelled');
+          return false; // Kullanıcı iptal etti
+        }
+      }
+      AppLogger.error('Apple signin hatası', e, stackTrace);
+      throw ErrorHandler.handle(e);
+    }
+  }
+
   /// Çıkış yap
   Future<void> signOut() async {
     try {
       AppLogger.logAuthEvent('signout_started');
-      
+
       await _supabase.auth.signOut();
-      
+
       AppLogger.logAuthEvent('signout_success');
     } catch (e, stackTrace) {
       AppLogger.error('Signout hatası', e, stackTrace);

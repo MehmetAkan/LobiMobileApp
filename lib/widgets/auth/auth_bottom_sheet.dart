@@ -118,6 +118,24 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                           color: AppTheme.black800,
                           borderRadius: BorderRadius.circular(25),
                           child: InkWell(
+                            onTap: () async {
+                              final controller = ref.read(
+                                authControllerProvider.notifier,
+                              );
+                              final error = await controller.signInWithApple();
+
+                              Navigator.of(context).pop();
+
+                              if (error != null && context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(error),
+                                    duration: const Duration(seconds: 2),
+                                    backgroundColor: AppTheme.zinc800,
+                                  ),
+                                );
+                              }
+                            },
                             borderRadius: BorderRadius.circular(25),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

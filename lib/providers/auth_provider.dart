@@ -55,10 +55,7 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
         AppLogger.info('✅ OTP gönderildi');
         return null; // Success - hata yok
       } else {
-        state = AsyncValue.error(
-          result.errorMessage!,
-          StackTrace.current,
-        );
+        state = AsyncValue.error(result.errorMessage!, StackTrace.current);
         return result.errorMessage;
       }
     } catch (e, stackTrace) {
@@ -76,20 +73,14 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     state = const AsyncValue.loading();
 
     try {
-      final result = await _repository.verifyOtp(
-        email: email,
-        code: code,
-      );
+      final result = await _repository.verifyOtp(email: email, code: code);
 
       if (result.isSuccess) {
         state = const AsyncValue.data(null);
         AppLogger.info('✅ OTP doğrulandı');
         return result; // UI'da profile/home'a yönlendirmek için
       } else {
-        state = AsyncValue.error(
-          result.errorMessage!,
-          StackTrace.current,
-        );
+        state = AsyncValue.error(result.errorMessage!, StackTrace.current);
         return result;
       }
     } catch (e, stackTrace) {
@@ -123,22 +114,40 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
   //     return 'Google girişi başarısız. Tekrar deneyin.';
   //   }
   // }
-Future<String?> signInWithGoogle() async {
-  state = const AsyncValue.loading();
+  /// Google ile giriş
+  Future<String?> signInWithGoogle() async {
+    state = const AsyncValue.loading();
 
-  try {
-    final result = await _repository.signInWithGoogle();
+    try {
+      await _repository.signInWithGoogle();
 
-    state = const AsyncValue.data(null);
-    AppLogger.info('✅ Google OAuth flow başlatıldı');
-    return null; // Hata gösterme, auth state dinleyecek
-    
-  } catch (e, stackTrace) {
-    state = AsyncValue.error(e, stackTrace);
-    AppLogger.error('Google giriş hatası', e, stackTrace);
-    return 'Google girişi başarısız. Tekrar deneyin.';
+      state = const AsyncValue.data(null);
+      AppLogger.info('✅ Google OAuth flow başlatıldı');
+      return null; // Hata gösterme, auth state dinleyecek
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+      AppLogger.error('Google giriş hatası', e, stackTrace);
+      return 'Google girişi başarısız. Tekrar deneyin.';
+    }
   }
-}
+
+  /// Apple ile giriş
+  Future<String?> signInWithApple() async {
+    state = const AsyncValue.loading();
+
+    try {
+      await _repository.signInWithApple();
+
+      state = const AsyncValue.data(null);
+      AppLogger.info('✅ Apple OAuth flow başlatıldı');
+      return null; // Hata gösterme, auth state dinleyecek
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+      AppLogger.error('Apple giriş hatası', e, stackTrace);
+      return 'Apple girişi başarısız. Tekrar deneyin.';
+    }
+  }
+
   /// Çıkış yap
   Future<void> signOut() async {
     state = const AsyncValue.loading();
@@ -160,6 +169,6 @@ Future<String?> signInWithGoogle() async {
 /// Neden: AuthController'ı provide eder, UI'dan erişim için
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
-  final repository = ref.watch(authRepositoryProvider);
-  return AuthController(repository);
-});
+      final repository = ref.watch(authRepositoryProvider);
+      return AuthController(repository);
+    });
