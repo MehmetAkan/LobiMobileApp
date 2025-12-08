@@ -9,6 +9,7 @@ import 'package:lobi_application/screens/auth/username_setup_screen.dart';
 import 'package:lobi_application/screens/auth/create_profile_screen.dart';
 import 'package:lobi_application/screens/main/main_navigation_screen.dart';
 import 'package:lobi_application/providers/notification_provider.dart';
+import 'package:lobi_application/screens/splash/splash_screen.dart';
 
 /// App Entry Point
 /// Neden ConsumerWidget: Riverpod provider'ları dinlemek için
@@ -27,10 +28,10 @@ class AppEntry extends ConsumerWidget {
     ref.watch(unreadNotificationCountProvider);
 
     return authState.when(
-      // Loading: Auth state yüklenirken
+      // Loading: Auth state yüklenirken - Splash screen göster
       loading: () {
         AppLogger.debug('Auth state yükleniyor...');
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        return const SplashScreen();
       },
 
       // Error: Auth state yüklenirken hata
@@ -83,9 +84,7 @@ class AppEntry extends ConsumerWidget {
         return profileState.when(
           loading: () {
             AppLogger.debug('Profil yükleniyor...');
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
+            return const SplashScreen();
           },
           error: (error, stack) {
             // If offline, show waiting screen instead of error

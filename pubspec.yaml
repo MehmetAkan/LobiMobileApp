@@ -59,6 +59,8 @@ flutter:
     - assets/images/
     - assets/images/parafoni-logo-dark.png
     - assets/images/system/lobi-icon.svg
+    - assets/images/system/lobi-icon-white.svg
+    - assets/images/system/background-splash.svg
     - assets/images/parafoni-login-img.png
     - assets/images/system/background-auth.png
     - assets/images/system/other-page-bg.png
@@ -112,6 +114,7 @@ flutter:
     - assets/images/system/settings/web.png
     - assets/images/system/settings/linkedin.png
     - assets/images/system/profile-cover.png
+    - assets/images/system/background-splash.svg
   fonts:
     - family: Figtree
       fonts:

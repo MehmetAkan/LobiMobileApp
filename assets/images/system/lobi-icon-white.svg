@@ -1,0 +1,14 @@
+<svg id="lobi-icon-white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="146.901" height="147.066" viewBox="0 0 146.901 147.066">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.1" y1="0.048" x2="0.918" y2="0.92" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#2e00a7"/>
+      <stop offset="1" stop-color="#6512c6"/>
+    </linearGradient>
+  </defs>
+  <path id="Path_8960" data-name="Path 8960" d="M41.132,0h64.637A41.132,41.132,0,0,1,146.9,41.132v64.637A41.132,41.132,0,0,1,105.769,146.9H41.132A41.132,41.132,0,0,1,0,105.769V41.132A41.132,41.132,0,0,1,41.132,0Z" transform="translate(0 0.139)" fill="url(#linear-gradient)"/>
+  <path id="Path_8945" data-name="Path 8945" d="M84.64.661,69.671,28.906A53.6,53.6,0,0,1,90.144,40.482c20.611,18.772,20.611,49.209,0,67.981-8.1,7.378-37.859,28.506-54.167,39.263h-15l15-27.687A53.609,53.609,0,0,1,15.5,108.464c-20.611-18.772-20.733-49.1,0-67.981C25.159,31.689,64.259,2.6,68.384.661ZM52.824,39.272c-22.681,0-41.067,15.76-41.067,35.2s18.387,35.2,41.067,35.2,41.067-15.76,41.067-35.2S75.5,39.272,52.824,39.272Zm0,13.494c12.96,0,23.467,9.719,23.467,21.707S65.784,96.18,52.824,96.18,29.357,86.462,29.357,74.473,39.863,52.766,52.824,52.766Zm0,11.733c-6.676,0-11.734,4.679-11.734,9.974s5.058,9.974,11.734,9.974,11.734-4.678,11.734-9.974S59.5,64.5,52.824,64.5Z" transform="translate(20.65 -0.661)" fill="url(#linear-gradient-2)"/>
+</svg>
