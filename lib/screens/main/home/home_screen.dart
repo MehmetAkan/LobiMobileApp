@@ -226,7 +226,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       height: 40.h,
                       width: 40.h,
                       child: SvgPicture.asset(
-                        'assets/images/system/lobi-icon.svg',
+                        'assets/images/system/logo/lobi-icon.svg',
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -241,7 +241,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           width: activeDate != null ? 30.w : 45.w,
                           height: activeDate != null ? 25.h : 30.h,
                           child: SvgPicture.asset(
-                            'assets/images/system/lobitext.svg',
+                            'assets/images/system/logo/lobitext.svg',
                             fit: BoxFit.contain,
                           ),
                         ),

@@ -139,7 +139,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                       height: 40.h,
                       width: 40.h,
                       child: SvgPicture.asset(
-                        'assets/images/system/lobi-icon.svg',
+                        'assets/images/system/logo/lobi-icon.svg',
                         fit: BoxFit.contain,
                       ),
                     ),

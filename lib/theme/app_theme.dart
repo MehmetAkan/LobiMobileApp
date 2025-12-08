@@ -60,7 +60,7 @@ class AppTheme {
   static const Color purple200 = Color(0xFFD1CCFF);
   static const Color purple300 = Color(0xFFAFA4FF);
   static const Color purple400 = Color(0xFF8970FF);
-  static const Color purple500 = Color(0xFF6637FF);
+  static const Color purple500 = Color(0xFF6412C6);
   static const Color purple600 = Color(0xFF550FFF);
   static const Color purple700 = Color(0xFF4600FF);
   static const Color purple800 = Color(0xFF3A00DA);

@@ -9,10 +9,10 @@ class GradientButton extends StatelessWidget {
     this.routeName,
     this.expand = true,
     this.colors,
-    this.begin = Alignment.centerLeft,
-    this.end = Alignment.centerRight,
+    this.begin = Alignment.topCenter,
+    this.end = Alignment.bottomCenter,
     this.borderRadius = 100,
-    this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
     this.textStyle,
     this.icon, // 🔹 opsiyonel icon
     this.iconGap = 8, // 🔹 icon ile yazı arası boşluk
@@ -56,12 +56,12 @@ class GradientButton extends StatelessWidget {
     final isEnabled = (onPressed != null) || (routeName != null);
 
     final gradientColors =
-        colors ?? const [AppTheme.purple800, AppTheme.purple900];
+        colors ?? const [AppTheme.purple900, AppTheme.purple500];
 
     // Disabled durumunda biraz soluklaştır
     final effectiveColors = isEnabled
         ? gradientColors
-        : gradientColors.map((c) => c.withValues(alpha: 0.50)).toList();
+        : gradientColors.map((c) => c.withValues(alpha: 0.90)).toList();
 
     // 🔹 Label widget
     final labelWidget = Text(
@@ -70,7 +70,7 @@ class GradientButton extends StatelessWidget {
           (textStyle ??
           const TextStyle(
             fontWeight: FontWeight.w700,
-            fontSize: 17,
+            fontSize: 18,
             color: Colors.white,
           )),
     );

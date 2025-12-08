@@ -315,7 +315,7 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       height: 40.h,
                       width: 40.h,
                       child: SvgPicture.asset(
-                        'assets/images/system/lobi-icon.svg',
+                        'assets/images/system/logo/lobi-icon.svg',
                         fit: BoxFit.contain,
                       ),
                     ),

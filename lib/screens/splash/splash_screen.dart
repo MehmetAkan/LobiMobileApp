@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 
-/// Splash Screen - Uygulama açılış ekranı
-///
-/// Tasarım:
-/// - Purple900 arka plan
-/// - background-splash.svg overlay (0.65 opacity)
-/// - Ortada dönen lobi-icon.svg (infinite rotation)
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -73,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen>
                 );
               },
               child: SvgPicture.asset(
-                'assets/images/system/lobi-icon-white.svg',
+                'assets/images/system/logo/lobi-icon-white.svg',
                 width: 120, // Logo boyutu
                 height: 120,
               ),
