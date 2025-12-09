@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/data/repositories/auth_repository.dart';
 import 'package:lobi_application/providers/auth_provider.dart';
@@ -28,9 +29,6 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final text = theme.textTheme;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -52,15 +50,15 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                           Container(
                             width: 55,
                             height: 55,
-                            decoration: const BoxDecoration(
-                              color: AppTheme.zinc200,
+                            decoration: BoxDecoration(
+                              color: AppTheme.getAuthIconBg(context),
                               shape: BoxShape.circle,
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Icon(
                                 Icons.mail_outline,
                                 size: 30,
-                                color: AppTheme.zinc800,
+                                color: AppTheme.getAuthIconColor(context),
                               ),
                             ),
                           ),
@@ -68,33 +66,36 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                           Text(
                             'Doğrulama Kodu',
                             textAlign: TextAlign.start,
-                            style: text.headlineSmall?.copyWith(
+                            style: TextStyle(
+                              fontSize: 35.sp,
+                              letterSpacing: -0.20,
+                              height: 1.1,
                               fontWeight: FontWeight.w700,
-                              fontSize: 35,
-                              color: AppTheme.black800,
-                              height: 1.2,
+                              color: AppTheme.getAuthHeadText(context),
                             ),
                           ),
                           const SizedBox(height: 15),
                           Text(
                             'E-postana doğrulama kodu gönderdik',
                             textAlign: TextAlign.start,
-                            style: text.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.zinc800,
-                              height: 1.3,
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              letterSpacing: -0.20,
+                              height: 1.1,
+                              fontWeight: FontWeight.w400,
+                              color: AppTheme.getAuthDescText(context),
                             ),
                           ),
                           const SizedBox(height: 5),
                           Text(
                             widget.email,
                             textAlign: TextAlign.start,
-                            style: text.bodyMedium?.copyWith(
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              letterSpacing: -0.20,
+                              height: 1.1,
                               fontWeight: FontWeight.w600,
-                              color: AppTheme.black800,
-                              height: 1.3,
-                              fontSize: 16,
+                              color: AppTheme.getAuthHeadText(context),
                             ),
                           ),
                           const SizedBox(height: 25),
@@ -110,9 +111,12 @@ class _AuthenticationScreenState extends ConsumerState<AuthenticationScreen> {
                           if (errorText != null)
                             Text(
                               errorText!,
-                              style: text.bodySmall?.copyWith(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w500,
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                letterSpacing: -0.20,
+                                height: 1,
+                                fontWeight: FontWeight.w400,
+                                color: AppTheme.red700,
                               ),
                             ),
                           const SizedBox(height: 25),

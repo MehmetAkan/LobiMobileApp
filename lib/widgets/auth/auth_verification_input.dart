@@ -1,8 +1,9 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart'; // kendi yoluna göre ayarla
 
-class  AuthVerificationInput extends StatelessWidget {
+class AuthVerificationInput extends StatelessWidget {
   const AuthVerificationInput({super.key, required this.onCompleted});
 
   final void Function(String code) onCompleted;
@@ -17,27 +18,27 @@ class  AuthVerificationInput extends StatelessWidget {
       defaultPinTheme: PinTheme(
         width: 50,
         height: 56,
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,
-          color: AppTheme.black800,
+          color: AppTheme.getAuthHeadText(context),
         ),
         decoration: BoxDecoration(
-          color: AppTheme.zinc200,
+          color: AppTheme.getAuthInputBg(context),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTheme.zinc300),
+          border: Border.all(color: AppTheme.getAuthInputBorder(context)),
         ),
       ),
       focusedPinTheme: PinTheme(
         width: 50,
         height: 56,
-        textStyle: const TextStyle(
-          fontSize: 20,
+        textStyle: TextStyle(
+          fontSize: 20.sp,
           fontWeight: FontWeight.w600,
-          color: AppTheme.black800,
+          color: AppTheme.getAuthHeadText(context),
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.getAuthInputBorderFocus(context),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppTheme.purple900, width: 2),
           boxShadow: [
