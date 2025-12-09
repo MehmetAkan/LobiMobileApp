@@ -33,13 +33,13 @@ class AuthTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(12);
-    final borderColor = AppTheme.zinc300;
-    final focusedBorderColor = AppTheme.zinc400;
-    final fillColor = AppTheme.zinc200;
+    final borderRadius = BorderRadius.circular(15);
+    final borderColor = AppTheme.getAuthInputBorder(context);
+    final focusedBorderColor = AppTheme.getAuthInputBorderFocus(context);
+    final fillColor = AppTheme.getAuthInputBg(context);
     final labelColor = AppTheme.black800;
-    final textColor = AppTheme.black800;
-    final errorColor = AppTheme.red900;
+    final textColor = AppTheme.getAuthInputText(context);
+    final errorColor = AppTheme.red700;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +71,7 @@ class AuthTextField extends StatelessWidget {
             counterText: '',
             hintText: hintText,
             hintStyle: TextStyle(
-              color: AppTheme.zinc600,
+              color: AppTheme.getAuthInputHint(context),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),

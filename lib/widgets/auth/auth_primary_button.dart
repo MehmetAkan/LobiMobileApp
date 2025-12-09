@@ -22,10 +22,11 @@ class AuthPrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Default değerler:
-    final Color resolvedBg = backgroundColor ?? AppTheme.black800;
-    final Color resolvedTextColor = textColor ?? AppTheme.white;
+    final Color resolvedBg =
+        backgroundColor ?? AppTheme.getAuthButtonBg(context);
+    final Color resolvedTextColor =
+        textColor ?? AppTheme.getAuthButtonText(context);
     final double resolvedFontSize = fontSize ?? 17;
-
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -45,10 +46,7 @@ class AuthPrimaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(50),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 18,
-              horizontal: 22,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 22),
             child: Text(
               label,
               textAlign: TextAlign.center,

@@ -21,8 +21,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   void initState() {
     super.initState();
-
-    // Sliding animation (soldan sağa, sürekli)
     _slideController = AnimationController(
       duration: const Duration(seconds: 100),
       vsync: this,
@@ -41,6 +39,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     final text = theme.textTheme;
 
     return Scaffold(
+      backgroundColor: AppTheme.white,
       body: Stack(
         children: [
           Positioned.fill(

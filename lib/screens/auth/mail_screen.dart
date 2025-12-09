@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/providers/auth_provider.dart';
 import 'package:lobi_application/screens/auth/authentication_screen.dart';
 import 'package:lobi_application/widgets/auth/auth_text_field.dart';
@@ -31,9 +32,6 @@ class _MailScreenState extends ConsumerState<MailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final text = theme.textTheme;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -55,15 +53,15 @@ class _MailScreenState extends ConsumerState<MailScreen> {
                           Container(
                             width: 55,
                             height: 55,
-                            decoration: const BoxDecoration(
-                              color: AppTheme.zinc200,
+                            decoration: BoxDecoration(
+                              color: AppTheme.getAuthIconBg(context),
                               shape: BoxShape.circle,
                             ),
-                            child: const Center(
+                            child: Center(
                               child: Icon(
                                 Icons.mail_outline,
                                 size: 30,
-                                color: AppTheme.zinc800,
+                                color: AppTheme.getAuthIconColor(context),
                               ),
                             ),
                           ),
@@ -71,23 +69,25 @@ class _MailScreenState extends ConsumerState<MailScreen> {
                           Text(
                             'E-posta adresiyle devam edin',
                             textAlign: TextAlign.start,
-                            style: text.headlineSmall?.copyWith(
+                            style: TextStyle(
+                              fontSize: 35.sp,
+                              letterSpacing: -0.20,
+                              height: 1.1,
                               fontWeight: FontWeight.w700,
-                              fontSize: 35,
-                              color: AppTheme.black800,
-                              height: 1.2,
+                              color: AppTheme.getAuthHeadText(context),
                             ),
                           ),
+
                           const SizedBox(height: 10),
                           Text(
-                            'Fişlerini okut, harcamaların otomatik kategorilensin. '
-                            'Hepsini tek ekrandan yönet.',
+                            'Etkinlikleri takip et veya kendi etkinliklerini düzenle',
                             textAlign: TextAlign.start,
-                            style: text.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: AppTheme.zinc800,
-                              height: 1.3,
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              letterSpacing: -0.20,
+                              height: 1.1,
+                              fontWeight: FontWeight.w400,
+                              color: AppTheme.getAuthDescText(context),
                             ),
                           ),
                           const SizedBox(height: 25),
@@ -97,11 +97,11 @@ class _MailScreenState extends ConsumerState<MailScreen> {
                             hintText: 'ornek@mail.com',
                             keyboardType: TextInputType.emailAddress,
                             errorText: errorText,
-                            suffix: const Icon(
+                            suffix: Icon(
                               Icons.mail_outline,
                               size: 24,
                               weight: 1,
-                              color: AppTheme.zinc600,
+                              color: AppTheme.getAuthInputHint(context),
                             ),
                           ),
                           const SizedBox(height: 25),

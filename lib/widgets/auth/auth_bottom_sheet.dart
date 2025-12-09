@@ -29,7 +29,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
         curve: Curves.decelerate,
         child: Container(
           decoration: BoxDecoration(
-            color: AppTheme.getSwitchBg(ctx),
+            color: AppTheme.white,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(30.r),
               topLeft: Radius.circular(30.r),
@@ -93,7 +93,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                       ),
                       const SizedBox(height: 3),
                       const Text(
-                        'Etkinlikleri takip etmek ve kendi etkinliklerini düzenle',
+                        'Etkinlikleri takip et veya kendi etkinliklerini düzenle',
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 15,

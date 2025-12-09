@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+
 class AuthBackButton extends StatelessWidget {
-  const AuthBackButton({
-    super.key,
-  });
+  const AuthBackButton({super.key});
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -13,15 +12,13 @@ class AuthBackButton extends StatelessWidget {
         onTap: () {
           if (Navigator.of(context).canPop()) {
             Navigator.of(context).pop();
-          } else {
-         
-          }
+          } else {}
         },
         child: Ink(
           child: Icon(
             Icons.arrow_back_rounded,
             size: 20,
-            color: AppTheme.black800,
+            color: AppTheme.getAuthBackButton(context),
           ),
         ),
       ),

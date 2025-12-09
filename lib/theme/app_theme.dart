@@ -132,278 +132,369 @@ class AppTheme {
   static const Color black800 = Color(0xFF090A0A);
   static const Color backgroundLight = Color.fromARGB(255, 255, 255, 255);
   static const Color backgroundDark = Color(0xFF090A0A);
-  static const Color dark_zinc600 = Color(0xFFB2B2B2);
-  static const Color dark_zinc700 = Color(0xFF949293);
+  static const Color dark_zinc200 = Color(0xFFF2F2F2);
+  static const Color dark_zinc300 = Color(0xFFBEBEBE);
+  static const Color dark_zinc400 = Color(0xFF636367);
+  static const Color dark_zinc500 = Color(0xFF515155);
+  static const Color dark_zinc600 = Color(0xFF404043);
+  static const Color dark_zinc700 = Color(0xFF303033);
   static const Color dark_zinc800 = Color(0xFF1D1D1F);
+  static const Color dark_zinc900 = Color(0xFF141415);
   static const Color navbarLight = Color(0xFFFFFFFF);
   static const Color navbarDark = Color.fromARGB(255, 0, 0, 0);
 
   static Color getButtonIconBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc800
         : white;
   }
 
   static Color getButtonIconColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? white : black800;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
   }
 
   static Color getTextNavigationColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc700;
   }
 
   static Color getButtonIconBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc100;
   }
 
   static Color getNavbarBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? backgroundDark
         : backgroundLight;
   }
 
   static Color getNavbarBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc200;
   }
 
   static Color getNavbarDateDescText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? zinc600 : zinc600;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? zinc600
+        : zinc600;
   }
 
   static Color getNavigationBtnBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc300;
   }
 
   static Color getNavbarBtnBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc200;
   }
 
   static Color getNavbarBtnBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc100;
   }
 
   static Color getNavbarBtnActiveBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : purple900;
   }
 
   static Color getNavbarBtnActiveBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : black800;
   }
 
   static Color getNavbarBtnActiveText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : white;
   }
 
   static Color getTextHeadColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? backgroundLight
         : black800;
   }
 
   static Color getTextDescColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc600;
   }
 
   static Color getTextModalDescColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc700;
   }
 
   static Color getCardColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc800;
   }
 
   static Color getHomeButtonBgColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : white;
   }
 
   static Color getHomeButtonTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : black800;
   }
 
   static Color getHomeButtonBorderColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc200;
   }
 
   static Color getEventIconColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc600;
   }
 
   static Color getEventIconTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? zinc800 : zinc800;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? zinc800
+        : zinc800;
   }
 
   static Color getnNavigationBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : white;
   }
 
   static Color getnNavigationBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc100;
   }
 
   static Color getCategoryCardBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc800
         : zinc300;
   }
 
   static Color getCategoryCardBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : white;
   }
 
   static Color getSwitchText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : black800;
   }
 
   static Color getSwitchBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc100;
   }
 
   static Color getSwitchBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc300;
   }
 
   static Color getSwitchActive(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc400;
   }
 
   static Color getFilterText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : black800;
   }
 
   static Color getFilterActiveText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : purple900;
   }
 
   static Color getAppBarBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : black800;
   }
 
   static Color getAppBarButtonBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : black800.withOpacity(0.2);
   }
 
   static Color getAppBarButtonBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? zinc400
         : dark_zinc600.withOpacity(0.5);
   }
 
   static Color getCreateEventBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? black800
         : black800;
   }
 
   static Color getAppBarTextColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? black800 : white;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
   }
 
   static Color getAppBarTextColorSecondary(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? white : black800;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
   }
 
   static Color getAppBarButtonBorderColorSecondary(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc700
         : zinc300;
   }
 
   static Color getAppBarButtonBgColorSecondary(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc200.withValues(alpha: 0.7);
   }
 
   static Color getAppBarButtonColor(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? black800 : white;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
   }
 
   static Color getEventFieldBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : black800.withOpacity(0.5);
   }
 
   static Color getEventFieldBorder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : dark_zinc800.withOpacity(0.2);
   }
 
   static Color getEventFieldPlaceholder(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : white.withOpacity(0.6);
   }
 
   static Color getModalButtonBg(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc700
         : zinc200;
   }
 
   static Color getModalButtonText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : black800;
   }
 
   static Color getEventFieldText(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark ? white : white;
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : white;
+  }
+
+  static Color getAuthIconBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc900
+        : zinc200;
+  }
+
+  static Color getAuthIconColor(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc200
+        : zinc800;
+  }
+
+  static Color getAuthHeadText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc200
+        : black800;
+  }
+
+  static Color getAuthDescText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc300
+        : zinc800;
+  }
+
+  static Color getAuthInputBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : zinc200;
+  }
+
+  static Color getAuthInputText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc200
+        : black800;
+  }
+
+  static Color getAuthInputBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getAuthInputBorderFocus(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc400;
+  }
+
+  static Color getAuthInputHint(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc600;
+  }
+
+  static Color getAuthButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? zinc200
+        : black800;
+  }
+
+  static Color getAuthButtonText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
+  }
+
+  static Color getAuthBackButton(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc300
+        : zinc800;
   }
 
   static String? get _platformFontFamily {
