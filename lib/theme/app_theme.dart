@@ -455,6 +455,48 @@ class AppTheme {
         : zinc200;
   }
 
+  static Color getAuthCardBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : zinc300;
+  }
+
+  static Color getAuthCarText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc300
+        : zinc700;
+  }
+
+  static Color getAuthCategoryBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : white;
+  }
+
+  static Color getAuthCategoryBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getAuthCategoryText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc700;
+  }
+
+  static Color getAuthCategoryTextSelected(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
+  static Color getAuthCategoryBgSelected(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc900
+        : zinc100;
+  }
+
   static Color getAuthInputText(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc200

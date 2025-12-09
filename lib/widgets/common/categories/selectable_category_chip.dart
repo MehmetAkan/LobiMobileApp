@@ -26,11 +26,13 @@ class SelectableCategoryChip extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.white.withValues(alpha: 1)
-              : AppTheme.white,
+              ? AppTheme.getAuthCategoryBgSelected(context)
+              : AppTheme.getAuthCategoryBg(context),
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: isSelected ? AppTheme.green600 : AppTheme.zinc300,
+            color: isSelected
+                ? AppTheme.green600
+                : AppTheme.getAuthCategoryBorder(context),
             width: isSelected ? 1 : 1,
           ),
         ),
@@ -45,7 +47,9 @@ class SelectableCategoryChip extends StatelessWidget {
                 fontSize: 14.sp,
                 letterSpacing: -0.20,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? AppTheme.green600 : AppTheme.zinc800,
+                color: isSelected
+                    ? AppTheme.getAuthCategoryTextSelected(context)
+                    : AppTheme.getAuthCategoryText(context),
               ),
             ),
           ],

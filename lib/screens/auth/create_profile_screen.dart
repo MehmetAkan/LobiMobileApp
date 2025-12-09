@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/screens/auth/username_setup_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
@@ -60,15 +61,15 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                       Container(
                         width: 55,
                         height: 55,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.zinc200,
+                        decoration: BoxDecoration(
+                          color: AppTheme.getAuthIconBg(context),
                           shape: BoxShape.circle,
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Icon(
                             LucideIcons.userStar400,
-                            size: 28,
-                            color: AppTheme.zinc800,
+                            size: 30,
+                            color: AppTheme.getAuthIconColor(context),
                           ),
                         ),
                       ),
@@ -76,22 +77,24 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                       Text(
                         'Profil Oluşturma',
                         textAlign: TextAlign.start,
-                        style: text.headlineSmall?.copyWith(
+                        style: TextStyle(
+                          fontSize: 35.sp,
+                          letterSpacing: -0.20,
+                          height: 1.1,
                           fontWeight: FontWeight.w700,
-                          fontSize: 35,
-                          color: AppTheme.black800,
-                          height: 1.2,
+                          color: AppTheme.getAuthHeadText(context),
                         ),
                       ),
                       const SizedBox(height: 15),
                       Text(
                         'Artık son aşamadayız, profilini oluştur hemen etkinlik katıl!',
                         textAlign: TextAlign.start,
-                        style: text.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.zinc800,
-                          height: 1.3,
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          letterSpacing: -0.20,
+                          height: 1.1,
+                          fontWeight: FontWeight.w400,
+                          color: AppTheme.getAuthDescText(context),
                         ),
                       ),
                       const SizedBox(height: 25),

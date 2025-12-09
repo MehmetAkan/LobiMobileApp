@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class DatePickerField extends StatefulWidget {
   final String label;
@@ -40,9 +42,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
         return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(24),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: const EdgePadding(), // Bunu birazdan tanımlayacağız
           child: _CupertinoDatePickerSheet(
@@ -74,13 +74,12 @@ class _DatePickerFieldState extends State<DatePickerField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Label
         Text(
           widget.label,
-          style: const TextStyle(
-            fontSize: 17,
+          style: TextStyle(
+            fontSize: 17.sp,
             fontWeight: FontWeight.w500,
-            color: AppTheme.black800
+            color: AppTheme.getAuthHeadText(context),
           ),
         ),
         const SizedBox(height: 10),
@@ -88,17 +87,14 @@ class _DatePickerFieldState extends State<DatePickerField> {
           borderRadius: BorderRadius.circular(12),
           onTap: _openCupertinoPicker,
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppTheme.zinc300,
+                color: AppTheme.getAuthInputBorder(context),
                 width: 1,
               ),
-              color: AppTheme.zinc200,
+              color: AppTheme.getAuthInputBg(context),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,14 +105,15 @@ class _DatePickerFieldState extends State<DatePickerField> {
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: widget.value == null
-                        ? AppTheme.zinc600
-                        : AppTheme.black800,
+                        ? AppTheme.getAuthInputHint(context)
+                        : AppTheme.getAuthInputText(context),
                   ),
                 ),
 
-                const Icon(
-                  Icons.calendar_today_outlined,
-                  size: 20,
+                Icon(
+                  LucideIcons.calendar400,
+                  size: 18.sp,
+                  color: AppTheme.getAuthInputHint(context),
                 ),
               ],
             ),
@@ -130,12 +127,12 @@ class _DatePickerFieldState extends State<DatePickerField> {
 // Küçük padding helper'ı (sheet içi boşluklar için güzel oluyor)
 class EdgePadding extends EdgeInsets {
   const EdgePadding()
-      : super.only(
-          left: 16,
-          right: 16,
-          top: 12,
-          bottom: 24 + 12, // picker altına biraz nefes
-        );
+    : super.only(
+        left: 16,
+        right: 16,
+        top: 12,
+        bottom: 24 + 12, // picker altına biraz nefes
+      );
 }
 
 // Bu widget aslında bottom sheet'in içini çiziyor
@@ -171,10 +168,7 @@ class _CupertinoDatePickerSheet extends StatelessWidget {
                 onPressed: onCancel,
                 child: const Text(
                   'İptal',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ),
               const Text(
@@ -189,10 +183,7 @@ class _CupertinoDatePickerSheet extends StatelessWidget {
                 onPressed: onDone,
                 child: const Text(
                   'Bitti',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],

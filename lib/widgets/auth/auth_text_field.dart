@@ -37,7 +37,7 @@ class AuthTextField extends StatelessWidget {
     final borderColor = AppTheme.getAuthInputBorder(context);
     final focusedBorderColor = AppTheme.getAuthInputBorderFocus(context);
     final fillColor = AppTheme.getAuthInputBg(context);
-    final labelColor = AppTheme.black800;
+    final labelColor = AppTheme.getAuthHeadText(context);
     final textColor = AppTheme.getAuthInputText(context);
     final errorColor = AppTheme.red700;
 

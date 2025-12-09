@@ -89,34 +89,34 @@ class AuthRepository {
     required String code,
   }) async {
     try {
-      // Validation
-      if (code.length != 6) {
-        return AuthResult.failure('Lütfen 6 haneli kodu girin');
-      }
+      AppLogger.info('🔑 OTP doğrulanıyor: $email');
 
-      AppLogger.info('🔐 OTP doğrulanıyor...');
-
-      // 1. Kodu doğrula
       final user = await _authService.verifyOtp(email: email, token: code);
 
-      // 2. Profil var mı kontrol et
+      // Profil var mı kontrol et
       final profile = await _profileService.getProfile(user.id);
 
       if (profile == null) {
-        AppLogger.info('⚠️ Profil bulunamadı, oluşturulması gerekiyor');
         return AuthResult.success(status: AuthStatus.needsProfile, user: user);
       }
 
-      AppLogger.info('✅ Giriş başarılı: ${profile.fullName}');
       return AuthResult.success(
         status: AuthStatus.authenticated,
         user: user,
         profile: profile,
       );
     } on AppException catch (e) {
-      return AuthResult.failure(e.message);
+      // Hata mesajını kullanıcı dostu hale getir
+      String userMessage = e.message;
+      if (userMessage.toLowerCase().contains('token') &&
+          (userMessage.toLowerCase().contains('expired') ||
+              userMessage.toLowerCase().contains('invalid'))) {
+        userMessage =
+            'Doğrulama kodu hatalı veya süresi dolmuş. Lütfen kodu kontrol edin.';
+      }
+      return AuthResult.failure(userMessage);
     } catch (e) {
-      AppLogger.error('OTP doğrulama hatası', e);
+      AppLogger.error('Beklenmeyen hata', e);
       return AuthResult.failure('Doğrulama başarısız. Tekrar deneyin.');
     }
   }

@@ -148,7 +148,8 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
       case UsernameState.invalid:
         return AppTheme.red900;
       default:
-        return AppTheme.zinc300;
+        return AppTheme.getAuthInputBorder(context);
+        ;
     }
   }
 
@@ -180,15 +181,15 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                       Container(
                         width: 55.w,
                         height: 55.h,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.zinc200,
+                        decoration: BoxDecoration(
+                          color: AppTheme.getAuthIconBg(context),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: Icon(
                             LucideIcons.atSign400,
-                            size: 28.sp,
-                            color: AppTheme.zinc800,
+                            size: 30.sp,
+                            color: AppTheme.getAuthIconColor(context),
                           ),
                         ),
                       ),
@@ -196,22 +197,24 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                       Text(
                         'Kullanıcı Adını Seç',
                         textAlign: TextAlign.start,
-                        style: text.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
+                        style: TextStyle(
                           fontSize: 35.sp,
-                          color: AppTheme.black800,
-                          height: 1.2,
+                          letterSpacing: -0.20,
+                          height: 1.1,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.getAuthHeadText(context),
                         ),
                       ),
                       SizedBox(height: 15.h),
                       Text(
                         'Kullanıcı adın profil URL\'inde görünecek ve diğer kullanıcılar seni bu şekilde bulabilecek.',
                         textAlign: TextAlign.start,
-                        style: text.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.zinc800,
-                          height: 1.3,
+                        style: TextStyle(
                           fontSize: 16.sp,
+                          letterSpacing: -0.20,
+                          height: 1.1,
+                          fontWeight: FontWeight.w400,
+                          color: AppTheme.getAuthDescText(context),
                         ),
                       ),
                       SizedBox(height: 25.h),
@@ -225,13 +228,13 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
-                              color: AppTheme.black800,
+                              color: AppTheme.getAuthHeadText(context),
                             ),
                           ),
                           SizedBox(height: 8.h),
                           Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
+                              borderRadius: BorderRadius.circular(15.r),
                               border: Border.all(
                                 color: _buildFieldBorderColor(),
                                 width: 1.5,
@@ -246,7 +249,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                                     style: TextStyle(
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.w600,
-                                      color: AppTheme.zinc600,
+                                      color: AppTheme.getAuthInputHint(context),
                                     ),
                                   ),
                                 ),
@@ -257,14 +260,16 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                                     style: TextStyle(
                                       fontSize: 17.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: AppTheme.black800,
+                                      color: AppTheme.getAuthInputText(context),
                                     ),
                                     decoration: InputDecoration(
                                       hintText: 'username',
                                       hintStyle: TextStyle(
                                         fontSize: 17.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: AppTheme.zinc500,
+                                        color: AppTheme.getAuthInputHint(
+                                          context,
+                                        ),
                                       ),
                                       border: InputBorder.none,
                                       contentPadding: EdgeInsets.symmetric(
@@ -303,7 +308,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                                 style: TextStyle(
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w500,
-                                  color: AppTheme.zinc500,
+                                  color: AppTheme.getAuthInputHint(context),
                                 ),
                               ),
                             ],
@@ -315,7 +320,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                           Container(
                             padding: EdgeInsets.all(15.w),
                             decoration: BoxDecoration(
-                              color: AppTheme.zinc100,
+                              color: AppTheme.getAuthCardBg(context),
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                             child: Column(
@@ -354,14 +359,18 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
   Widget _buildRule(String text) {
     return Row(
       children: [
-        Icon(LucideIcons.check400, size: 14.sp, color: AppTheme.zinc700),
+        Icon(
+          LucideIcons.check400,
+          size: 14.sp,
+          color: AppTheme.getAuthCarText(context),
+        ),
         SizedBox(width: 8.w),
         Text(
           text,
           style: TextStyle(
             fontSize: 13.sp,
             fontWeight: FontWeight.w500,
-            color: AppTheme.zinc700,
+            color: AppTheme.getAuthCarText(context),
           ),
         ),
       ],

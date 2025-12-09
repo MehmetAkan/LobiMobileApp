@@ -119,15 +119,15 @@ class _FavoriteCategoriesScreenState extends State<FavoriteCategoriesScreen> {
                       Container(
                         width: 55.w,
                         height: 55.h,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.zinc200,
+                        decoration: BoxDecoration(
+                          color: AppTheme.getAuthIconBg(context),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: Icon(
                             LucideIcons.heart400,
-                            size: 28.sp,
-                            color: AppTheme.zinc800,
+                            size: 30.sp,
+                            color: AppTheme.getAuthIconColor(context),
                           ),
                         ),
                       ),
@@ -135,22 +135,24 @@ class _FavoriteCategoriesScreenState extends State<FavoriteCategoriesScreen> {
                       Text(
                         'İlgi Alanlarını Seç',
                         textAlign: TextAlign.start,
-                        style: text.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
+                        style: TextStyle(
                           fontSize: 35.sp,
-                          color: AppTheme.black800,
-                          height: 1.2,
+                          letterSpacing: -0.20,
+                          height: 1.1,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.getAuthHeadText(context),
                         ),
                       ),
                       SizedBox(height: 15.h),
                       Text(
                         'Sana uygun etkinlikleri önerelim. En az 3 kategori seç.',
                         textAlign: TextAlign.start,
-                        style: text.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.zinc800,
-                          height: 1.3,
+                        style: TextStyle(
                           fontSize: 16.sp,
+                          letterSpacing: -0.20,
+                          height: 1.1,
+                          fontWeight: FontWeight.w400,
+                          color: AppTheme.getAuthDescText(context),
                         ),
                       ),
                       SizedBox(height: 20.h),
@@ -164,7 +166,7 @@ class _FavoriteCategoriesScreenState extends State<FavoriteCategoriesScreen> {
                         decoration: BoxDecoration(
                           color: _selectedIds.length >= 3
                               ? AppTheme.green500.withValues(alpha: 0.1)
-                              : AppTheme.zinc100,
+                              : AppTheme.getAuthCardBg(context),
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Row(
@@ -177,7 +179,7 @@ class _FavoriteCategoriesScreenState extends State<FavoriteCategoriesScreen> {
                               size: 16.sp,
                               color: _selectedIds.length >= 3
                                   ? AppTheme.green500
-                                  : AppTheme.zinc600,
+                                  : AppTheme.getAuthCarText(context),
                             ),
                             SizedBox(width: 6.w),
                             Text(
@@ -187,7 +189,7 @@ class _FavoriteCategoriesScreenState extends State<FavoriteCategoriesScreen> {
                                 fontWeight: FontWeight.w600,
                                 color: _selectedIds.length >= 3
                                     ? AppTheme.green500
-                                    : AppTheme.zinc600,
+                                    : AppTheme.getAuthCarText(context),
                               ),
                             ),
                           ],
