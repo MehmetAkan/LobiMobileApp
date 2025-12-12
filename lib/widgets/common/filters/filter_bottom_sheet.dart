@@ -43,7 +43,7 @@ class FilterBottomSheet extends StatelessWidget {
       padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 5.h),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.getSwitchBg(context),
+          color: AppTheme.getModalBg(context),
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(30.r),
             topLeft: Radius.circular(30.r),
@@ -57,13 +57,11 @@ class FilterBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header (Title + Close Button)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // Centered Title
                     Text(
                       'Filtrele',
                       style: TextStyle(
@@ -105,7 +103,7 @@ class FilterBottomSheet extends StatelessWidget {
                 separatorBuilder: (context, index) => Divider(
                   height: 2.h,
                   thickness: 1.h,
-                  color: AppTheme.getSwitchActive(context),
+                  color: AppTheme.getModalListDivider(context),
                 ),
                 itemBuilder: (context, index) {
                   final option = options[index];

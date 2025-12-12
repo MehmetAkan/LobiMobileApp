@@ -43,25 +43,21 @@ class _StandardPageState extends State<StandardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundLight,
       body: Stack(
         children: [
-          // İçerik
           ListView(
             controller: _scrollController,
             padding: EdgeInsets.only(
               top: 120.h, // AppBar altı boşluk
               left: 15.w,
               right: 15.w,
-              bottom: 40.h,
+              bottom: 90.h,
             ),
             physics: widget.isScrollable
                 ? const AlwaysScrollableScrollPhysics()
                 : const NeverScrollableScrollPhysics(),
             children: [...widget.children],
           ),
-
-          // AppBar
           FullPageAppBar(
             title: widget.title,
             scrollController: _scrollController,

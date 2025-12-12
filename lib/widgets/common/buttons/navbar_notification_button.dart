@@ -89,7 +89,7 @@ class NavbarNotificationButton extends ConsumerWidget {
                 width: 12.w,
                 height: 12.w,
                 decoration: BoxDecoration(
-                  color: AppTheme.green900,
+                  color: AppTheme.green600,
                   shape: BoxShape.circle,
                   border: Border.all(color: AppTheme.white, width: 1.5),
                 ),

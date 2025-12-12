@@ -67,8 +67,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
             onRefresh: handleRefresh,
             child: SingleChildScrollView(
               controller: scrollController,
-              physics:
-                  const AlwaysScrollableScrollPhysics(), // Pull-to-refresh için zorunlu
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.fromLTRB(
                 0.w,
                 navbarHeight + 20.h,
@@ -90,7 +89,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                     },
                   ),
                   SizedBox(height: 25.h),
-
                   _buildPopularEventsSection(),
                   SizedBox(height: 25.h),
                   Padding(
@@ -154,7 +152,10 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
                           width: activeDate != null ? 30.w : 45.w,
                           height: activeDate != null ? 25.h : 30.h,
                           child: SvgPicture.asset(
-                            'assets/images/system/lobitext.svg',
+                            MediaQuery.platformBrightnessOf(context) ==
+                                    Brightness.dark
+                                ? 'assets/images/system/logo/lobitext-white.svg'
+                                : 'assets/images/system/logo/lobitext.svg',
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -227,7 +228,6 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen>
 
   Widget _buildPopularEventsSection() {
     final state = ref.watch(discoverPopularEventsProvider);
-
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 0),
       child: EventsSection(

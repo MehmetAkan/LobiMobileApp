@@ -128,7 +128,6 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Category Icon (centered)
               Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
@@ -156,7 +155,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                     fontSize: 24.sp,
                     letterSpacing: -0.25,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.black800,
+                    color: AppTheme.getTextHeadColor(context),
                   ),
                 ),
               ),
@@ -169,7 +168,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 16.sp,
-                    color: AppTheme.zinc600,
+                    color: AppTheme.getTextDescColor(context),
                     height: 1,
                   ),
                 ),
@@ -180,10 +179,14 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                 child: Container(
                   height: 48.h,
                   decoration: BoxDecoration(
-                    color: _isFavorite ? AppTheme.zinc100 : AppTheme.black800,
+                    color: _isFavorite
+                        ? AppTheme.getCategoryButtonBgActive(context)
+                        : AppTheme.getCategoryButtonBg(context),
                     borderRadius: BorderRadius.circular(25.r),
                     border: Border.all(
-                      color: _isFavorite ? AppTheme.zinc300 : AppTheme.zinc300,
+                      color: _isFavorite
+                          ? AppTheme.getCategoryButtonBorderActive(context)
+                          : AppTheme.getCategoryButtonBorder(context),
                       width: 1,
                     ),
                   ),
@@ -205,8 +208,10 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen> {
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                               color: _isFavorite
-                                  ? AppTheme.black800
-                                  : AppTheme.white,
+                                  ? AppTheme.getCategoryButtonTextActive(
+                                      context,
+                                    )
+                                  : AppTheme.getCategoryButtonText(context),
                             ),
                           ),
                   ),

@@ -41,10 +41,7 @@ class _AllEventsListState extends ConsumerState<AllEventsList> {
   }
 
   void _onScroll() {
-    // 1. Pagination kontrolü
     _checkPagination();
-
-    // 2. Aktif tarih kontrolü (navbar için)
     _updateActiveDate();
   }
 
@@ -60,8 +57,6 @@ class _AllEventsListState extends ConsumerState<AllEventsList> {
     final position = widget.scrollController.position;
     final maxScroll = position.maxScrollExtent;
     final currentScroll = position.pixels;
-
-    // Alt kısma yaklaştıysak (son 400px içinde)
     if (currentScroll >= maxScroll - 400) {
       ref.read(discoverEventsControllerProvider.notifier).loadMore();
     }
@@ -74,8 +69,6 @@ class _AllEventsListState extends ConsumerState<AllEventsList> {
     if (state.events.isEmpty) return;
 
     DateTime? newActiveDate;
-
-    // Her kartın pozisyonunu kontrol et
     for (int i = 0; i < state.events.length; i++) {
       final key = _cardKeys[i];
       if (key == null) continue;
@@ -87,8 +80,6 @@ class _AllEventsListState extends ConsumerState<AllEventsList> {
         final position = renderBox.localToGlobal(Offset.zero);
         final cardTop = position.dy;
         final cardBottom = cardTop + renderBox.size.height;
-
-        // Navbar hizasındaki veya üstündeki ilk kartı bul
         if (cardTop <= widget.navbarHeight &&
             cardBottom > widget.navbarHeight) {
           newActiveDate = state.events[i].date.dateOnly;
@@ -169,13 +160,10 @@ class _AllEventsListState extends ConsumerState<AllEventsList> {
             return Column(
               children: [
                 SizedBox(height: 20.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Divider(
-                    color: AppTheme.zinc300,
-                    thickness: 1,
-                    height: 1,
-                  ),
+                Divider(
+                  color: AppTheme.getEventListDivider(context),
+                  thickness: 1,
+                  height: 1,
                 ),
                 SizedBox(height: 20.h),
               ],

@@ -203,8 +203,6 @@ class _EventsScreenState extends ConsumerState<EventsScreen>
                       ],
                     ),
                   ),
-
-                  // Event List
                   if (_isLoading)
                     Center(
                       child: Padding(

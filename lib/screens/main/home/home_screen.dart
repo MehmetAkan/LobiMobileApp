@@ -19,10 +19,7 @@ import 'package:lobi_application/widgets/common/indicators/app_refresh_indicator
 import 'package:lobi_application/widgets/common/sections/events_section.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
-import 'package:lobi_application/data/services/fcm_service.dart';
-import 'package:lobi_application/widgets/common/modals/notification_permission_modal.dart';
-import 'package:lobi_application/core/di/service_locator.dart';
-import 'package:flutter/services.dart'; // Haptic feedback
+import 'package:flutter/services.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -35,42 +32,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     with ScrollablePageMixin, RefreshablePageMixin {
   DateTime? activeDate;
 
-  /// Yatay liste (mock) - "Beğenebileceğin ve fazlası"
-  final List<Map<String, dynamic>> _mockRecommendedEvents = [
-    {
-      'id': '5',
-      'title': 'Morkomedyen Stand Up',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/morkomedyen-stand-up-202492493058dda84e1ba75b43399c3fd34102f70702.jpg',
-      'date': '5 Kas - 14:30',
-      'location': 'Antalya Açık Hava Tiyartosu',
-      'attendeeCount': 500,
-    },
-    {
-      'id': '6',
-      'title': 'Ali Congun - Adliye Çayı Stand Up',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/ali-congun-adliye-cayi-stand-up-202581920245282b8a52c40c74b86866b06a02b15a866.jpg',
-      'date': '5 Kas - 14:30',
-      'location': 'Konya Kültür Merkezi',
-      'attendeeCount': 200,
-    },
-    {
-      'id': '7',
-      'title': 'Türk rock müziğinin efsane grubu Mor ve Ötesi',
-      'imageUrl':
-          'https://b6s54eznn8xq.merlincdn.net/Uploads/Films/mor-ve-otesi-20259281120578730a00788d4ca0863f88153d521be2.png',
-      'date': '5 Kas - 14:30',
-      'location': 'Meram Bağları',
-      'attendeeCount': 350,
-    },
-  ];
-
   @override
   List<ProviderOrFamily> getProvidersToRefresh() {
     final providers = <ProviderOrFamily>[homeThisWeekEventsProvider];
 
-    // Recommended events için current user lazım
     final profile = ref.read(currentUserProfileProvider).value;
     if (profile != null) {
       providers.add(recommendedEventsProvider(profile.userId));
@@ -79,9 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     return providers;
   }
 
-  /// Tab retap handler - scroll to top + refresh
   Future<void> triggerScrollToTopAndRefresh() async {
-    // Scroll to top with smooth animation
     if (scrollController.hasClients) {
       await scrollController.animateTo(
         0,
@@ -89,11 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         curve: Curves.easeOut,
       );
     }
-
-    // Haptic feedback
     HapticFeedback.lightImpact();
-
-    // Trigger refresh
     await handleRefresh();
   }
 
@@ -109,14 +68,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           AppRefreshIndicator(
             onRefresh: handleRefresh,
             child: SingleChildScrollView(
-              controller: scrollController, // Mixin'den geliyor
-              physics:
-                  const AlwaysScrollableScrollPhysics(), // Pull-to-refresh için zorunlu
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.fromLTRB(0.w, navbarHeight + 20.h, 0.w, 60.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Recommended events section
                   Padding(
                     padding: const EdgeInsets.only(left: 15, right: 0),
                     child: Consumer(
@@ -192,7 +149,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       },
                     ),
                   ),
-
                   SizedBox(height: 5.h),
                   Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15),
@@ -241,7 +197,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           width: activeDate != null ? 30.w : 45.w,
                           height: activeDate != null ? 25.h : 30.h,
                           child: SvgPicture.asset(
-                            'assets/images/system/logo/lobitext.svg',
+                            MediaQuery.platformBrightnessOf(context) ==
+                                    Brightness.dark
+                                ? 'assets/images/system/logo/lobitext-white.svg'
+                                : 'assets/images/system/logo/lobitext.svg',
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -263,7 +222,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             );
                           },
                           child: activeDate == null
-                              ? const SizedBox.shrink() // hiçbir şey gösterme
+                              ? const SizedBox.shrink()
                               : _buildDateContent(context, activeDate!),
                         ),
                       ],

@@ -305,7 +305,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     return Column(
       children: [
         TabBar(
-          dividerColor: AppTheme.zinc200,
+          dividerColor: AppTheme.getProfileDivider(context),
           controller: _tabController,
           labelColor: AppTheme.getTextHeadColor(context),
           unselectedLabelColor: AppTheme.zinc500,
@@ -323,7 +323,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             Tab(text: 'Oluşturduğu Etkinlikler'),
           ],
         ),
-        Container(height: 1.h, color: AppTheme.zinc200),
+        Container(height: 1.h, color: AppTheme.getProfileDivider(context)),
       ],
     );
   }
@@ -362,7 +362,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           padding: EdgeInsets.all(40.w),
           child: Text(
             emptyMessage,
-            style: TextStyle(fontSize: 14.sp, color: AppTheme.zinc600),
+            style: TextStyle(fontSize: 14.sp, color: AppTheme.red50),
             textAlign: TextAlign.center,
           ),
         ),

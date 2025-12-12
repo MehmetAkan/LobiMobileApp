@@ -33,9 +33,6 @@ class CustomNavigationBar extends StatelessWidget {
               AppTheme.getnNavigationBg(context).withValues(alpha: 0.2),
             ],
           ),
-          // border: Border(
-          //   top: BorderSide(color: AppTheme.getNavbarBorder(context), width: 0),
-          // ),
         ),
         padding: EdgeInsets.only(bottom: 20, top: 10, left: 20, right: 20),
         child: BackdropFilter(
@@ -48,21 +45,24 @@ class CustomNavigationBar extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.5),
-                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.6),
                   AppTheme.getnNavigationBg(context).withValues(alpha: 0.7),
                   AppTheme.getnNavigationBg(context).withValues(alpha: 0.8),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 0.9),
+                  AppTheme.getnNavigationBg(context).withValues(alpha: 1),
                 ],
               ),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: AppTheme.zinc300.withValues(alpha: 0.5),
-              //     blurRadius: 5,
-              //     offset: const Offset(0, 7),
-              //   ),
-              // ],
+              boxShadow: [
+                // BoxShadow(
+                //   color: AppTheme.zinc600.withValues(alpha: 0.5),
+                //   blurRadius: 5,
+                //   offset: const Offset(0, 7),
+                // ),
+              ],
               border: Border(
-                top: BorderSide(color: AppTheme.zinc200, width: 1),
+                top: BorderSide(
+                  color: AppTheme.getnNavigationBorder(context),
+                  width: 1,
+                ),
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
@@ -96,7 +96,7 @@ class CustomNavigationBar extends StatelessWidget {
                       child: Container(
                         width: bgWidth,
                         decoration: BoxDecoration(
-                          color: AppTheme.zinc100,
+                          color: AppTheme.getnNavigationActive(context),
                           borderRadius: BorderRadius.circular(35),
                           border: Border.all(
                             color: AppTheme.getNavigationBtnBorder(context),
@@ -204,7 +204,7 @@ class CustomNavigationBar extends StatelessWidget {
                 height: 22.h,
                 colorFilter: ColorFilter.mode(
                   isActive
-                      ? AppTheme.purple900
+                      ? AppTheme.getTextNavigationActive(context)
                       : AppTheme.getTextNavigationColor(context),
                   BlendMode.srcIn,
                 ),
@@ -219,7 +219,7 @@ class CustomNavigationBar extends StatelessWidget {
                 letterSpacing: -0.20,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
                 color: isActive
-                    ? AppTheme.purple900
+                    ? AppTheme.getTextNavigationActive(context)
                     : AppTheme.getTextNavigationColor(context),
                 height: 1.2,
               ),

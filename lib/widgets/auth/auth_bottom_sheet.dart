@@ -89,6 +89,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.55,
                           fontSize: 25,
+                          color: AppTheme.black800,
                         ),
                       ),
                       const SizedBox(height: 3),

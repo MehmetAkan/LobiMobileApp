@@ -22,7 +22,6 @@ class NotificationsScreen extends ConsumerWidget {
       title: 'Bildirimler',
       children: [
         SizedBox(height: 16.h),
-
         notificationsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(
@@ -179,7 +178,7 @@ class NotificationsScreen extends ConsumerWidget {
                             fontWeight: notification.isRead
                                 ? FontWeight.w500
                                 : FontWeight.w600,
-                            color: AppTheme.black800,
+                            color: AppTheme.getNotificationText(context),
                             height: 1.3,
                             letterSpacing: -0.2,
                           ),

@@ -62,11 +62,12 @@ flutter:
     - assets/images/system/logo/lobi-icon.svg
     - assets/images/system/logo/lobi-icon-white.svg
     - assets/images/system/logo/lobi-logo.svg
+    - assets/images/system/logo/lobitext.svg
+    - assets/images/system/logo/lobitext-white.svg
     - assets/images/system/background-splash.svg
     - assets/images/system/auth-photo.png
     - assets/images/parafoni-login-img.png
     - assets/images/system/other-page-bg.png
-    - assets/images/system/logo/lobitext.svg
     - assets/images/system/parafoni-icon-logo-dark.svg
     - assets/images/system/google-icon.svg
     - assets/images/system/apple-icon.svg

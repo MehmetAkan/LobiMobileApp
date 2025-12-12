@@ -84,13 +84,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   @override
   void initState() {
     super.initState();
-
-    // ✨ Status bar rengini style'a göre ayarla
     _setStatusBarStyle();
-
     _internalScrollController = widget.scrollController ?? ScrollController();
     _internalScrollController.addListener(_onScroll);
-
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -136,11 +132,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
     super.dispose();
   }
 
-  /// ✨ Style'a göre status bar rengini ayarla
   void _setStatusBarStyle() {
     switch (widget.style) {
       case AppBarStyle.dark:
-        // Dark style → Beyaz status bar ikonları
         SystemChrome.setSystemUIOverlayStyle(
           const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,

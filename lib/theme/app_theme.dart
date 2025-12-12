@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lobi_application/theme/app_text_styles.dart';
 
 class AppTheme {
@@ -157,13 +158,13 @@ class AppTheme {
 
   static Color getTextNavigationColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
-        : zinc700;
+        ? dark_zinc400
+        : zinc600;
   }
 
   static Color getButtonIconBorder(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc900
         : zinc100;
   }
 
@@ -185,27 +186,21 @@ class AppTheme {
         : zinc600;
   }
 
-  static Color getNavigationBtnBorder(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
-        : zinc300;
-  }
-
   static Color getNavbarBtnBorder(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc800
         : zinc200;
   }
 
   static Color getNavbarBtnBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc900
         : zinc100;
   }
 
   static Color getNavbarBtnActiveBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc400
         : purple900;
   }
 
@@ -217,20 +212,32 @@ class AppTheme {
 
   static Color getNavbarBtnActiveText(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? white
         : white;
   }
 
   static Color getTextHeadColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? backgroundLight
+        ? white
         : black800;
   }
 
   static Color getTextDescColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc300
         : zinc600;
+  }
+
+  static Color getListUsernameColor(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc600;
+  }
+
+  static Color getEventCardOrganizerBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
   }
 
   static Color getTextModalDescColor(BuildContext context) {
@@ -265,26 +272,68 @@ class AppTheme {
 
   static Color getEventIconColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc300
         : zinc600;
+  }
+
+  static Color getEventListDivider(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getProfileDivider(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc200;
+  }
+
+  static Color getNotificationText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
+  static Color getProfileDividerActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
   }
 
   static Color getEventIconTextColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? zinc800
+        ? dark_zinc300
         : zinc800;
   }
 
   static Color getnNavigationBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
-        : white;
+        ? dark_zinc800
+        : zinc100;
   }
 
   static Color getnNavigationBorder(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc800
+        : zinc200;
+  }
+
+  static Color getNavigationBtnBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getnNavigationActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
         : zinc100;
+  }
+
+  static Color getTextNavigationActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
   }
 
   static Color getCategoryCardBorder(BuildContext context) {
@@ -293,45 +342,105 @@ class AppTheme {
         : zinc300;
   }
 
+  static Color getCategoryButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
+  static Color getCategoryButtonBgActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : zinc300;
+  }
+
+  static Color getCategoryButtonBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : black800;
+  }
+
+  static Color getCategoryButtonBorderActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc400;
+  }
+
+  static Color getCategoryButtonText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
+  }
+
+  static Color getCategoryButtonTextActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
   static Color getCategoryCardBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc900
         : white;
   }
 
   static Color getSwitchText(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? white
         : black800;
   }
 
   static Color getSwitchBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc800
         : zinc100;
   }
 
-  static Color getSwitchBorder(BuildContext context) {
+  static Color getModalBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc900
+        : zinc100;
+  }
+
+  static Color getModalButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : zinc200;
+  }
+
+  static Color getModalButtonText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
+  static Color getModalListDivider(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : zinc300;
   }
 
+  static Color getSwitchBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
   static Color getSwitchActive(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc700
         : zinc400;
   }
 
   static Color getFilterText(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc300
         : black800;
   }
 
   static Color getFilterActiveText(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? white
         : purple900;
   }
 
@@ -343,13 +452,13 @@ class AppTheme {
 
   static Color getAppBarButtonBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? white
+        ? black800.withOpacity(0.2)
         : black800.withOpacity(0.2);
   }
 
   static Color getAppBarButtonBorder(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? zinc400
+        ? dark_zinc600.withOpacity(0.5)
         : dark_zinc600.withOpacity(0.5);
   }
 
@@ -361,7 +470,7 @@ class AppTheme {
 
   static Color getAppBarTextColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? black800
+        ? white
         : white;
   }
 
@@ -379,19 +488,19 @@ class AppTheme {
 
   static Color getAppBarButtonBgColorSecondary(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? zinc200.withValues(alpha: 0.7)
         : zinc200.withValues(alpha: 0.7);
   }
 
   static Color getAppBarButtonColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? black800
+        ? white
         : white;
   }
 
   static Color getEventFieldBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? white
+        ? black800.withOpacity(0.5)
         : black800.withOpacity(0.5);
   }
 
@@ -405,18 +514,6 @@ class AppTheme {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : white.withOpacity(0.6);
-  }
-
-  static Color getModalButtonBg(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc700
-        : zinc200;
-  }
-
-  static Color getModalButtonText(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
-        : black800;
   }
 
   static Color getEventFieldText(BuildContext context) {
@@ -558,6 +655,7 @@ class AppTheme {
     // fontFamily: 'Figtree',
     fontFamily: _platformFontFamily,
     scaffoldBackgroundColor: backgroundLight,
+    brightness: Brightness.light,
     textTheme: TextTheme(
       titleLarge: AppTextStyles.pageTitle,
       titleMedium: AppTextStyles.sectionTitle,
@@ -570,6 +668,8 @@ class AppTheme {
       elevation: 0,
       foregroundColor: Colors.black,
       centerTitle: true,
+      systemOverlayStyle:
+          SystemUiOverlayStyle.dark, // Status bar icons dark (for light bg)
     ),
     iconTheme: const IconThemeData(size: 22),
     filledButtonTheme: FilledButtonThemeData(
@@ -585,6 +685,7 @@ class AppTheme {
     useMaterial3: true,
     fontFamily: _platformFontFamily,
     scaffoldBackgroundColor: backgroundDark,
+    brightness: Brightness.dark,
     textTheme: TextTheme(
       titleLarge: AppTextStyles.pageTitle,
       titleMedium: AppTextStyles.sectionTitle,
@@ -597,6 +698,8 @@ class AppTheme {
       backgroundColor: Colors.transparent,
       elevation: 0,
       foregroundColor: Colors.white,
+      systemOverlayStyle:
+          SystemUiOverlayStyle.light, // Status bar icons light (for dark bg)
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(

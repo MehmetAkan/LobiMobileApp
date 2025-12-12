@@ -80,7 +80,7 @@ class EventCardCompact extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildPhotoSection(),
+              _buildPhotoSection(context),
               SizedBox(width: 12.w),
               Expanded(child: _buildInfoSection(context)),
             ],
@@ -90,7 +90,7 @@ class EventCardCompact extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoSection() {
+  Widget _buildPhotoSection(BuildContext context) {
     return SizedBox(
       width: 160.w,
       child: Stack(
@@ -126,7 +126,10 @@ class EventCardCompact extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppTheme.purple100,
                     borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(color: AppTheme.white, width: 3.w),
+                    border: Border.all(
+                      color: AppTheme.getEventCardOrganizerBorder(context),
+                      width: 3.w,
+                    ),
                   ),
                   child: Text(
                     'Organizatör',
@@ -171,7 +174,7 @@ class EventCardCompact extends StatelessWidget {
                         height: 1,
                         letterSpacing: -0.25,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.black800,
+                        color: AppTheme.getTextHeadColor(context),
                       ),
                     ),
                     if (organizerUsername != null)
@@ -182,7 +185,7 @@ class EventCardCompact extends StatelessWidget {
                           height: 1,
                           letterSpacing: -0.25,
                           fontWeight: FontWeight.w500,
-                          color: AppTheme.zinc600,
+                          color: AppTheme.getListUsernameColor(context),
                         ),
                       ),
                   ],

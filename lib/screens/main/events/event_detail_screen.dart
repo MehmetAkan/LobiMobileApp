@@ -484,11 +484,6 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     }
   }
 
-  // TODO: Phase 2 - Announcement feature
-  // void _handleAnnouncement() {
-  //   debugPrint('📢 Duyuru: ${widget.event.id}');
-  // }
-
   void _handleViewRequests() {
     // Only show requests if event requires approval
     if (widget.event.requiresApproval == true) {
@@ -585,11 +580,6 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       }
     }
   }
-
-  // TODO: Phase 2 - Contact feature
-  // void _handleContact() {
-  //   debugPrint('💬 İletişim: ${widget.event.id}');
-  // }
 
   Future<void> _handleCancelAttendance() async {
     final confirmed = await EventCancelModal.show(context: context);
