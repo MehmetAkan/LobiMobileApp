@@ -93,11 +93,6 @@ class EventManageScreen extends StatelessWidget {
         ),
 
         SizedBox(height: 20.h),
-
-        // ========================================
-        // Settings Group
-        // (Blocked when event ended)
-        // ========================================
         _buildBlockableMenuGroup(
           context: context,
           isEnabled: event.canManageAccess,

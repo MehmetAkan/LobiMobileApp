@@ -340,6 +340,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 title: eventData['title'] ?? 'Etkinlik Detayı',
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
+                useEventBackButton: true,
                 actions: [
                   if (!_isOrganizer && !_attendanceStatus.canLeaveEvent)
                     _buildQuickAttendButton(),

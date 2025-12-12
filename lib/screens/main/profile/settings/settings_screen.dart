@@ -87,9 +87,11 @@ class SettingsScreen extends ConsumerWidget {
             SizedBox(height: 20.h),
             Container(
               decoration: BoxDecoration(
-                color: AppTheme.zinc100,
+                color: AppTheme.getSettingsCardBg(context),
                 borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppTheme.zinc200),
+                border: Border.all(
+                  color: AppTheme.getSettingsCardBorder(context),
+                ),
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
@@ -102,7 +104,7 @@ class SettingsScreen extends ConsumerWidget {
                           Icon(
                             LucideIcons.smartphone400,
                             size: 22.sp,
-                            color: AppTheme.black800,
+                            color: AppTheme.getSettingsCardIcon(context),
                           ),
                           SizedBox(width: 15.w),
                           Text(
@@ -112,7 +114,7 @@ class SettingsScreen extends ConsumerWidget {
                               fontWeight: FontWeight.w600,
                               height: 1.2,
                               letterSpacing: -0.20,
-                              color: AppTheme.black800,
+                              color: AppTheme.getTextHeadColor(context),
                             ),
                           ),
                         ],
@@ -189,9 +191,9 @@ class SettingsScreen extends ConsumerWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
+        color: AppTheme.getSettingsCardBg(context),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppTheme.zinc200),
+        border: Border.all(color: AppTheme.getSettingsCardBorder(context)),
       ),
       child: Column(
         children: [
@@ -216,7 +218,7 @@ class SettingsScreen extends ConsumerWidget {
                           letterSpacing: -0.20,
                           fontWeight: FontWeight.w600,
                           height: 1.2,
-                          color: AppTheme.black800,
+                          color: AppTheme.getTextHeadColor(context),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -229,7 +231,7 @@ class SettingsScreen extends ConsumerWidget {
                             fontSize: 15.sp,
                             letterSpacing: -0.20,
                             fontWeight: FontWeight.w600,
-                            color: AppTheme.zinc700,
+                            color: AppTheme.getListUsernameColor(context),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -243,7 +245,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
 
           // Divider
-          Divider(height: 1, color: AppTheme.zinc400),
+          Divider(height: 1, color: AppTheme.getSettingsCardDivider(context)),
 
           // Edit profile using same menu item style
           Material(
@@ -273,14 +275,14 @@ class SettingsScreen extends ConsumerWidget {
                           letterSpacing: -0.20,
                           fontWeight: FontWeight.w600,
                           height: 1.2,
-                          color: AppTheme.black800,
+                          color: AppTheme.getTextHeadColor(context),
                         ),
                       ),
                     ),
                     Icon(
                       LucideIcons.chevronRight,
                       size: 20.sp,
-                      color: AppTheme.zinc600,
+                      color: AppTheme.getSettingsCardArrowIcon(context),
                     ),
                   ],
                 ),

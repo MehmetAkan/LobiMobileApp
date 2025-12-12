@@ -242,7 +242,7 @@ class AppTheme {
 
   static Color getTextModalDescColor(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
+        ? dark_zinc400
         : zinc700;
   }
 
@@ -256,6 +256,24 @@ class AppTheme {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
         : white;
+  }
+
+  static Color getModalIconBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : zinc200;
+  }
+
+  static Color getModalIconBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getModalIconText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
   }
 
   static Color getHomeButtonTextColor(BuildContext context) {
@@ -396,6 +414,18 @@ class AppTheme {
         : zinc100;
   }
 
+  static Color getSettingsCheckButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc600
+        : zinc400;
+  }
+
+  static Color getSettingsCheckButtonBgActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
   static Color getModalBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc900
@@ -450,6 +480,18 @@ class AppTheme {
         : black800;
   }
 
+  static Color getEventAppBarButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800.withOpacity(0.2)
+        : black800.withOpacity(0.2);
+  }
+
+  static Color getEventAppBarButtonBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc600.withOpacity(0.5)
+        : dark_zinc600.withOpacity(0.5);
+  }
+
   static Color getAppBarButtonBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? black800.withOpacity(0.2)
@@ -488,8 +530,86 @@ class AppTheme {
 
   static Color getAppBarButtonBgColorSecondary(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? zinc200.withValues(alpha: 0.7)
+        ? dark_zinc800
         : zinc200.withValues(alpha: 0.7);
+  }
+
+  static Color getSettingsCardBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc800
+        : zinc200;
+  }
+
+  static Color getSettingsProfileLabel(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc700;
+  }
+
+  static Color getSettingsProfileHint(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc500
+        : zinc600;
+  }
+
+  static Color getSettingsProfileSmallHead(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc600;
+  }
+
+  static Color getSettingsCardBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc300;
+  }
+
+  static Color getSettingsCardDivider(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc600
+        : zinc400;
+  }
+
+  static Color getSettingsCardIcon(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
+  static Color getSettingsLogout(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? red500
+        : red700;
+  }
+
+  static Color getLogoutModalIconBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? red700
+        : red50;
+  }
+
+  static Color getLogoutModalIconBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? red700
+        : red100;
+  }
+
+  static Color getLogoutModalIconText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : red700;
+  }
+
+  static Color getSettingsCardArrowIcon(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc500
+        : zinc600;
+  }
+
+  static Color getSettingsCardText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
   }
 
   static Color getAppBarButtonColor(BuildContext context) {

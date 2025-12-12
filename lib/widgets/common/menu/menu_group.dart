@@ -14,9 +14,9 @@ class MenuGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
+        color: AppTheme.getSettingsCardBg(context),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppTheme.zinc200),
+        border: Border.all(color: AppTheme.getSettingsCardBorder(context)),
       ),
       child: Column(
         children: List.generate(items.length, (index) {
@@ -29,7 +29,10 @@ class MenuGroup extends StatelessWidget {
               if (!isLast)
                 Padding(
                   padding: EdgeInsets.only(left: 56.w),
-                  child: Divider(height: 1, color: AppTheme.zinc400),
+                  child: Divider(
+                    height: 1,
+                    color: AppTheme.getSettingsCardDivider(context),
+                  ),
                 ),
             ],
           );
@@ -56,8 +59,8 @@ class MenuGroup extends StatelessWidget {
                   item.icon,
                   size: 22.sp,
                   color: item.isDestructive
-                      ? AppTheme.red700
-                      : AppTheme.black800,
+                      ? AppTheme.getSettingsLogout(context)
+                      : AppTheme.getSettingsCardIcon(context),
                 ),
 
               SizedBox(width: 15.w),
@@ -74,8 +77,8 @@ class MenuGroup extends StatelessWidget {
                         height: 1.2,
                         letterSpacing: -0.20,
                         color: item.isDestructive
-                            ? AppTheme.red700
-                            : AppTheme.black800,
+                            ? AppTheme.getSettingsLogout(context)
+                            : AppTheme.getSettingsCardText(context),
                       ),
                     ),
                     if (item.description != null) ...[
@@ -95,7 +98,7 @@ class MenuGroup extends StatelessWidget {
               Icon(
                 LucideIcons.chevronRight,
                 size: 20.sp,
-                color: AppTheme.zinc600,
+                color: AppTheme.getSettingsCardArrowIcon(context),
               ),
             ],
           ),

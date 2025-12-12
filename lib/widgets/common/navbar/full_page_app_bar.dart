@@ -48,6 +48,9 @@ class FullPageAppBar extends StatefulWidget {
   /// Blur başlama threshold'u
   final double blurThreshold;
 
+  /// Event detail için özel back button kullanılsın mı?
+  final bool useEventBackButton;
+
   const FullPageAppBar({
     super.key,
     required this.title,
@@ -61,6 +64,7 @@ class FullPageAppBar extends StatefulWidget {
     this.height,
     this.titleThreshold = 20.0,
     this.blurThreshold = 3.0,
+    this.useEventBackButton = false,
   });
 
   @override
@@ -240,6 +244,24 @@ class _FullPageAppBarState extends State<FullPageAppBar>
     }
   }
 
+  Color _getEventButtonBgColor(BuildContext context) {
+    switch (widget.style) {
+      case AppBarStyle.dark:
+        return AppTheme.getEventAppBarButtonBg(context);
+      case AppBarStyle.secondary:
+        return AppTheme.getAppBarButtonBgColorSecondary(context);
+    }
+  }
+
+  Color _getEventButtonBorderColor(BuildContext context) {
+    switch (widget.style) {
+      case AppBarStyle.dark:
+        return AppTheme.getEventAppBarButtonBorder(context);
+      case AppBarStyle.secondary:
+        return AppTheme.getAppBarButtonBorderColorSecondary(context);
+    }
+  }
+
   Color _getHeadTextColor(BuildContext context) {
     switch (widget.style) {
       case AppBarStyle.dark:
@@ -342,8 +364,10 @@ class _FullPageAppBarState extends State<FullPageAppBar>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Sol - Geri Button (Sabit)
-          _buildBackButton(context),
-
+          widget.useEventBackButton
+              ? _buildEventBackButton(context)
+              : _buildBackButton(context),
+          SizedBox(width: 10.w),
           // Orta - Başlık (Dinamik)
           Expanded(
             child: widget.style == AppBarStyle.dark
@@ -404,6 +428,38 @@ class _FullPageAppBarState extends State<FullPageAppBar>
               shape: BoxShape.circle,
               border: Border.all(
                 color: _getButtonBorderColor(context),
+                width: 1,
+              ),
+            ),
+            child: Center(
+              child: Icon(
+                LucideIcons.chevronLeft400,
+                size: 22.sp,
+                color: _getButtonTextColor(context),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEventBackButton(BuildContext context) {
+    return SizedBox(
+      width: 40.w,
+      height: 40.w,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: widget.onBackPressed ?? () => Navigator.of(context).pop(),
+          customBorder: const CircleBorder(),
+          child: Container(
+            decoration: BoxDecoration(
+              color: _getEventButtonBgColor(context),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _getEventButtonBorderColor(context),
                 width: 1,
               ),
             ),

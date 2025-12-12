@@ -25,14 +25,17 @@ class ProfilePhotoModal {
               width: 50.w,
               height: 50.w,
               decoration: BoxDecoration(
-                color: AppTheme.zinc200,
+                color: AppTheme.getModalIconBg(context),
                 shape: BoxShape.circle,
-                border: Border.all(color: AppTheme.zinc300, width: 1.w),
+                border: Border.all(
+                  color: AppTheme.getModalIconBorder(context),
+                  width: 1.w,
+                ),
               ),
               child: Icon(
                 LucideIcons.camera,
                 size: 24.sp,
-                color: AppTheme.zinc700,
+                color: AppTheme.getModalIconText(context),
               ),
             ),
             SizedBox(height: 15.h),
@@ -49,18 +52,21 @@ class ProfilePhotoModal {
                 color: AppTheme.getTextModalDescColor(context),
               ),
             ),
+            SizedBox(height: 15.h),
           ],
         ),
-        showDivider: true,
+        showDivider: false,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Fotoğraf Çek & Fotoğraf Seç (Grouped)
             Container(
               decoration: BoxDecoration(
-                color: AppTheme.zinc200,
+                color: AppTheme.getSettingsCardBg(context),
                 borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppTheme.zinc300),
+                border: Border.all(
+                  color: AppTheme.getSettingsCardBorder(context),
+                ),
               ),
               child: Column(
                 children: [
@@ -73,7 +79,10 @@ class ProfilePhotoModal {
                       onTakePhoto();
                     },
                   ),
-                  Divider(height: 1, color: AppTheme.zinc300),
+                  Divider(
+                    height: 1,
+                    color: AppTheme.getSettingsCardDivider(context),
+                  ),
                   _buildOption(
                     context,
                     icon: LucideIcons.image400,
@@ -90,14 +99,17 @@ class ProfilePhotoModal {
             // Fotoğrafı Sil (Separate - Destructive)
             Container(
               decoration: BoxDecoration(
-                color: AppTheme.red50,
+                color: AppTheme.getLogoutModalIconBg(context),
                 borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: AppTheme.red100),
+                border: Border.all(
+                  color: AppTheme.getLogoutModalIconBorder(context),
+                ),
               ),
               child: _buildOption(
                 context,
                 icon: LucideIcons.trash2,
                 title: 'Fotoğrafı Sil',
+
                 isDestructive: true,
                 onTap: () {
                   Navigator.of(context, rootNavigator: true).pop();
@@ -131,7 +143,9 @@ class ProfilePhotoModal {
               Icon(
                 icon,
                 size: 20.sp,
-                color: isDestructive ? AppTheme.red700 : AppTheme.zinc700,
+                color: isDestructive
+                    ? AppTheme.getLogoutModalIconText(context)
+                    : AppTheme.zinc700,
               ),
               SizedBox(width: 12.w),
               // Title
@@ -142,7 +156,7 @@ class ProfilePhotoModal {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: isDestructive
-                        ? AppTheme.red700
+                        ? AppTheme.getLogoutModalIconText(context)
                         : AppTheme.getTextHeadColor(context),
                   ),
                 ),

@@ -65,7 +65,7 @@ class CustomModalSheet extends StatelessWidget {
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: AppTheme.getSwitchBg(context),
+            color: AppTheme.getModalBg(context),
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(30.r),
               topLeft: Radius.circular(30.r),

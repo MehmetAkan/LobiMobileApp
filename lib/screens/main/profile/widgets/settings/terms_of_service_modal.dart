@@ -17,14 +17,17 @@ class TermsOfServiceModal {
             width: 50.w,
             height: 50.w,
             decoration: BoxDecoration(
-              color: AppTheme.zinc200,
+              color: AppTheme.getModalIconBg(context),
               shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.zinc300, width: 1.w),
+              border: Border.all(
+                color: AppTheme.getModalIconBorder(context),
+                width: 1.w,
+              ),
             ),
             child: Icon(
               LucideIcons.fileUser400,
               size: 24.sp,
-              color: AppTheme.zinc700,
+              color: AppTheme.getModalIconText(context),
             ),
           ),
           SizedBox(height: 15.h),
@@ -34,9 +37,10 @@ class TermsOfServiceModal {
               color: AppTheme.getTextHeadColor(context),
             ),
           ),
+          SizedBox(height: 15.h),
         ],
       ),
-      showDivider: true,
+      showDivider: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -16,14 +16,17 @@ class LogoutModal {
             width: 50.w,
             height: 50.w,
             decoration: BoxDecoration(
-              color: AppTheme.red50,
+              color: AppTheme.getLogoutModalIconBg(context),
               shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.red100, width: 1.w),
+              border: Border.all(
+                color: AppTheme.getLogoutModalIconBorder(context),
+                width: 1.w,
+              ),
             ),
             child: Icon(
               LucideIcons.logOut,
               size: 24.sp,
-              color: AppTheme.red700,
+              color: AppTheme.getLogoutModalIconText(context),
             ),
           ),
           SizedBox(height: 15.h),
@@ -40,9 +43,10 @@ class LogoutModal {
               color: AppTheme.getTextModalDescColor(context),
             ),
           ),
+          SizedBox(height: 10.h),
         ],
       ),
-      showDivider: true,
+      showDivider: false,
       child: Row(
         children: [
           Expanded(
@@ -83,7 +87,7 @@ class LogoutModal {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.black800,
+                  color: AppTheme.getTextHeadColor(context),
                 ),
               ),
             ),

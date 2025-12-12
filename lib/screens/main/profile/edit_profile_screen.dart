@@ -136,8 +136,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           title: 'Profili Düzenle',
           actionIcon: LucideIcons.check,
           actionIconBackgroundColor: _hasChanges
-              ? AppTheme.black800
-              : AppTheme.zinc400,
+              ? AppTheme.getSettingsCheckButtonBgActive(context)
+              : AppTheme.getSettingsCheckButtonBg(context),
+
           onActionTap: _hasChanges && !_isSaving ? _saveProfile : null,
           children: [
             // Profile Photo with Camera Icon
@@ -147,18 +148,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               fullName: fullName,
             ),
             SizedBox(height: 30.h),
-
-            // Personal Info Section
             _buildPersonalInfoSection(),
             SizedBox(height: 20.h),
-
-            // Biography Section
             _buildSectionTitle('Biyografi'),
             SizedBox(height: 10.h),
             _buildBioInput(),
             SizedBox(height: 20.h),
-
-            // Social Accounts Section
             _buildSectionTitle('Sosyal Hesaplar'),
             SizedBox(height: 10.h),
             _buildSocialAccountsSection(),
@@ -402,9 +397,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget _buildPersonalInfoSection() {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
+        color: AppTheme.getSettingsCardBg(context),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppTheme.zinc200),
+        border: Border.all(color: AppTheme.getSettingsCardBorder(context)),
       ),
       child: Column(
         children: [
@@ -430,7 +425,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 fontSize: 15.sp,
                 letterSpacing: -0.20,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.zinc700,
+                color: AppTheme.getSettingsProfileLabel(context),
               ),
             ),
           ),
@@ -441,7 +436,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.black800,
+                color: AppTheme.getTextHeadColor(context),
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -451,7 +446,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 hintStyle: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w400,
-                  color: AppTheme.zinc600,
+                  color: AppTheme.getSettingsProfileHint(context),
                 ),
               ),
             ),
@@ -462,7 +457,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildDivider() {
-    return Divider(height: 1, color: AppTheme.zinc300);
+    return Divider(height: 1, color: AppTheme.getSettingsCardDivider(context));
   }
 
   Widget _buildSectionTitle(String title) {
@@ -474,7 +469,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           fontSize: 15.sp,
           letterSpacing: -0.20,
           fontWeight: FontWeight.w600,
-          color: AppTheme.zinc600,
+          color: AppTheme.getSettingsProfileSmallHead(context),
         ),
       ),
     );
@@ -483,9 +478,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget _buildBioInput() {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
+        color: AppTheme.getSettingsCardBg(context),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppTheme.zinc200),
+        border: Border.all(color: AppTheme.getSettingsCardBorder(context)),
       ),
       padding: EdgeInsets.all(15.w),
       child: TextField(
@@ -495,7 +490,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         style: TextStyle(
           fontSize: 15.sp,
           fontWeight: FontWeight.w400,
-          color: AppTheme.black800,
+          color: AppTheme.getTextHeadColor(context),
         ),
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -505,9 +500,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           hintStyle: TextStyle(
             fontSize: 15.sp,
             fontWeight: FontWeight.w400,
-            color: AppTheme.zinc600,
+            color: AppTheme.getSettingsProfileHint(context),
           ),
-          counterStyle: TextStyle(fontSize: 12.sp, color: AppTheme.zinc500),
+          counterStyle: TextStyle(
+            fontSize: 12.sp,
+            color: AppTheme.getSettingsProfileHint(context),
+          ),
         ),
       ),
     );
@@ -516,9 +514,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget _buildSocialAccountsSection() {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
+        color: AppTheme.getSettingsCardBg(context),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppTheme.zinc200),
+        border: Border.all(color: AppTheme.getSettingsCardBorder(context)),
       ),
       child: Column(
         children: [
@@ -600,7 +598,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 fontSize: 15.sp,
                 letterSpacing: -0.20,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.zinc600,
+                color: AppTheme.getSettingsProfileLabel(context),
               ),
             ),
           ),
@@ -612,7 +610,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.black800,
+                color: AppTheme.getTextHeadColor(context),
               ),
               decoration: InputDecoration(
                 border: InputBorder.none,
@@ -622,7 +620,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 hintStyle: TextStyle(
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w400,
-                  color: AppTheme.zinc600,
+                  color: AppTheme.getSettingsProfileHint(context),
                 ),
               ),
             ),
