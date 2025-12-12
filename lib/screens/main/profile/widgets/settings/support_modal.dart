@@ -110,14 +110,17 @@ class _SupportModalContentState extends State<_SupportModalContent> {
             width: 50.w,
             height: 50.w,
             decoration: BoxDecoration(
-              color: AppTheme.zinc200,
+              color: AppTheme.getModalIconBg(context),
               shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.zinc300, width: 1.w),
+              border: Border.all(
+                color: AppTheme.getModalIconBorder(context),
+                width: 1.w,
+              ),
             ),
             child: Icon(
               LucideIcons.headset,
               size: 24.sp,
-              color: AppTheme.zinc700,
+              color: AppTheme.getModalIconText(context),
             ),
           ),
           SizedBox(height: 15.h),
@@ -134,18 +137,22 @@ class _SupportModalContentState extends State<_SupportModalContent> {
               color: AppTheme.getTextModalDescColor(context),
             ),
           ),
+          SizedBox(height: 15.h),
         ],
       ),
-      showDivider: true,
+      showDivider: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppTheme.zinc200,
+              color: AppTheme.getSettingsCardBg(context),
               borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: AppTheme.zinc300, width: 1),
+              border: Border.all(
+                color: AppTheme.getSettingsCardBorder(context),
+                width: 1,
+              ),
             ),
             child: TextField(
               controller: _messageController,
@@ -162,7 +169,7 @@ class _SupportModalContentState extends State<_SupportModalContent> {
                   fontSize: 16.sp,
                   letterSpacing: -0.20,
                   fontWeight: FontWeight.w400,
-                  color: AppTheme.zinc500,
+                  color: AppTheme.getSettingsProfileHint(context),
                 ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(16.w),
@@ -175,8 +182,8 @@ class _SupportModalContentState extends State<_SupportModalContent> {
             child: ElevatedButton(
               onPressed: _isLoading ? null : _sendMessage,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.black800,
-                foregroundColor: AppTheme.white,
+                backgroundColor: AppTheme.getModalButtonBg(context),
+                foregroundColor: AppTheme.getModalButtonText(context),
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),

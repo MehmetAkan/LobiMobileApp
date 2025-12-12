@@ -8,6 +8,7 @@ class StandardPage extends StatefulWidget {
   final List<Widget> children;
   final IconData? actionIcon;
   final Color? actionIconBackgroundColor;
+  final Color? actionIconColor;
   final VoidCallback? onActionTap;
   final bool isScrollable;
 
@@ -17,6 +18,7 @@ class StandardPage extends StatefulWidget {
     required this.children,
     this.actionIcon,
     this.actionIconBackgroundColor,
+    this.actionIconColor,
     this.onActionTap,
     this.isScrollable = true,
   });
@@ -63,6 +65,7 @@ class _StandardPageState extends State<StandardPage> {
             scrollController: _scrollController,
             actionIcon: widget.actionIcon,
             actionIconBackgroundColor: widget.actionIconBackgroundColor,
+            actionIconColor: widget.actionIconColor,
             onActionTap: widget.onActionTap,
             style: AppBarStyle.secondary,
           ),

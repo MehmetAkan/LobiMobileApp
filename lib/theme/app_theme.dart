@@ -417,13 +417,25 @@ class AppTheme {
   static Color getSettingsCheckButtonBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc600
-        : zinc400;
+        : zinc200;
+  }
+
+  static Color getSettingsCheckButton(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc500;
   }
 
   static Color getSettingsCheckButtonBgActive(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : black800;
+  }
+
+  static Color getSettingsCheckButtonActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
   }
 
   static Color getModalBg(BuildContext context) {

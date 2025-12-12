@@ -138,7 +138,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           actionIconBackgroundColor: _hasChanges
               ? AppTheme.getSettingsCheckButtonBgActive(context)
               : AppTheme.getSettingsCheckButtonBg(context),
-
+          actionIconColor: _hasChanges
+              ? AppTheme.getSettingsCheckButtonActive(context)
+              : AppTheme.getSettingsCheckButton(context),
           onActionTap: _hasChanges && !_isSaving ? _saveProfile : null,
           children: [
             // Profile Photo with Camera Icon
