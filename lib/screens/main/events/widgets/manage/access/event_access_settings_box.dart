@@ -11,7 +11,7 @@ class EventAccessSettingsBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppTheme.zinc100,
+        color: AppTheme.getSettingsCardBg(context),
         borderRadius: BorderRadius.circular(25.r),
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: children),

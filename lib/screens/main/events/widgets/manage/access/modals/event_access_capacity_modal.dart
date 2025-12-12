@@ -93,9 +93,11 @@ class _CapacityContentState extends State<_CapacityContent> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: AppTheme.white,
+                  color: AppTheme.getSettingsCapacityBg(context),
                   borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(color: AppTheme.zinc300),
+                  border: Border.all(
+                    color: AppTheme.getSettingsCapacityBorder(context),
+                  ),
                 ),
                 child: TextField(
                   controller: _controller,
@@ -109,11 +111,11 @@ class _CapacityContentState extends State<_CapacityContent> {
                   style: TextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.w700,
-                    color: AppTheme.black800,
+                    color: AppTheme.getTextHeadColor(context),
                     height: 1.2,
                   ),
                   decoration: InputDecoration(
-                    fillColor: AppTheme.red900,
+                    fillColor: AppTheme.red700,
                     hintText: 'Sınırsız',
                     hintStyle: TextStyle(
                       fontSize: 28.sp,
@@ -137,7 +139,7 @@ class _CapacityContentState extends State<_CapacityContent> {
                       onPressed: _onRemove,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.white,
-                        foregroundColor: AppTheme.red900,
+                        foregroundColor: AppTheme.red700,
                         padding: EdgeInsets.symmetric(vertical: 15.h),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -151,7 +153,7 @@ class _CapacityContentState extends State<_CapacityContent> {
                           Icon(
                             LucideIcons.circleX400,
                             size: 18.sp,
-                            color: AppTheme.red900,
+                            color: AppTheme.red700,
                           ),
                           SizedBox(width: 5.w),
                           Text(

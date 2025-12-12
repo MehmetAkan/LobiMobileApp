@@ -414,30 +414,6 @@ class AppTheme {
         : zinc100;
   }
 
-  static Color getSettingsCheckButtonBg(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc600
-        : zinc200;
-  }
-
-  static Color getSettingsCheckButton(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? dark_zinc400
-        : zinc500;
-  }
-
-  static Color getSettingsCheckButtonBgActive(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? white
-        : black800;
-  }
-
-  static Color getSettingsCheckButtonActive(BuildContext context) {
-    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
-        ? black800
-        : white;
-  }
-
   static Color getModalBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc900
@@ -582,16 +558,82 @@ class AppTheme {
         : zinc400;
   }
 
-  static Color getSettingsCardIcon(BuildContext context) {
+  static Color getSettingsCapacityBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : white;
+  }
+
+  static Color getSettingsCapacityBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc300;
+  }
+
+  static Color getSettingsCapacityText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc500
+        : white;
+  }
+
+  static Color getSettingsCheckBorder(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc300;
+  }
+
+  static Color getSettingsCheckBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc700
+        : zinc400;
+  }
+
+  static Color getSettingsCheckSelectedBg(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
         : black800;
+  }
+
+  static Color getSettingsCheckSelectedIcon(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
+  }
+
+  static Color getSettingsCardIcon(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc300
+        : zinc600;
   }
 
   static Color getSettingsLogout(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? red500
         : red700;
+  }
+
+  static Color getSettingsCheckButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc600
+        : zinc200;
+  }
+
+  static Color getSettingsCheckButton(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc400
+        : zinc500;
+  }
+
+  static Color getSettingsCheckButtonBgActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? white
+        : black800;
+  }
+
+  static Color getSettingsCheckButtonActive(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
   }
 
   static Color getLogoutModalIconBg(BuildContext context) {
@@ -842,4 +884,6 @@ class AppTheme {
       ),
     ),
   );
+
+  static Color? getSettingsLogoutColor(BuildContext context) {}
 }

@@ -34,7 +34,7 @@ class EventAccessModalSheet extends StatelessWidget {
       curve: Curves.decelerate,
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.getSwitchBg(context),
+          color: AppTheme.getModalBg(context),
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(30.r),
             topLeft: Radius.circular(30.r),
@@ -78,7 +78,7 @@ class EventAccessModalSheet extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.w600,
-                          color: AppTheme.black800,
+                          color: AppTheme.getTextHeadColor(context),
                           height: 1.2,
                         ),
                       ),
@@ -88,7 +88,7 @@ class EventAccessModalSheet extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppTheme.black800.withValues(alpha: 0.5),
+                          color: AppTheme.getTextDescColor(context),
                           height: 1.3,
                         ),
                       ),
@@ -103,8 +103,12 @@ class EventAccessModalSheet extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppTheme.zinc200,
+                      color: AppTheme.getSettingsCardBg(context),
                       borderRadius: BorderRadius.circular(25.r),
+                      border: Border.all(
+                        color: AppTheme.getSettingsCardBorder(context),
+                        width: 1.w,
+                      ),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -138,11 +142,15 @@ class EventAccessModalSheet extends StatelessWidget {
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.zinc200,
+              color: AppTheme.getModalIconBg(context),
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(iconData, size: 22.sp, color: AppTheme.zinc700),
+              child: Icon(
+                iconData,
+                size: 22.sp,
+                color: AppTheme.getModalIconText(context),
+              ),
             ),
           ),
         ),
@@ -185,22 +193,18 @@ class EventModalAccessOption extends StatelessWidget {
                   height: 24.sp,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isSelected
-                          ? AppTheme.zinc300
-                          : AppTheme.getEventFieldPlaceholder(
-                              context,
-                            ).withOpacity(0.3),
-                      width: 2,
-                    ),
-                    color: isSelected ? AppTheme.black800 : AppTheme.zinc400,
+                    color: isSelected
+                        ? AppTheme.getSettingsCheckSelectedBg(context)
+                        : AppTheme.getSettingsCheckBg(context),
                   ),
                   child: isSelected
                       ? Center(
                           child: Icon(
                             LucideIcons.check600,
                             size: 16.sp,
-                            color: AppTheme.white,
+                            color: AppTheme.getSettingsCheckSelectedIcon(
+                              context,
+                            ),
                           ),
                         )
                       : null,
@@ -217,8 +221,8 @@ class EventModalAccessOption extends StatelessWidget {
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: isSelected
-                              ? AppTheme.black800
-                              : AppTheme.black800,
+                              ? AppTheme.getTextHeadColor(context)
+                              : AppTheme.getTextHeadColor(context),
                           height: 1.2,
                         ),
                       ),
@@ -228,7 +232,7 @@ class EventModalAccessOption extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppTheme.black800.withValues(alpha: 0.6),
+                          color: AppTheme.getTextDescColor(context),
                           height: 1.3,
                         ),
                       ),
@@ -242,7 +246,11 @@ class EventModalAccessOption extends StatelessWidget {
         if (showDivider)
           Padding(
             padding: EdgeInsets.only(left: 20.w + 24.sp + 12.w),
-            child: Divider(height: 1, thickness: 1, color: AppTheme.zinc300),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: AppTheme.getSettingsCardDivider(context),
+            ),
           ),
       ],
     );

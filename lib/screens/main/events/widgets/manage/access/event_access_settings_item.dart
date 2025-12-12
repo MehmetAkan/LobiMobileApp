@@ -79,7 +79,11 @@ class EventAccessSettingsItem extends StatelessWidget {
         if (showDivider)
           Padding(
             padding: EdgeInsets.only(left: 20.w + 20.sp + 10.w),
-            child: Divider(height: 1, thickness: 1, color: AppTheme.zinc300),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: AppTheme.getSettingsCardDivider(context),
+            ),
           ),
       ],
     );
@@ -96,22 +100,19 @@ class EventAccessSettingsItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Icon
-          Icon(icon, size: 20.sp, color: AppTheme.zinc600),
+          Icon(icon, size: 20.sp, color: AppTheme.getSettingsCardIcon(context)),
           SizedBox(width: 10.w),
-          // Label
           Expanded(
             child: Text(
               label,
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.black800,
+                color: AppTheme.getTextHeadColor(context),
                 height: 1.2,
               ),
             ),
           ),
-          // Right side (Switch veya Action)
           _buildRightSide(context),
         ],
       ),
@@ -136,8 +137,8 @@ class EventAccessSettingsItem extends StatelessWidget {
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: actionValue != null
-                    ? AppTheme.black800
-                    : AppTheme.zinc600,
+                    ? AppTheme.getTextHeadColor(context)
+                    : AppTheme.getSettingsCardIcon(context),
                 height: 1.2,
               ),
             ),

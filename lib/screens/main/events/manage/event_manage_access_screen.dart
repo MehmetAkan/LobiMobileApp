@@ -124,7 +124,7 @@ class _EventManageAccessScreenState extends State<EventManageAccessScreen> {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w600,
-              color: AppTheme.zinc600,
+              color: AppTheme.getSettingsProfileSmallHead(context),
               height: 1.2,
             ),
           ),
@@ -157,7 +157,7 @@ class _EventManageAccessScreenState extends State<EventManageAccessScreen> {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w600,
-              color: AppTheme.zinc600,
+              color: AppTheme.getSettingsProfileSmallHead(context),
               height: 1.2,
             ),
           ),

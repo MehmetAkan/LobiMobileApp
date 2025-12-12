@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_text_styles.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lobi_application/screens/main/events/widgets/manage/access/modals/event_access_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class EventCancelModal {
@@ -113,7 +112,7 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                       Text(
                         'Etkinlik iptal edildiğinde, tüm katılımcılara iptal edildiğini bildiren mesaj gönderilecek',
                         style: AppTextStyles.titleDesc_MD.copyWith(
-                          color: AppTheme.getTextModalDescColor(context),
+                          color: AppTheme.getTextDescColor(context),
                         ),
                       ),
                     ],
@@ -135,7 +134,7 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           letterSpacing: -0.25,
-                          color: AppTheme.red700,
+                          color: AppTheme.getSettingsLogout(context),
                           height: 1.4,
                         ),
                       ),
@@ -148,7 +147,7 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
-                              color: AppTheme.zinc800,
+                              color: AppTheme.getTextDescColor(context),
                             ),
                           ),
                           SizedBox(width: 3.w),
@@ -157,7 +156,7 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
-                              color: AppTheme.black800,
+                              color: AppTheme.getTextHeadColor(context),
                             ),
                           ),
                           SizedBox(width: 3.w),
@@ -166,7 +165,7 @@ class _EventCancelContentState extends State<_EventCancelContent> {
                             style: TextStyle(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w500,
-                              color: AppTheme.zinc800,
+                              color: AppTheme.getTextDescColor(context),
                             ),
                           ),
                         ],
@@ -292,11 +291,20 @@ class _EventCancelContentState extends State<_EventCancelContent> {
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.zinc200,
+              color: AppTheme.getModalIconBg(context),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: AppTheme.getModalIconBorder(context),
+                width: 1.w,
+              ),
             ),
+
             child: Center(
-              child: Icon(iconData, size: 22.sp, color: AppTheme.zinc700),
+              child: Icon(
+                iconData,
+                size: 22.sp,
+                color: AppTheme.getModalIconText(context),
+              ),
             ),
           ),
         ),
@@ -320,12 +328,16 @@ class _EventCancelContentState extends State<_EventCancelContent> {
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.red50,
+              color: AppTheme.getLogoutModalIconBg(context),
               border: Border.all(color: AppTheme.red100, width: 1.w),
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(iconData, size: 22.sp, color: AppTheme.red700),
+              child: Icon(
+                iconData,
+                size: 22.sp,
+                color: AppTheme.getLogoutModalIconText(context),
+              ),
             ),
           ),
         ),
