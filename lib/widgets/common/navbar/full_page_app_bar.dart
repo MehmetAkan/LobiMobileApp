@@ -84,11 +84,11 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   bool _isScrolled = false;
   double _titleOpacity = 0.0;
   double _titleScale = 1.0;
+  bool _statusBarStyleSet = false;
 
   @override
   void initState() {
     super.initState();
-    _setStatusBarStyle();
     _internalScrollController = widget.scrollController ?? ScrollController();
     _internalScrollController.addListener(_onScroll);
     _animationController = AnimationController(
@@ -117,15 +117,21 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Status bar stilini sadece bir kez ayarla (context hazır olduktan sonra)
+    if (!_statusBarStyleSet) {
+      _setStatusBarStyle();
+      _statusBarStyleSet = true;
+    }
+  }
+
+  @override
   void dispose() {
-    // ✨ Varsayılan status bar'a geri dön
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark, // Varsayılan: Siyah
-        statusBarBrightness: Brightness.light, // iOS için
-      ),
-    );
+    // Not: Status bar stil ayarını dispose'da yapmıyoruz çünkü:
+    // 1. dispose() sırasında context artık geçerli değil
+    // 2. Her FullPageAppBar zaten initState'te doğru stili ayarlıyor
+    // 3. Bir sonraki sayfa kendi status bar ayarını yapacak
 
     _animationController.dispose();
     if (widget.scrollController == null) {
@@ -137,6 +143,9 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   }
 
   void _setStatusBarStyle() {
+    final isDarkMode =
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
     switch (widget.style) {
       case AppBarStyle.dark:
         SystemChrome.setSystemUIOverlayStyle(
@@ -148,12 +157,18 @@ class _FullPageAppBarState extends State<FullPageAppBar>
         );
         break;
       case AppBarStyle.secondary:
-        // Secondary style → Siyah status bar ikonları
+        // Secondary style → Dark mode'da beyaz, light mode'da siyah ikonlar
         SystemChrome.setSystemUIOverlayStyle(
-          const SystemUiOverlayStyle(
+          SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.dark, // ✨ Siyah
-            statusBarBrightness: Brightness.light, // iOS için
+            statusBarIconBrightness: isDarkMode
+                ? Brightness
+                      .light // Dark mode: Beyaz ikonlar
+                : Brightness.dark, // Light mode: Siyah ikonlar
+            statusBarBrightness: isDarkMode
+                ? Brightness
+                      .dark // iOS için dark mode
+                : Brightness.light, // iOS için light mode
           ),
         );
         break;
