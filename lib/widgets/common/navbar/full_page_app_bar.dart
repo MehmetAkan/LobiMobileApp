@@ -88,7 +88,6 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   bool _isScrolled = false;
   double _titleOpacity = 0.0;
   double _titleScale = 1.0;
-  bool _statusBarStyleSet = false;
 
   @override
   void initState() {
@@ -123,11 +122,8 @@ class _FullPageAppBarState extends State<FullPageAppBar>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Status bar stilini sadece bir kez ayarla (context hazır olduktan sonra)
-    if (!_statusBarStyleSet) {
-      _setStatusBarStyle();
-      _statusBarStyleSet = true;
-    }
+    // Status bar stilini her dependency değiştiğinde ayarla
+    _setStatusBarStyle();
   }
 
   @override

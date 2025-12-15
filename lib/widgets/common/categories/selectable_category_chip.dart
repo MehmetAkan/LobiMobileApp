@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lobi_application/data/models/category_model.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SelectableCategoryChip extends StatelessWidget {
   final CategoryModel category;

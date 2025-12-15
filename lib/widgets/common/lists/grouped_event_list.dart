@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/screens/main/events/event_detail_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
-import 'package:lobi_application/widgets/common/headers/date_header.dart';
 import 'package:lobi_application/widgets/common/cards/events/event_card_vertical.dart';
 
 class GroupedEventList extends StatefulWidget {

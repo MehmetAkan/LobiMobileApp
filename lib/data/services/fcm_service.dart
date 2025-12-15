@@ -193,7 +193,6 @@ class FCMService {
     _messaging.onTokenRefresh.listen((newToken) {
       AppLogger.info('🔄 FCM token yenilendi');
       _fcmToken = newToken;
-      // TODO: Save new token to profile if user logged in
     });
   }
 
@@ -239,7 +238,6 @@ class FCMService {
 
     // For now, just log - we'll implement global navigation
     AppLogger.info('Event detail navigation: $eventId');
-    // TODO: Implement with global navigator key
   }
 
   /// Check if permission is granted

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
@@ -34,6 +35,7 @@ import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/qr_ticket_modal.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lobi_application/data/services/share_service.dart';
+import 'package:lobi_application/data/models/extensions/event_time_state_extension.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final EventModel event;
@@ -341,6 +343,24 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 scrollController: _scrollController,
                 style: AppBarStyle.dark,
                 useEventBackButton: true,
+                onBackPressed: () {
+                  // Geri dönmeden önce status bar'ı tema'ya uygun sıfırla
+                  final isDarkMode =
+                      MediaQuery.platformBrightnessOf(context) ==
+                      Brightness.dark;
+                  SystemChrome.setSystemUIOverlayStyle(
+                    SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: isDarkMode
+                          ? Brightness.light
+                          : Brightness.dark,
+                      statusBarBrightness: isDarkMode
+                          ? Brightness.dark
+                          : Brightness.light,
+                    ),
+                  );
+                  Navigator.of(context).pop();
+                },
                 actions: [
                   if (!_isOrganizer && !_attendanceStatus.canLeaveEvent)
                     _buildQuickAttendButton(),
@@ -356,6 +376,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   Widget _buildActionButtons() {
     // Return empty if cancelled
     if (_currentEvent.isCancelled) {
+      return const SizedBox.shrink();
+    }
+
+    // Return empty if event has ended (tarihi geçmiş etkinlikler)
+    if (_currentEvent.timeState == EventTimeState.ended) {
       return const SizedBox.shrink();
     }
 
@@ -419,6 +444,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   Widget _buildQuickAttendButton() {
     // Hide if event is cancelled
     if (_currentEvent.isCancelled) {
+      return const SizedBox.shrink();
+    }
+
+    // Hide if event has ended (tarihi geçmiş etkinlikler)
+    if (_currentEvent.timeState == EventTimeState.ended) {
       return const SizedBox.shrink();
     }
 

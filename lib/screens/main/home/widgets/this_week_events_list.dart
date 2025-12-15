@@ -35,9 +35,10 @@ class ThisWeekEventsList extends StatelessWidget {
         return Column(
           children: [
             SizedBox(height: 20.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Divider(color: AppTheme.zinc300, thickness: 1, height: 1),
+            Divider(
+              color: AppTheme.getEventListDivider(context),
+              thickness: 1,
+              height: 1,
             ),
             SizedBox(height: 20.h),
           ],
