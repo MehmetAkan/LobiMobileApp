@@ -10,6 +10,7 @@ class EventDetailOrganizerActions extends StatelessWidget {
   final VoidCallback? onRequests; // Optional now
   final VoidCallback onManage;
   final bool showRequests; // Control visibility
+  final bool hideRequestsButton; // Hide requests for expired events
 
   const EventDetailOrganizerActions({
     super.key,
@@ -18,14 +19,15 @@ class EventDetailOrganizerActions extends StatelessWidget {
     this.onRequests,
     required this.onManage,
     this.showRequests = true, // Default true for backwards compatibility
+    this.hideRequestsButton = false, // Default false
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Conditionally show requests button
-        if (showRequests && onRequests != null) ...[
+        // Conditionally show requests button (hide for expired events)
+        if (!hideRequestsButton && showRequests && onRequests != null) ...[
           Expanded(
             child: EventDetailActionButton(
               icon: LucideIcons.listTodo400,

@@ -433,7 +433,42 @@ class EventAttendanceService {
       AppLogger.info('✅ Red bildirimi gönderildi: $userId');
     } on PostgrestException catch (e) {
       AppLogger.error('Supabase error in rejectAttendance', e);
-      throw DatabaseException('Reddetme başarısız: ${e.message}');
+    }
+  }
+
+  /// Auto-reject expired pending participation (Frontend triggered)
+  ///
+  /// Called when user views event detail and their status is pending but event has ended
+  Future<void> autoRejectExpiredParticipation({required String eventId}) async {
+    final userId = _supabase.auth.currentUser?.id;
+
+    if (userId == null) {
+      AppLogger.warning('User not authenticated for auto-reject');
+      return;
+    }
+
+    try {
+      await _supabase
+          .from(_tableName)
+          .update({
+            'status': EventAttendanceStatus.rejected.dbValue,
+            'rejected_at': DateTime.now().toIso8601String(),
+            'cancellation_reason':
+                'Etkinlik süresi dolduğu için başvurunuz otomatik olarak reddedilmiştir.',
+          })
+          .match({
+            'event_id': eventId,
+            'user_id': userId,
+            'status': EventAttendanceStatus.pending.dbValue,
+          });
+
+      AppLogger.info('✅ Auto-rejected expired participation: $userId');
+    } on PostgrestException catch (e) {
+      AppLogger.error('Supabase error in autoRejectExpiredParticipation', e);
+      // Don't throw - this is a background operation
+    } catch (e, stackTrace) {
+      AppLogger.error('autoRejectExpiredParticipation error', e, stackTrace);
+      // Don't throw - this is a background operation
     }
   }
 

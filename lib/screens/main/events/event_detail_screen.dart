@@ -96,15 +96,34 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     setState(() => _isLoadingAttendance = true);
 
     try {
-      final status = await _attendanceService.getAttendanceStatus(
+      var status = await _attendanceService.getAttendanceStatus(
         eventId: widget.event.id,
       );
+
+      // ✅ FRONTEND AUTO-REJECT
+      // If user is pending but event has ended, automatically reject
+      if (status == EventAttendanceStatus.pending &&
+          _currentEvent.timeState == EventTimeState.ended) {
+        debugPrint('🔄 Auto-rejecting expired pending participation...');
+
+        await _attendanceService.autoRejectExpiredParticipation(
+          eventId: widget.event.id,
+        );
+
+        // Update status to rejected for immediate UI update
+        status = EventAttendanceStatus.rejected;
+        debugPrint('✅ Auto-reject complete');
+      }
 
       if (mounted) {
         setState(() {
           _attendanceStatus = status;
           _isLoadingAttendance = false;
         });
+
+        debugPrint(
+          '✅ Attendance status loaded: $status (${status.displayText})',
+        );
       }
     } catch (e) {
       debugPrint('⚠️ Katılım durumu yüklenemedi: $e');
@@ -379,12 +398,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       return const SizedBox.shrink();
     }
 
-    // Return empty if event has ended (tarihi geçmiş etkinlikler)
-    if (_currentEvent.timeState == EventTimeState.ended) {
-      return const SizedBox.shrink();
-    }
-
     if (_isOrganizer) {
+      // For expired events, hide requests button but keep share and manage
+      final isExpired = _currentEvent.timeState == EventTimeState.ended;
+
       return EventDetailOrganizerActions(
         onShare: _handleShare,
         // onAnnouncement: _handleAnnouncement, // TODO: Phase 2 feature
@@ -392,6 +409,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
         showRequests:
             widget.event.requiresApproval ==
             true, // Only show if requires approval
+        hideRequestsButton: isExpired, // Hide for expired events
         onManage: () async {
           final result = await Navigator.push(
             context,
@@ -406,6 +424,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
           }
         },
       );
+    }
+
+    // Return empty if event has ended (tarihi geçmiş etkinlikler) - non-organizers
+    if (_currentEvent.timeState == EventTimeState.ended) {
+      return const SizedBox.shrink();
     }
 
     if (_isLoadingAttendance) {
@@ -428,9 +451,11 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       );
     }
 
-    // Attended veya DidNotAttend durumunda hiçbir buton gösterme
+    // Attended, DidNotAttend veya Rejected durumunda hiçbir buton gösterme
+    // (Badge zaten yukarıda gösteriliyor)
     if (_attendanceStatus == EventAttendanceStatus.attended ||
-        _attendanceStatus == EventAttendanceStatus.didNotAttend) {
+        _attendanceStatus == EventAttendanceStatus.didNotAttend ||
+        _attendanceStatus == EventAttendanceStatus.rejected) {
       return const SizedBox.shrink();
     }
 
@@ -452,9 +477,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
       return const SizedBox.shrink();
     }
 
-    // Attended veya DidNotAttend durumunda butonu gizle
+    // Attended, DidNotAttend veya Rejected durumunda butonu gizle
     if (_attendanceStatus == EventAttendanceStatus.attended ||
-        _attendanceStatus == EventAttendanceStatus.didNotAttend) {
+        _attendanceStatus == EventAttendanceStatus.didNotAttend ||
+        _attendanceStatus == EventAttendanceStatus.rejected) {
       return const SizedBox.shrink();
     }
 

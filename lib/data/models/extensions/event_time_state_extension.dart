@@ -57,9 +57,9 @@ extension EventTimeStateExtension on EventModel {
       EventDurationConfig.checkinWindowBeforeStart,
     );
 
-    // Event end time (use endDate or default to 3 hours after start)
-    final eventEndTime =
-        endDate ?? date.add(EventDurationConfig.defaultEventDuration);
+    // Event end time (use endDate, fallback to startDate if null)
+    // Since users are required to provide end_date, this fallback should rarely happen
+    final eventEndTime = endDate ?? date;
 
     if (referenceTime.isBefore(checkinStartTime)) {
       return EventTimeState.beforeCheckinWindow;
