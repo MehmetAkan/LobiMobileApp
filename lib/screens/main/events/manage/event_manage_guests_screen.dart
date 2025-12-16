@@ -172,15 +172,23 @@ class _EventManageGuestsScreenState extends State<EventManageGuestsScreen> {
 
     return Column(
       children: _filteredGuests.map((guest) {
+        // Rejected kullanıcılar için modal açılmasın (sadece görüntülenebilir)
+        final canOpenModal = guest.status != EventAttendanceStatus.rejected;
+
         return GestureDetector(
-          onTap: () => _showGuestModal(context, guest),
+          onTap: canOpenModal ? () => _showGuestModal(context, guest) : null,
           behavior: HitTestBehavior.opaque,
-          child: GuestListItem(
-            profileImageUrl: guest.profileImageUrl ?? '',
-            fullName: guest.fullName,
-            username: guest.username, // GuestListItem zaten @ ekliyor
-            statusText: guest.statusDisplayText,
-            statusType: _getStatusType(guest.status),
+          child: Opacity(
+            opacity: canOpenModal
+                ? 1.0
+                : 0.6, // Rejected kullanıcıları soluklaştır
+            child: GuestListItem(
+              profileImageUrl: guest.profileImageUrl ?? '',
+              fullName: guest.fullName,
+              username: guest.username, // GuestListItem zaten @ ekliyor
+              statusText: guest.statusDisplayText,
+              statusType: _getStatusType(guest.status),
+            ),
           ),
         );
       }).toList(),
