@@ -5,6 +5,7 @@ import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/images/app_image.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
+import 'package:lobi_application/data/models/profile_model.dart'; // Added for _targetProfile
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/data/repositories/event_repository.dart';
@@ -15,7 +16,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({super.key});
+  final String? userId; // Opsiyonel: Başkasının profilini göstermek için
+
+  const ProfileScreen({
+    super.key,
+    this.userId, // Null ise kendi profilini gösterir
+  });
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -30,18 +36,56 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   List<EventModel> _organizedEvents = [];
   bool _isLoadingEvents = true;
 
+  // Başkasının profilini görüntüleme için
+  ProfileModel? _targetProfile;
+  bool _isLoadingProfile = false;
+  late bool _isViewingOtherUser;
+
   @override
   void initState() {
     super.initState();
+    _isViewingOtherUser = widget.userId != null;
     _tabController = TabController(length: 2, vsync: this);
     _loadUserStats();
     _loadUserEvents();
+
+    // Başkasının profilini görüntülüyorsa
+    if (_isViewingOtherUser) {
+      _loadTargetProfile();
+    }
+  }
+
+  /// Belirli bir kullanıcının profilini yükle
+  Future<void> _loadTargetProfile() async {
+    if (widget.userId == null) return;
+
+    setState(() => _isLoadingProfile = true);
+
+    try {
+      final profileService = ProfileService();
+      final profile = await profileService.getProfile(widget.userId!);
+
+      if (mounted) {
+        setState(() {
+          _targetProfile = profile;
+          _isLoadingProfile = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Profil yüklenemedi: $e');
+      if (mounted) {
+        setState(() => _isLoadingProfile = false);
+      }
+    }
   }
 
   Future<void> _loadUserStats() async {
     try {
       final profileService = ProfileService();
-      final userId = ref.read(currentUserProfileProvider).value?.userId;
+      // Başkasının profilinde onun ID'sini kullan
+      final userId = _isViewingOtherUser
+          ? widget.userId
+          : ref.read(currentUserProfileProvider).value?.userId;
 
       if (userId != null) {
         final stats = await profileService.getUserStats(userId);
@@ -58,7 +102,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   Future<void> _loadUserEvents() async {
     try {
-      final userId = ref.read(currentUserProfileProvider).value?.userId;
+      // Başkasının profilinde onun ID'sini kullan
+      final userId = _isViewingOtherUser
+          ? widget.userId
+          : ref.read(currentUserProfileProvider).value?.userId;
       if (userId == null) return;
 
       final eventRepository = getIt<EventRepository>();
@@ -89,6 +136,66 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Başkasının profilini görüntüleme
+    if (_isViewingOtherUser) {
+      if (_isLoadingProfile) {
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      }
+
+      if (_targetProfile == null) {
+        return Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Profil bulunamadı',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: AppTheme.getTextHeadColor(context),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Geri Dön'),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      return Scaffold(
+        body: Stack(
+          children: [
+            // Main scrollable content
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildCoverPhoto(),
+                  _buildProfileInfo(_targetProfile!),
+                  Transform.translate(
+                    offset: Offset(0, -10.h),
+                    child: _buildTabs(),
+                  ),
+                  Transform.translate(
+                    offset: Offset(0, -10.h),
+                    child: _buildTabContent(),
+                  ),
+                ],
+              ),
+            ),
+
+            // Back button (başkasının profilinde)
+            _buildBackButton(),
+          ],
+        ),
+      );
+    }
+
+    // Kendi profilini görüntüleme (mevcut kod)
     final profileAsync = ref.watch(currentUserProfileProvider);
 
     return profileAsync.when(
@@ -140,6 +247,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         path: 'assets/images/system/profile-cover.png',
         fit: BoxFit.cover,
         placeholder: Container(color: AppTheme.zinc200),
+      ),
+    );
+  }
+
+  Widget _buildBackButton() {
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+
+    return Positioned(
+      top: statusBarHeight + -5.h,
+      left: 15.w,
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          width: 25.w,
+          height: 25.w,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.transparent, width: 1),
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            LucideIcons.chevronLeft500,
+            size: 24.sp,
+            color: AppTheme.black800,
+          ),
+        ),
       ),
     );
   }

@@ -33,6 +33,7 @@ import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/data/models/profile_model.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/screens/main/events/widgets/detail/qr_ticket_modal.dart';
+import 'package:lobi_application/screens/main/profile/profile_screen.dart'; // For organizer profile navigation
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lobi_application/data/services/share_service.dart';
 import 'package:lobi_application/data/models/extensions/event_time_state_extension.dart';
@@ -248,9 +249,24 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      EventDetailOrganizer(
-                        name: eventData['organizerName'] ?? '',
-                        photoUrl: eventData['organizerPhotoUrl'],
+                      GestureDetector(
+                        onTap: () {
+                          // Organizatörün profiline git
+                          if (_currentEvent.organizerId != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileScreen(
+                                  userId: _currentEvent.organizerId,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: EventDetailOrganizer(
+                          name: eventData['organizerName'] ?? '',
+                          photoUrl: eventData['organizerPhotoUrl'],
+                        ),
                       ),
                       if (_isOrganizer) ...[
                         Container(
