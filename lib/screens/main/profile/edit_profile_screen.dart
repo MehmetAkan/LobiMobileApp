@@ -154,7 +154,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               fullName: fullName,
             ),
             SizedBox(height: 30.h),
-            _buildPersonalInfoSection(),
+            _buildPersonalInfoSection(profile.userId),
             SizedBox(height: 20.h),
             _buildSectionTitle('Biyografi'),
             SizedBox(height: 10.h),
@@ -455,7 +455,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _buildPersonalInfoSection() {
+  Widget _buildPersonalInfoSection(String userId) {
+    // Get email from Supabase auth
+    final email = SupabaseManager.instance.client.auth.currentUser?.email ?? '';
+
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.getSettingsCardBg(context),
@@ -467,6 +470,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           _buildInfoRow('İsim', _firstNameController),
           _buildDivider(),
           _buildInfoRow('Soyad', _lastNameController),
+          _buildDivider(),
+          _buildReadOnlyRow('E-posta', email),
         ],
       ),
     );
@@ -479,7 +484,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         children: [
           // Label
           SizedBox(
-            width: 120.w,
+            width: 100.w,
             child: Text(
               label,
               style: TextStyle(
@@ -519,6 +524,40 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget _buildDivider() {
     return Divider(height: 1, color: AppTheme.getSettingsCardDivider(context));
+  }
+
+  Widget _buildReadOnlyRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+      child: Row(
+        children: [
+          // Label
+          SizedBox(
+            width: 100.w,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 15.sp,
+                letterSpacing: -0.20,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.getSettingsProfileLabel(context),
+              ),
+            ),
+          ),
+          // Value (Read-only)
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.getTextDescColor(context), // Slightly dimmed
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildSectionTitle(String title) {
