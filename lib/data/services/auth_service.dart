@@ -61,6 +61,9 @@ class AuthService {
         params: {'userId': response.user!.id},
       );
 
+      // Hesap silme talebini otomatik iptal et
+      await checkAndCancelPendingDeletion();
+
       return UserModel.fromSupabaseUser(response.user!);
     } catch (e, stackTrace) {
       AppLogger.error('OTP verify hatası', e, stackTrace);
@@ -84,6 +87,10 @@ class AuthService {
       }
 
       AppLogger.logAuthEvent('google_signin_success');
+
+      // Hesap silme talebini otomatik iptal et
+      await checkAndCancelPendingDeletion();
+
       return true;
     } catch (e, stackTrace) {
       AppLogger.error('Google signin hatası', e, stackTrace);
@@ -131,6 +138,10 @@ class AuthService {
       }
 
       AppLogger.logAuthEvent('apple_signin_success');
+
+      // Hesap silme talebini otomatik iptal et
+      await checkAndCancelPendingDeletion();
+
       return true;
     } catch (e, stackTrace) {
       if (e is SignInWithAppleAuthorizationException) {
@@ -166,6 +177,20 @@ class AuthService {
     } catch (e, stackTrace) {
       AppLogger.error('Session refresh hatası', e, stackTrace);
       throw ErrorHandler.handle(e);
+    }
+  }
+
+  /// Pending hesap silme talebini iptal et (login sonrası kontrol)
+  Future<void> checkAndCancelPendingDeletion() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user == null) return; // Login değilse skip
+
+      await _supabase.rpc('cancel_account_deletion_on_login');
+      AppLogger.info('🔄 Pending deletion request cancelled (if any)');
+    } catch (e) {
+      // Hata olsa bile devam et (silme talebi yoksa hata verir)
+      AppLogger.warning('Deletion cancellation check: $e');
     }
   }
 }

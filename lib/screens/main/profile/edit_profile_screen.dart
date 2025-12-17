@@ -4,13 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/providers/profile_provider.dart';
 import 'package:lobi_application/data/services/profile_service.dart';
 import 'package:lobi_application/data/services/storage_service.dart';
+import 'package:lobi_application/data/services/account_deletion_service.dart';
 import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
+import 'package:lobi_application/core/supabase_client.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/utils/image_picker_helper.dart';
 import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
+import 'package:lobi_application/widgets/common/menu/menu_group.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
+import 'package:lobi_application/widgets/profile/account_deletion_modal.dart';
 import 'package:lobi_application/screens/main/profile/widgets/profile_photo_modal.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -159,6 +163,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             _buildSectionTitle('Sosyal Hesaplar'),
             SizedBox(height: 10.h),
             _buildSocialAccountsSection(),
+            SizedBox(height: 15.h),
+            MenuGroup(
+              items: [
+                MenuItem(
+                  icon: LucideIcons.userRoundX400,
+                  title: 'Hesabı Sil',
+                  isDestructive: true,
+                  onTap: _handleAccountDeletion,
+                ),
+              ],
+            ),
             SizedBox(height: 60),
           ],
         );
@@ -230,6 +245,50 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (mounted) {
         setState(() => _isSaving = false);
         getIt<AppFeedbackService>().showError('Profil güncellenemedi');
+      }
+    }
+  }
+
+  /// Hesap silme işlemini başlat
+  Future<void> _handleAccountDeletion() async {
+    try {
+      // Modal ile onay al
+      final confirmed = await AccountDeletionModal.show(context);
+
+      if (confirmed != true) {
+        return; // Kullanıcı vazgeçti
+      }
+
+      // Loading göster
+      getIt<AppFeedbackService>().showInfo('Silme talebi oluşturuluyor...');
+
+      // Silme talebini oluştur
+      final deletionService = AccountDeletionService();
+      final result = await deletionService.requestAccountDeletion();
+
+      AppLogger.info('Hesap silme talebi oluşturuldu: $result');
+
+      // Başarılı mesajı göster
+      if (mounted) {
+        getIt<AppFeedbackService>().showSuccess(
+          result['message'] ?? 'Hesap silme talebiniz alındı',
+        );
+
+        // Logout yap
+        await Future.delayed(const Duration(seconds: 2));
+        await SupabaseManager.instance.client.auth.signOut();
+
+        // Ana sayfaya yönlendir
+        if (mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Hesap silme hatası', e);
+      if (mounted) {
+        getIt<AppFeedbackService>().showError(
+          'Bir hata oluştu. Lütfen tekrar deneyin.',
+        );
       }
     }
   }

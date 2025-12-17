@@ -5,9 +5,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
+import 'package:lobi_application/core/supabase_client.dart';
+import 'package:lobi_application/data/services/auth_service.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'firebase_options.dart';
 import 'package:lobi_application/data/services/local_notification_service.dart';
 import 'package:lobi_application/data/services/deep_link_service.dart';
@@ -97,6 +100,8 @@ class _LobiAppState extends State<LobiApp> {
     super.initState();
     // Deep link service'i başlat
     _initializeDeepLinks();
+    // Auth state listener'ı başlat (hesap silme iptali için)
+    _setupAuthListener();
   }
 
   Future<void> _initializeDeepLinks() async {
@@ -105,6 +110,21 @@ class _LobiAppState extends State<LobiApp> {
     } catch (e, stackTrace) {
       AppLogger.error('Deep link initialization failed', e, stackTrace);
     }
+  }
+
+  /// Auth state değişikliklerini dinle ve hesap silme iptalini kontrol et
+  /// Google, Apple, Email - her türlü giriş için çalışır
+  void _setupAuthListener() {
+    SupabaseManager.instance.client.auth.onAuthStateChange.listen((data) {
+      final event = data.event;
+      final session = data.session;
+
+      if (event == AuthChangeEvent.signedIn && session != null) {
+        // Kullanıcı giriş yaptı - hesap silme talebini iptal et
+        AppLogger.info('🔐 User signed in, checking pending deletion...');
+        AuthService().checkAndCancelPendingDeletion();
+      }
+    });
   }
 
   @override
