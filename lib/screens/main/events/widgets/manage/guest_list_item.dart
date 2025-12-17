@@ -35,7 +35,7 @@ class GuestListItem extends StatelessWidget {
                   image: NetworkImage(profileImageUrl),
                   fit: BoxFit.cover,
                 ),
-                color: AppTheme.zinc200, // Placeholder color
+                color: AppTheme.getProfileDivider(context), // Placeholder color
               ),
             ),
             SizedBox(width: 10.w),
@@ -48,7 +48,7 @@ class GuestListItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.black800,
+                      color: AppTheme.getTextHeadColor(context),
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -57,7 +57,7 @@ class GuestListItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
-                      color: AppTheme.zinc600,
+                      color: AppTheme.getTextDescColor(context),
                     ),
                   ),
                 ],
@@ -69,7 +69,11 @@ class GuestListItem extends StatelessWidget {
         SizedBox(height: 10.h),
         Padding(
           padding: EdgeInsets.only(left: 55.w), // İcona göre hizalı
-          child: Divider(height: 1, thickness: 1, color: AppTheme.zinc200),
+          child: Divider(
+            height: 1,
+            thickness: 1,
+            color: AppTheme.getProfileDivider(context),
+          ),
         ),
         SizedBox(height: 10.h),
       ],
