@@ -19,7 +19,7 @@ class NotificationPermissionModal {
     required VoidCallback onAllow,
     VoidCallback? onDeny,
   }) {
-    final config = _getConfig(permissionContext);
+    final config = _getConfig(context, permissionContext);
 
     showModalBottomSheet(
       context: context,
@@ -71,7 +71,9 @@ class NotificationPermissionModal {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Benefits List
-            ...config.benefits.map((benefit) => _buildBenefitItem(benefit)),
+            ...config.benefits.map(
+              (benefit) => _buildBenefitItem(context, benefit),
+            ),
 
             SizedBox(height: 20.h),
 
@@ -89,7 +91,7 @@ class NotificationPermissionModal {
                     },
                   ),
                 ),
-                SizedBox(width: 12.w),
+                SizedBox(width: 10.w),
                 // Allow Button
                 Expanded(
                   flex: 2,
@@ -111,14 +113,17 @@ class NotificationPermissionModal {
   }
 
   /// Get configuration based on context
-  static _ModalConfig _getConfig(NotificationPermissionContext context) {
-    switch (context) {
+  static _ModalConfig _getConfig(
+    BuildContext context,
+    NotificationPermissionContext permissionContext,
+  ) {
+    switch (permissionContext) {
       case NotificationPermissionContext.eventApproved:
         return _ModalConfig(
           icon: LucideIcons.bell,
-          iconColor: AppTheme.black800,
-          iconBackgroundColor: AppTheme.zinc200,
-          iconBorderColor: AppTheme.zinc300,
+          iconColor: AppTheme.getModalIconText(context),
+          iconBackgroundColor: AppTheme.getModalIconBg(context),
+          iconBorderColor: AppTheme.getModalIconBorder(context),
           title: 'Etkinlik Güncellemeleri',
           description:
               'Katıldığın etkinlikler için önemli bildirimleri kaçırma!',
@@ -135,7 +140,7 @@ class NotificationPermissionModal {
           icon: LucideIcons.star,
           iconColor: AppTheme.green500,
           iconBackgroundColor: AppTheme.green100,
-          iconBorderColor: AppTheme.green200,
+          iconBorderColor: AppTheme.getModalIconBorder(context),
           title: 'Yeni Etkinlik Bildirimleri',
           description:
               'İlgilendiğin kategorilerde yeni etkinlikler olduğunda seni bilgilendirelim',
@@ -150,9 +155,9 @@ class NotificationPermissionModal {
       case NotificationPermissionContext.general:
         return _ModalConfig(
           icon: LucideIcons.bellRing,
-          iconColor: AppTheme.black800,
-          iconBackgroundColor: AppTheme.zinc200,
-          iconBorderColor: AppTheme.zinc300,
+          iconColor: AppTheme.getModalIconText(context),
+          iconBackgroundColor: AppTheme.getModalIconBg(context),
+          iconBorderColor: AppTheme.getModalIconBorder(context),
           title: 'Bildirimleri Aç',
           description: 'Önemli güncellemeleri ve yeni etkinlikleri kaçırma',
           benefits: [
@@ -166,7 +171,7 @@ class NotificationPermissionModal {
   }
 
   /// Build benefit item
-  static Widget _buildBenefitItem(String text) {
+  static Widget _buildBenefitItem(BuildContext context, String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: 15.h),
       child: Row(
@@ -192,7 +197,7 @@ class NotificationPermissionModal {
               style: TextStyle(
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
-                color: AppTheme.black800,
+                color: AppTheme.getTextHeadColor(context),
                 letterSpacing: -0.20,
                 height: 1.2,
               ),
@@ -210,7 +215,7 @@ class NotificationPermissionModal {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: AppTheme.black800,
+      color: AppTheme.getModalOkButtonBg(context),
       borderRadius: BorderRadius.circular(25.r),
       child: InkWell(
         onTap: onTap,
@@ -223,7 +228,7 @@ class NotificationPermissionModal {
             style: TextStyle(
               fontSize: 15.sp,
               fontWeight: FontWeight.w700,
-              color: AppTheme.white,
+              color: AppTheme.getModalOkButtonText(context),
               letterSpacing: -0.20,
             ),
           ),
@@ -239,7 +244,7 @@ class NotificationPermissionModal {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: AppTheme.zinc100,
+      color: AppTheme.getModalNotButtonBg(context),
       borderRadius: BorderRadius.circular(16.r),
       child: InkWell(
         onTap: onTap,
@@ -253,7 +258,7 @@ class NotificationPermissionModal {
               fontSize: 15.sp,
               letterSpacing: -0.20,
               fontWeight: FontWeight.w500,
-              color: AppTheme.zinc1000,
+              color: AppTheme.getModalNotButtonText(context),
             ),
           ),
         ),

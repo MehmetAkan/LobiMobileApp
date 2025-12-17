@@ -124,16 +124,7 @@ class CustomModalSheet extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 0.h),
-
-                if (showDivider) ...[
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: AppTheme.zinc200, // Or appropriate divider color
-                  ),
-                  SizedBox(height: 20.h),
-                ],
+                SizedBox(height: 15.h),
 
                 // Body
                 Flexible(

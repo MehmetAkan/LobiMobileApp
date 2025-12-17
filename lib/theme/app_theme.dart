@@ -426,6 +426,30 @@ class AppTheme {
         : zinc200;
   }
 
+  static Color getModalNotButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc900
+        : zinc100;
+  }
+
+  static Color getModalNotButtonText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? dark_zinc300
+        : zinc900;
+  }
+
+  static Color getModalOkButtonBg(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? zinc200
+        : black800;
+  }
+
+  static Color getModalOkButtonText(BuildContext context) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark
+        ? black800
+        : white;
+  }
+
   static Color getModalButtonText(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? white
