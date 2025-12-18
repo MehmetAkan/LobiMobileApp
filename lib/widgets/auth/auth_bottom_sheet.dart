@@ -308,7 +308,9 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     launchUrl(
-                                      Uri.parse('https://lobiapp.co/terms'),
+                                      Uri.parse(
+                                        'https://lobiapp.co/terms-of-service',
+                                      ),
                                       mode: LaunchMode.inAppBrowserView,
                                     );
                                   },
@@ -325,7 +327,9 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     launchUrl(
-                                      Uri.parse('https://lobiapp.co/privacy'),
+                                      Uri.parse(
+                                        'https://lobiapp.co/privacy-policy',
+                                      ),
                                       mode: LaunchMode.inAppBrowserView,
                                     );
                                   },
