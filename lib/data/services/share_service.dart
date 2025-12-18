@@ -10,7 +10,7 @@ import 'package:lobi_application/core/utils/logger.dart';
 /// - Native share dialog gösterme
 /// - WhatsApp, Instagram, vb. platformlara paylaşım
 class ShareService {
-  static const String _baseUrl = 'https://go.lobiapp.co';
+  static const String _baseUrl = 'https://go.lobiapp.co/e';
 
   /// Etkinlik için paylaşılabilir link oluştur
   String generateEventLink(String shareSlug) {

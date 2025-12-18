@@ -12,6 +12,9 @@ class EventService {
 
   Future<Map<String, dynamic>> createEvent(Map<String, dynamic> data) async {
     try {
+      // Validasyon - Gerekli alanları kontrol et
+      _validateEventData(data);
+
       final rpcParams = data.map((key, value) {
         return MapEntry('${key}_in', value);
       });
@@ -25,8 +28,35 @@ class EventService {
           .single();
 
       return result as Map<String, dynamic>;
+    } on ValidationException {
+      rethrow; // ValidationException'ı olduğu gibi fırlat (prefix ekleme)
     } catch (e) {
       throw _handleError(e, 'createEvent');
+    }
+  }
+
+  /// Etkinlik verilerini doğrula
+  void _validateEventData(Map<String, dynamic> data) {
+    if (data['title'] == null || (data['title'] as String).trim().isEmpty) {
+      throw ValidationException('Etkinlik başlığı zorunludur');
+    }
+
+    if (data['description'] == null ||
+        (data['description'] as String).trim().isEmpty) {
+      throw ValidationException('Etkinlik açıklaması zorunludur');
+    }
+
+    if (data['category_id'] == null) {
+      throw ValidationException('Kategori seçimi zorunludur');
+    }
+
+    if (data['start_date'] == null) {
+      throw ValidationException('Başlangıç tarihi zorunludur');
+    }
+
+    if (data['location_name'] == null ||
+        (data['location_name'] as String).trim().isEmpty) {
+      throw ValidationException('Konum seçimi zorunludur');
     }
   }
 
@@ -373,6 +403,33 @@ class EventService {
     final String prefix = 'EventService ($context):';
 
     if (error is PostgrestException) {
+      // Database constraint hatalarını kullanıcı dostu mesajlara çevir
+      final message = error.message.toLowerCase();
+
+      if (message.contains('violates not-null constraint')) {
+        if (message.contains('description')) {
+          return ValidationException('Etkinlik açıklaması zorunludur');
+        } else if (message.contains('title')) {
+          return ValidationException('Etkinlik başlığı zorunludur');
+        } else if (message.contains('category_id')) {
+          return ValidationException('Kategori seçimi zorunludur');
+        } else if (message.contains('start_date')) {
+          return ValidationException('Başlangıç tarihi zorunludur');
+        } else if (message.contains('location_name')) {
+          return ValidationException('Konum bilgisi zorunludur');
+        } else {
+          return ValidationException('Bazı zorunlu alanlar eksik');
+        }
+      }
+
+      if (message.contains('violates foreign key constraint')) {
+        return ValidationException('Geçersiz kategori seçimi');
+      }
+
+      if (message.contains('duplicate key')) {
+        return ValidationException('Bu etkinlik zaten mevcut');
+      }
+
       return DatabaseException(
         '$prefix ${error.message}',
         code: error.code,
