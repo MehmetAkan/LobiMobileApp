@@ -1,9 +1,10 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 
 /// LocationModel - Konum verisi modeli
-/// 
+///
 /// Supabase'e kaydedilecek ve ekranlarda gösterilecek konum bilgisi
 class LocationModel {
   final String placeName; // "Antalya Üniversitesi"
@@ -33,38 +34,38 @@ class LocationModel {
   /// Detaylı adres (etkinlik kartlarında gösterilecek)
   String get detailAddress {
     final parts = <String>[];
-    
+
     if (district != null && district!.isNotEmpty) {
       parts.add(district!);
     }
     if (city != null && city!.isNotEmpty) {
       parts.add(city!);
     }
-    
+
     return parts.isEmpty ? address : parts.join(', ');
   }
 
   /// Supabase'e kaydetmek için JSON
   Map<String, dynamic> toJson() => {
-        'location_place_name': placeName,
-        'location_address': address,
-        'location_latitude': latitude,
-        'location_longitude': longitude,
-        'location_city': city,
-        'location_district': district,
-        'location_country': country,
-      };
+    'location_place_name': placeName,
+    'location_address': address,
+    'location_latitude': latitude,
+    'location_longitude': longitude,
+    'location_city': city,
+    'location_district': district,
+    'location_country': country,
+  };
 
   /// Supabase'den okuma
   factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
-        placeName: json['location_place_name'] as String? ?? '',
-        address: json['location_address'] as String? ?? '',
-        latitude: (json['location_latitude'] as num).toDouble(),
-        longitude: (json['location_longitude'] as num).toDouble(),
-        city: json['location_city'] as String?,
-        district: json['location_district'] as String?,
-        country: json['location_country'] as String?,
-      );
+    placeName: json['location_place_name'] as String? ?? '',
+    address: json['location_address'] as String? ?? '',
+    latitude: (json['location_latitude'] as num).toDouble(),
+    longitude: (json['location_longitude'] as num).toDouble(),
+    city: json['location_city'] as String?,
+    district: json['location_district'] as String?,
+    country: json['location_country'] as String?,
+  );
 
   @override
   String toString() => displayText;
@@ -81,7 +82,7 @@ class LocationModel {
 }
 
 /// LocationService - Konum işlemleri servisi
-/// 
+///
 /// Kullanım alanları:
 /// 1. Kullanıcının mevcut konumunu alma
 /// 2. Yakındaki etkinlikleri bulma (ilçe/mahalle bazında)
@@ -122,14 +123,14 @@ class LocationService {
   }
 
   /// ✨ Kullanıcının mevcut konumunu al (Position)
-  /// 
+  ///
   /// Modal'da kullanılacak - Position döndürür
   Future<Position> getCurrentLocation() async {
     return await getCurrentPosition();
   }
 
   /// Kullanıcının mevcut konumunu al
-  /// 
+  ///
   /// Throws: Exception - Konum servisi kapalı veya izin yok
   Future<Position> getCurrentPosition() async {
     final serviceEnabled = await isLocationServiceEnabled();
@@ -154,7 +155,7 @@ class LocationService {
   }
 
   /// Koordinatları adrese çevir (Reverse Geocoding)
-  /// 
+  ///
   /// İlçe ve mahalle bilgisini de alır
   Future<LocationModel?> getAddressFromCoordinates(
     double latitude,
@@ -181,13 +182,13 @@ class LocationService {
         country: place.country,
       );
     } catch (e) {
-      print('Reverse geocoding hatası: $e');
+      AppLogger.error('Reverse geocoding hatası', e);
       return null;
     }
   }
 
   /// İki nokta arası mesafe hesapla (km cinsinden)
-  /// 
+  ///
   /// Haversine formülü kullanır
   double calculateDistance({
     required double startLatitude,
@@ -205,7 +206,7 @@ class LocationService {
   }
 
   /// Kullanıcının konumuna göre etkinlikleri filtrele
-  /// 
+  ///
   /// İlçe ve mahalle bazında filtreleme için
   /// maxDistanceKm: Maksimum mesafe (km)
   Future<List<T>> filterEventsByDistance<T>({
@@ -251,7 +252,7 @@ class LocationService {
   }
 
   /// Mesafe metnini formatla
-  /// 
+  ///
   /// Kullanıcı dostu format: "2.5 km" veya "850 m"
   String formatDistance(double distanceKm) {
     if (distanceKm < 1) {
@@ -262,13 +263,13 @@ class LocationService {
   }
 
   /// Google Maps uygulamasında aç
-  /// 
+  ///
   /// Kullanıcıya yönlendirme yapmak için
   Future<void> openInGoogleMaps(LocationModel location) async {
     final url =
         'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
     // TODO: url_launcher paketi ile aç
-    print('Google Maps açılıyor: $url');
+    AppLogger.debug('Google Maps açılıyor: $url');
   }
 
   /// Apple Maps'te aç (iOS için)
@@ -276,6 +277,6 @@ class LocationService {
     final url =
         'https://maps.apple.com/?q=${location.latitude},${location.longitude}';
     // TODO: url_launcher paketi ile aç
-    print('Apple Maps açılıyor: $url');
+    AppLogger.debug('Apple Maps açılıyor: $url');
   }
 }

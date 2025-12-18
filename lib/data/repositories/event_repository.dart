@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:lobi_application/core/errors/app_exception.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/data/models/category_model.dart';
 import 'package:lobi_application/data/models/event_model.dart';
 import 'package:lobi_application/data/repositories/auth_repository.dart';
@@ -169,26 +170,32 @@ class EventRepository {
     int limit = 5,
   }) async {
     try {
-      print('📦 REPOSITORY: getRecommendedEvents called for user: $userId');
+      AppLogger.debug(
+        '📦 REPOSITORY: getRecommendedEvents called for user: $userId',
+      );
 
       final rows = await _eventService.getRecommendedEvents(
         userId: userId,
         limit: limit,
       );
 
-      print('📦 REPOSITORY: Received ${rows.length} events from service');
+      AppLogger.debug(
+        '📦 REPOSITORY: Received ${rows.length} events from service',
+      );
 
       final events = rows
           .map<EventModel>((row) => _mapToEventModel(row))
           .toList();
 
-      print('📦 REPOSITORY: Mapped to ${events.length} EventModel objects');
+      AppLogger.debug(
+        '📦 REPOSITORY: Mapped to ${events.length} EventModel objects',
+      );
 
       return events;
     } on AppException {
       rethrow;
     } catch (e) {
-      print('📦 REPOSITORY ERROR: $e');
+      AppLogger.debug('📦 REPOSITORY ERROR: $e');
       throw UnknownException(
         'Önerilen etkinlikler alınırken bir hata oluştu',
         originalError: e,

@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 import 'location_service.dart';
 
 /// PlacePrediction - Yer önerisi modeli
-/// 
+///
 /// Kullanıcı yazarken gösterilecek arama sonuçları
 class PlacePrediction {
   final String placeId;
@@ -20,8 +21,9 @@ class PlacePrediction {
   });
 
   factory PlacePrediction.fromJson(Map<String, dynamic> json) {
-    final structuredFormatting = json['structured_formatting'] as Map<String, dynamic>?;
-    
+    final structuredFormatting =
+        json['structured_formatting'] as Map<String, dynamic>?;
+
     return PlacePrediction(
       placeId: json['place_id'] as String,
       mainText: structuredFormatting?['main_text'] as String? ?? '',
@@ -32,7 +34,7 @@ class PlacePrediction {
 }
 
 /// PlacesService - Google Places API servisi
-/// 
+///
 /// Kullanım alanları:
 /// 1. Etkinlik oluştururken yer arama
 /// 2. Yer detaylarını alma (koordinat, adres, vs.)
@@ -41,12 +43,12 @@ class PlacesService {
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api';
 
   PlacesService({String? apiKey})
-      : _apiKey = apiKey ?? dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+    : _apiKey = apiKey ?? dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 
   /// Yer arama (Autocomplete)
-  /// 
+  ///
   /// Kullanıcı yazarken otomatik tamamlama önerileri
-  /// 
+  ///
   /// Örnek:
   /// ```dart
   /// final predictions = await searchPlaces(
@@ -61,7 +63,9 @@ class PlacesService {
   }) async {
     if (query.isEmpty) return [];
     if (_apiKey.isEmpty) {
-      throw Exception('Google Maps API key bulunamadı. .env dosyasını kontrol edin.');
+      throw Exception(
+        'Google Maps API key bulunamadı. .env dosyasını kontrol edin.',
+      );
     }
 
     try {
@@ -73,8 +77,9 @@ class PlacesService {
         if (sessionToken != null) 'sessiontoken': sessionToken,
       };
 
-      final uri = Uri.parse('$_baseUrl/place/autocomplete/json')
-          .replace(queryParameters: params);
+      final uri = Uri.parse(
+        '$_baseUrl/place/autocomplete/json',
+      ).replace(queryParameters: params);
 
       final response = await http.get(uri);
 
@@ -95,15 +100,15 @@ class PlacesService {
         throw Exception('HTTP Error: ${response.statusCode}');
       }
     } catch (e) {
-      print('Places search error: $e');
+      AppLogger.error('Places search error', e);
       return [];
     }
   }
 
   /// Yer detaylarını al
-  /// 
+  ///
   /// PlaceId'den tam konum bilgisi (koordinat, adres, ilçe, şehir)
-  /// 
+  ///
   /// Örnek:
   /// ```dart
   /// final location = await getPlaceDetails(
@@ -126,8 +131,9 @@ class PlacesService {
         'fields': 'name,formatted_address,geometry,address_components',
       };
 
-      final uri = Uri.parse('$_baseUrl/place/details/json')
-          .replace(queryParameters: params);
+      final uri = Uri.parse(
+        '$_baseUrl/place/details/json',
+      ).replace(queryParameters: params);
 
       final response = await http.get(uri);
 
@@ -175,13 +181,13 @@ class PlacesService {
         throw Exception('HTTP Error: ${response.statusCode}');
       }
     } catch (e) {
-      print('Place details error: $e');
+      AppLogger.error('Place details error', e);
       return null;
     }
   }
 
   /// Session token oluştur
-  /// 
+  ///
   /// Maliyet optimizasyonu için:
   /// Aynı session'daki autocomplete + details çağrıları tek istek sayılır
   String generateSessionToken() {

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 import '../data/services/location_service.dart';
 import '../data/services/places_service.dart';
 
@@ -14,7 +15,7 @@ final placesServiceProvider = Provider<PlacesService>((ref) {
 });
 
 /// Kullanıcının mevcut konumu
-/// 
+///
 /// Ana sayfada "Yakınımdaki Etkinlikler" için kullanılacak
 final userLocationProvider = FutureProvider<Position?>((ref) async {
   final service = ref.read(locationServiceProvider);
@@ -22,18 +23,18 @@ final userLocationProvider = FutureProvider<Position?>((ref) async {
   try {
     return await service.getCurrentPosition();
   } catch (e) {
-    print('Konum alınamadı: $e');
+    AppLogger.error('Konum alınamadı', e);
     return null;
   }
 });
 
 /// Seçili konum
-/// 
+///
 /// Etkinlik oluştururken seçilen konum burada saklanır
 final selectedLocationProvider = StateProvider<LocationModel?>((ref) => null);
 
 /// Yer arama notifier
-/// 
+///
 /// Kullanıcı yazarken Places API'den sonuç getir
 class PlaceSearchNotifier
     extends StateNotifier<AsyncValue<List<PlacePrediction>>> {
@@ -73,57 +74,58 @@ class PlaceSearchNotifier
   }
 
   /// Yer seçildiğinde detayları al
-  /// 
+  ///
   /// PlaceId'den koordinat ve adres bilgisini çek
   Future<LocationModel?> selectPlace(String placeId) async {
     try {
-      final location = await placesService.getPlaceDetails(
-        placeId: placeId,
-      );
+      final location = await placesService.getPlaceDetails(placeId: placeId);
 
       // Session token'ı sıfırla (Places API billing için)
       _sessionToken = null;
 
       return location;
     } catch (e) {
-      print('Yer detayları alınamadı: $e');
+      AppLogger.error('Yer detayları alınamadı', e);
       return null;
     }
   }
 }
 
 /// Yer arama provider
-final placeSearchProvider = StateNotifierProvider<PlaceSearchNotifier,
-    AsyncValue<List<PlacePrediction>>>(
-  (ref) {
-    final placesService = ref.read(placesServiceProvider);
-    return PlaceSearchNotifier(placesService);
-  },
-);
+final placeSearchProvider =
+    StateNotifierProvider<
+      PlaceSearchNotifier,
+      AsyncValue<List<PlacePrediction>>
+    >((ref) {
+      final placesService = ref.read(placesServiceProvider);
+      return PlaceSearchNotifier(placesService);
+    });
 
 /// Mesafe hesaplama helper
-/// 
+///
 /// İki konum arası mesafe (km)
-final distanceCalculatorProvider = Provider<
-    double Function({
-      required double lat1,
-      required double lon1,
-      required double lat2,
-      required double lon2,
-    })>((ref) {
-  final service = ref.read(locationServiceProvider);
+final distanceCalculatorProvider =
+    Provider<
+      double Function({
+        required double lat1,
+        required double lon1,
+        required double lat2,
+        required double lon2,
+      })
+    >((ref) {
+      final service = ref.read(locationServiceProvider);
 
-  return ({
-    required double lat1,
-    required double lon1,
-    required double lat2,
-    required double lon2,
-  }) {
-    return service.calculateDistance(
-      startLatitude: lat1,
-      startLongitude: lon1,
-      endLatitude: lat2,
-      endLongitude: lon2,
-    );
-  };
-});
+      return ({
+        required double lat1,
+        required double lon1,
+        required double lat2,
+        required double lon2,
+      }) {
+        return service.calculateDistance(
+          startLatitude: lat1,
+          startLongitude: lon1,
+          endLatitude: lat2,
+          endLongitude: lon2,
+        );
+      };
+    });

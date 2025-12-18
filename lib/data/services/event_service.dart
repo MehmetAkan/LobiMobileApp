@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:lobi_application/core/constants/app_constants.dart';
 import 'package:lobi_application/core/errors/app_exception.dart';
+import 'package:lobi_application/core/utils/logger.dart';
 
 class EventService {
   final SupabaseClient _client;
@@ -143,7 +144,7 @@ class EventService {
     String? excludeUserId,
   }) async {
     try {
-      print(
+      AppLogger.debug(
         '⭐ POPULAR EVENTS: Being called with limit: $limit, excludeUserId: $excludeUserId',
       );
 
@@ -168,7 +169,7 @@ class EventService {
             .map((e) => e['event_id'] as String)
             .toList();
 
-        print(
+        AppLogger.debug(
           '⭐ POPULAR EVENTS: Excluding ${excludedEventIds.length} participant events',
         );
 
@@ -183,7 +184,7 @@ class EventService {
             .toList();
       }
 
-      print('⭐ POPULAR EVENTS: Returned ${events.length} events');
+      AppLogger.debug('⭐ POPULAR EVENTS: Returned ${events.length} events');
 
       return events;
     } catch (e) {
