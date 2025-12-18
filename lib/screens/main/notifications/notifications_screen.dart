@@ -219,28 +219,51 @@ class NotificationsScreen extends ConsumerWidget {
             if (notification.data?['event_image_url'] != null)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12.r),
-                child: Image.network(
+                child: _buildEventImage(
                   notification.data!['event_image_url'] as String,
-                  width: 56.w,
-                  height: 56.w,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 56.w,
-                      height: 56.w,
-                      color: AppTheme.zinc200,
-                      child: Icon(
-                        LucideIcons.image,
-                        color: AppTheme.zinc500,
-                        size: 24.sp,
-                      ),
-                    );
-                  },
                 ),
               ),
           ],
         ),
       ),
+    );
+  }
+
+  /// Build event image - handles both assets and network URLs
+  Widget _buildEventImage(String imageUrl) {
+    final isAsset = imageUrl.startsWith('assets/');
+
+    if (isAsset) {
+      // Asset image
+      return Image.asset(
+        imageUrl,
+        width: 56.w,
+        height: 56.w,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildImagePlaceholder();
+        },
+      );
+    } else {
+      // Network URL
+      return Image.network(
+        imageUrl,
+        width: 56.w,
+        height: 56.w,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildImagePlaceholder();
+        },
+      );
+    }
+  }
+
+  Widget _buildImagePlaceholder() {
+    return Container(
+      width: 56.w,
+      height: 56.w,
+      color: AppTheme.zinc200,
+      child: Icon(LucideIcons.image, color: AppTheme.zinc500, size: 24.sp),
     );
   }
 

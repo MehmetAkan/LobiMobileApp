@@ -171,7 +171,16 @@ class NotificationService {
         updatedData['profile_name'] = fullName;
         updatedData['profile_image_url'] = profileResponse['avatar_url'];
 
-        AppLogger.debug('Sender profile loaded: $fullName');
+        // Preserve event_image_url if it exists (for all notification types)
+        // This ensures event cover image is shown in notifications
+        if (notification.data?['event_image_url'] != null) {
+          updatedData['event_image_url'] =
+              notification.data!['event_image_url'];
+        }
+
+        AppLogger.debug(
+          '🖼️ Sender profile loaded: $fullName | Event image: ${updatedData['event_image_url']}',
+        );
 
         notification = notification.copyWith(data: updatedData);
       } catch (e) {
