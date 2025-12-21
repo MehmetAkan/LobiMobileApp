@@ -7,8 +7,6 @@ import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 import 'package:lobi_application/widgets/common/pages/standard_page.dart';
 import 'package:lobi_application/widgets/common/menu/menu_group.dart';
 import 'package:lobi_application/screens/main/profile/edit_profile_screen.dart';
-import 'package:lobi_application/screens/main/profile/widgets/settings/privacy_policy_modal.dart';
-import 'package:lobi_application/screens/main/profile/widgets/settings/terms_of_service_modal.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/support_modal.dart';
 import 'package:lobi_application/screens/main/profile/widgets/settings/logout_modal.dart';
 import 'package:lobi_application/core/widgets/app_restart_widget.dart';
@@ -17,6 +15,7 @@ import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:lobi_application/screens/main/notifications/notifications_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -49,21 +48,7 @@ class SettingsScreen extends ConsumerWidget {
               username: username,
             ),
             SizedBox(height: 20.h),
-            MenuGroup(
-              items: [
-                MenuItem(
-                  icon: LucideIcons.scrollText400,
-                  title: 'Gizlilik Sözleşmesi',
-                  onTap: () => PrivacyPolicyModal.show(context),
-                ),
-                MenuItem(
-                  icon: LucideIcons.fileUser400,
-                  title: 'Kullanıcı Sözleşmesi',
-                  onTap: () => TermsOfServiceModal.show(context),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.h),
+
             MenuGroup(
               items: [
                 MenuItem(
@@ -134,6 +119,31 @@ class SettingsScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+            ),
+            SizedBox(height: 20.h),
+            MenuGroup(
+              items: [
+                MenuItem(
+                  icon: LucideIcons.scrollText400,
+                  title: 'Gizlilik Sözleşmesi',
+                  onTap: () {
+                    launchUrl(
+                      Uri.parse('https://lobiapp.co/privacy-policy'),
+                      mode: LaunchMode.inAppBrowserView,
+                    );
+                  },
+                ),
+                MenuItem(
+                  icon: LucideIcons.fileUser400,
+                  title: 'Kullanıcı Sözleşmesi',
+                  onTap: () {
+                    launchUrl(
+                      Uri.parse('https://lobiapp.co/terms-of-service'),
+                      mode: LaunchMode.inAppBrowserView,
+                    );
+                  },
+                ),
+              ],
             ),
             SizedBox(height: 20.h),
             MenuGroup(

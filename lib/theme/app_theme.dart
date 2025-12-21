@@ -627,7 +627,7 @@ class AppTheme {
   static Color getSettingsCardIcon(BuildContext context) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark
         ? dark_zinc300
-        : zinc600;
+        : zinc700;
   }
 
   static Color getSettingsLogout(BuildContext context) {
