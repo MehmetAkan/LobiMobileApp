@@ -104,7 +104,7 @@ class EventCardHorizontal extends StatelessWidget {
           child: Icon(
             isLiked ? LucideIcons.heart : LucideIcons.heart400,
             size: 20.sp,
-            color: isLiked ? AppTheme.red900 : AppTheme.zinc700,
+            color: isLiked ? AppTheme.red700 : AppTheme.zinc700,
           ),
         ),
       ),

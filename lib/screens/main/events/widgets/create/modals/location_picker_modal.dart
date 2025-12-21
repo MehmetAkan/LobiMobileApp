@@ -316,7 +316,7 @@ class _LocationPickerContentState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 48.sp, color: AppTheme.red900),
+              Icon(Icons.error_outline, size: 48.sp, color: AppTheme.red700),
               SizedBox(height: 16.h),
               Text(
                 'Bir hata oluştu',

@@ -135,7 +135,7 @@ class ImagePickerService {
           // Android ayarları
           AndroidUiSettings(
             toolbarTitle: 'Resmi Kırp',
-            toolbarColor: AppTheme.red900,
+            toolbarColor: AppTheme.red700,
             toolbarWidgetColor: AppTheme.white,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true, // Oranı sabit tut
@@ -180,7 +180,7 @@ class ImagePickerService {
           // Android ayarları
           AndroidUiSettings(
             toolbarTitle: 'Profil Fotoğrafını Kırp',
-            toolbarColor: AppTheme.red900,
+            toolbarColor: AppTheme.red700,
             toolbarWidgetColor: AppTheme.white,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,

@@ -40,7 +40,7 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppTheme.red900),
+            style: TextButton.styleFrom(foregroundColor: AppTheme.red700),
             child: const Text('Çıkış Yap'),
           ),
         ],
@@ -70,7 +70,7 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Çıkış yapılırken hata: $e'),
-          backgroundColor: AppTheme.red900,
+          backgroundColor: AppTheme.red700,
         ),
       );
     }
@@ -86,10 +86,10 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: AppTheme.red900.withValues(alpha: 0.1),
+            color: AppTheme.red800.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: AppTheme.red900.withValues(alpha: 0.3),
+              color: AppTheme.red800.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -102,14 +102,14 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
                   height: 20.sp,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppTheme.red900,
+                    color: AppTheme.red700,
                   ),
                 )
               else
                 Icon(
                   LucideIcons.logOut400,
                   size: 20.sp,
-                  color: AppTheme.red900,
+                  color: AppTheme.red700,
                 ),
               SizedBox(width: 8.w),
               Text(
@@ -117,7 +117,7 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.red900,
+                  color: AppTheme.red700,
                   height: 1.2,
                 ),
               ),
@@ -187,7 +187,7 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Çıkış yapılırken hata: $e'),
-          backgroundColor: AppTheme.red900,
+          backgroundColor: AppTheme.red700,
         ),
       );
     }
@@ -206,10 +206,10 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
           customBorder: const CircleBorder(),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.red900.withValues(alpha: 0.1),
+              color: AppTheme.red700.withValues(alpha: 0.1),
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppTheme.red900.withValues(alpha: 0.3),
+                color: AppTheme.red700.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -220,13 +220,13 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
                       height: 20.sp,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppTheme.red900,
+                        color: AppTheme.red700,
                       ),
                     )
                   : Icon(
                       LucideIcons.logOut400,
                       size: 22.sp,
-                      color: AppTheme.red900,
+                      color: AppTheme.red700,
                     ),
             ),
           ),

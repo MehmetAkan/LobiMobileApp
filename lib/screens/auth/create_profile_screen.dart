@@ -132,7 +132,7 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                           child: Text(
                             errorText!,
                             style: const TextStyle(
-                              color: AppTheme.red900,
+                              color: AppTheme.red700,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),

@@ -42,7 +42,7 @@ class ProfileAvatar extends StatelessWidget {
     final colors = [
       AppTheme.blue800,
       AppTheme.purple900,
-      AppTheme.red900,
+      AppTheme.red700,
       const Color(0xFF16A34A), // green
       const Color(0xFFEA580C), // orange
       const Color(0xFF0891B2), // cyan

@@ -282,7 +282,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.white,
-                foregroundColor: AppTheme.red900,
+                foregroundColor: AppTheme.red700,
                 padding: EdgeInsets.symmetric(vertical: 15.h),
                 elevation: 0,
                 shape: RoundedRectangleBorder(

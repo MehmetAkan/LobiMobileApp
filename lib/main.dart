@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
@@ -147,6 +148,19 @@ class _LobiAppState extends State<LobiApp> {
           title: 'Lobi',
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: rootScaffoldMessengerKey,
+
+          // Localization - Date pickers için Türkçe desteği
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('tr', 'TR'), // Türkçe
+            Locale('en', 'US'), // İngilizce (fallback)
+          ],
+          locale: const Locale('tr', 'TR'), // Default Türkçe
+
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           // home: const GoogleMapsTestScreen(),

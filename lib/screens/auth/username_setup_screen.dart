@@ -136,7 +136,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
         );
       case UsernameState.taken:
       case UsernameState.invalid:
-        return Icon(LucideIcons.x400, size: 20.sp, color: AppTheme.red900);
+        return Icon(LucideIcons.x400, size: 20.sp, color: AppTheme.red700);
     }
   }
 
@@ -146,7 +146,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
         return AppTheme.green500;
       case UsernameState.taken:
       case UsernameState.invalid:
-        return AppTheme.red900;
+        return AppTheme.red700;
       default:
         return AppTheme.getAuthInputBorder(context);
         ;
@@ -263,7 +263,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                                       color: AppTheme.getAuthInputText(context),
                                     ),
                                     decoration: InputDecoration(
-                                      hintText: 'username',
+                                      hintText: 'kullanıcı adı',
                                       hintStyle: TextStyle(
                                         fontSize: 17.sp,
                                         fontWeight: FontWeight.w500,
@@ -299,7 +299,7 @@ class _UsernameSetupScreenState extends State<UsernameSetupScreen> {
                                     style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: AppTheme.red900,
+                                      color: AppTheme.red700,
                                     ),
                                   ),
                                 ),

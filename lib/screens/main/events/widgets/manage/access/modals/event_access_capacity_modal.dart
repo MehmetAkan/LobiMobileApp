@@ -68,7 +68,7 @@ class _CapacityContentState extends State<_CapacityContent> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Lütfen geçerli bir sayı girin'),
-          backgroundColor: AppTheme.red900,
+          backgroundColor: AppTheme.red700,
           duration: const Duration(seconds: 2),
         ),
       );
