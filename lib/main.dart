@@ -14,6 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'firebase_options.dart';
 import 'package:lobi_application/data/services/local_notification_service.dart';
 import 'package:lobi_application/data/services/deep_link_service.dart';
+import 'package:lobi_application/data/services/fcm_service.dart';
 
 Future<void> main() async {
   // Flutter binding'i başlat
@@ -47,6 +48,10 @@ Future<void> main() async {
 
     // 🔔 Initialize local notifications
     await LocalNotificationService().initialize();
+
+    // 🔥 Initialize FCM service
+    await FCMService().initialize();
+    AppLogger.info('✅ FCM service initialized');
 
     await setupServiceLocator();
 
@@ -123,6 +128,11 @@ class _LobiAppState extends State<LobiApp> {
         // Kullanıcı giriş yaptı - hesap silme talebini iptal et
         AppLogger.info('🔐 User signed in, checking pending deletion...');
         AuthService().checkAndCancelPendingDeletion();
+
+        // FCM token kaydet
+        final userId = session.user.id;
+        FCMService().requestPermissionAndSaveToken(userId: userId);
+        AppLogger.info('📱 FCM token request sent for user: $userId');
       }
     });
   }
