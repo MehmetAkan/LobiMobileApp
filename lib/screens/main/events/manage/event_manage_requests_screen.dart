@@ -13,6 +13,7 @@ import 'package:lobi_application/widgets/common/filters/filter_bottom_sheet.dart
 import 'package:lobi_application/widgets/common/filters/filter_option.dart';
 import 'package:lobi_application/widgets/common/modals/custom_modal_sheet.dart';
 import 'package:lobi_application/theme/app_theme.dart';
+import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 
 class EventManageRequestsScreen extends StatefulWidget {
   final String eventId;
@@ -85,6 +86,13 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
 
       debugPrint('🔍 Received ${data.length} requests');
       debugPrint('🔍 Raw data: $data');
+
+      // Username kontrolü için debug
+      if (data.isNotEmpty) {
+        final firstRequest = data.first;
+        final profile = firstRequest['profiles'] as Map<String, dynamic>?;
+        debugPrint('🔍 First profile username: ${profile?['username']}');
+      }
 
       if (mounted) {
         setState(() {
@@ -230,20 +238,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
       headerLeft: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 22.5.r,
-            backgroundImage: profileImageUrl != null
-                ? NetworkImage(profileImageUrl)
-                : null,
-            backgroundColor: AppTheme.zinc300,
-            child: profileImageUrl == null
-                ? Icon(
-                    LucideIcons.user400,
-                    size: 24.sp,
-                    color: AppTheme.zinc600,
-                  )
-                : null,
-          ),
+          ProfileAvatar(imageUrl: profileImageUrl, name: fullName, size: 45),
           SizedBox(height: 10.h),
           Text(
             fullName,

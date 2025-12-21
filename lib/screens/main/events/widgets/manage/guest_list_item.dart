@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/common/badges/status_badge.dart';
+import 'package:lobi_application/widgets/common/avatars/profile_avatar.dart';
 
 class GuestListItem extends StatelessWidget {
   final String profileImageUrl;
@@ -25,18 +26,11 @@ class GuestListItem extends StatelessWidget {
       children: [
         Row(
           children: [
-            // Profile Picture
-            Container(
-              width: 45.sp,
-              height: 45.sp,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(profileImageUrl),
-                  fit: BoxFit.cover,
-                ),
-                color: AppTheme.getProfileDivider(context), // Placeholder color
-              ),
+            // Profile Picture - ProfileAvatar kullan
+            ProfileAvatar(
+              imageUrl: profileImageUrl.isNotEmpty ? profileImageUrl : null,
+              name: fullName,
+              size: 45,
             ),
             SizedBox(width: 10.w),
             Expanded(
@@ -51,15 +45,17 @@ class GuestListItem extends StatelessWidget {
                       color: AppTheme.getTextHeadColor(context),
                     ),
                   ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    '@$username',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w400,
-                      color: AppTheme.getTextDescColor(context),
+                  if (username.isNotEmpty) ...[
+                    SizedBox(height: 2.h),
+                    Text(
+                      '@$username',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: AppTheme.getTextDescColor(context),
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),

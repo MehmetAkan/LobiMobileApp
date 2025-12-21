@@ -258,7 +258,7 @@ class EventAttendanceService {
       // 3. Profiles çek
       final profiles = await _supabase
           .from('profiles')
-          .select('user_id, first_name, last_name, avatar_url')
+          .select('user_id, first_name, last_name, username, avatar_url')
           .inFilter('user_id', userIds);
 
       // 4. Merge et
