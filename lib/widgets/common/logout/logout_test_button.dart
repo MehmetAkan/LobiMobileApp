@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lobi_application/app_entry.dart';
+import 'package:lobi_application/core/widgets/app_restart_widget.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/event_permission_helper.dart';
 import 'package:lobi_application/data/repositories/auth_repository.dart';
@@ -60,11 +60,8 @@ class _LogoutTestButtonState extends State<LogoutTestButton> {
 
       if (!mounted) return;
 
-      // AppEntry'ye yönlendir (auth listener welcome screen'e götürür)
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const AppEntry()),
-        (route) => false,
-      );
+      // Restart app to clear all state
+      AppRestartWidget.restartApp(context);
     } catch (e) {
       if (!mounted) return;
 
@@ -181,10 +178,7 @@ class _LogoutIconButtonState extends State<LogoutIconButton> {
 
       if (!mounted) return;
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const AppEntry()),
-        (route) => false,
-      );
+      AppRestartWidget.restartApp(context);
     } catch (e) {
       if (!mounted) return;
 

@@ -5,7 +5,7 @@ import 'package:lobi_application/core/feedback/app_feedback_service.dart';
 import 'package:lobi_application/data/models/category_model.dart';
 import 'package:lobi_application/data/services/category_service.dart';
 import 'package:lobi_application/data/services/favorite_categories_service.dart';
-import 'package:lobi_application/screens/main/main_navigation_screen.dart';
+import 'package:lobi_application/screens/auth/registration_success_screen.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
@@ -76,10 +76,12 @@ class _FavoriteCategoriesScreenState extends State<FavoriteCategoriesScreen> {
 
       if (!mounted) return;
 
-      // Navigate to home
+      // Navigate to success screen
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+        MaterialPageRoute(
+          builder: (context) => const RegistrationSuccessScreen(),
+        ),
         (route) => false,
       );
     } catch (e) {

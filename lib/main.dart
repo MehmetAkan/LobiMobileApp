@@ -6,6 +6,7 @@ import 'package:lobi_application/app_entry.dart';
 import 'package:lobi_application/core/di/service_locator.dart';
 import 'package:lobi_application/core/utils/logger.dart';
 import 'package:lobi_application/core/supabase_client.dart';
+import 'package:lobi_application/core/widgets/app_restart_widget.dart';
 import 'package:lobi_application/data/services/auth_service.dart';
 import 'package:lobi_application/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -49,15 +50,12 @@ Future<void> main() async {
     // 🔔 Initialize local notifications
     await LocalNotificationService().initialize();
 
-    // 🔥 Initialize FCM service
-    await FCMService().initialize();
-    AppLogger.info('✅ FCM service initialized');
-
+    // Setup service locator (includes Supabase init + FCM init)
     await setupServiceLocator();
 
     AppLogger.info('✅ Uygulama başarıyla başlatıldı');
 
-    runApp(const ProviderScope(child: LobiApp()));
+    runApp(const AppRestartWidget(child: ProviderScope(child: LobiApp())));
   } catch (e, stackTrace) {
     AppLogger.error('❌ Uygulama başlatma hatası', e, stackTrace);
 

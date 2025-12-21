@@ -150,14 +150,17 @@ class FCMService {
 
       AppLogger.debug('FCM token profile\'a kaydediliyor: $userId');
 
-      await _supabase
-          .from('profiles')
-          .update({'fcm_token': _fcmToken})
-          .eq('user_id', userId);
+      // Use upsert instead of update to handle new profiles
+      // onConflict ensures existing profiles are updated
+      await _supabase.from('profiles').upsert({
+        'user_id': userId,
+        'fcm_token': _fcmToken,
+      }, onConflict: 'user_id');
 
       AppLogger.info('✅ FCM token kaydedildi');
     } catch (e, stackTrace) {
       AppLogger.error('FCM token kaydetme hatası', e, stackTrace);
+      AppLogger.debug('User ID: $userId, Token: $_fcmToken');
     }
   }
 

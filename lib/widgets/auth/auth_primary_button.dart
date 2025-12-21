@@ -44,7 +44,7 @@ class AuthPrimaryButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
         child: InkWell(
           borderRadius: BorderRadius.circular(50),
-          onTap: onTap,
+          onTap: onTap == null ? null : () => onTap!(),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 22),
             child: Text(

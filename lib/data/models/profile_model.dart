@@ -58,6 +58,10 @@ class ProfileModel {
   }
 
   /// ProfileModel'i JSON'a çevirme (veritabanına kaydetmek için)
+  ///
+  /// NOT: fcm_token field'ı kasıtlı olarak dahil edilmemiştir.
+  /// FCM token yönetimi FCMService tarafından ayrı olarak yapılır.
+  /// Bu sayede profil güncellemelerinde token korunur (preserve edilir).
   Map<String, dynamic> toJson() {
     return {
       'user_id': userId,
@@ -73,6 +77,7 @@ class ProfileModel {
       'tiktok': tiktok,
       'website': website,
       'linkedin': linkedin,
+      // fcm_token kasıtlı olarak dahil edilmedi (FCMService yönetir)
     };
   }
 
