@@ -28,7 +28,10 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
   final EventAttendanceService _attendanceService = EventAttendanceService();
   FilterOption _selectedFilter = _filterOptions.first;
   List<Map<String, dynamic>> _requests = [];
+  List<Map<String, dynamic>> _filteredRequests =
+      []; // Arama için filtrelenmiş liste
   bool _isLoading = true;
+  String _searchQuery = ''; // Arama sorgusu
 
   static const List<FilterOption> _filterOptions = [
     FilterOption(
@@ -86,6 +89,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
       if (mounted) {
         setState(() {
           _requests = data;
+          _filteredRequests = data; // İlk yüklemede tüm istekleri göster
           _isLoading = false;
         });
       }
@@ -120,7 +124,15 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
       actionIcon: LucideIcons.listFilter400,
       onActionTap: _openFilterModal,
       children: [
-        CustomSearchBar(hintText: 'Kullanıcı Ara', onChanged: (value) {}),
+        CustomSearchBar(
+          hintText: 'Kullanıcı Ara',
+          onChanged: (value) {
+            setState(() {
+              _searchQuery = value.toLowerCase();
+              _filterRequests();
+            });
+          },
+        ),
         SizedBox(height: 20.h),
         _isLoading ? _buildLoading() : _buildRequestList(),
       ],
@@ -136,13 +148,33 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
     );
   }
 
+  void _filterRequests() {
+    if (_searchQuery.isEmpty) {
+      _filteredRequests = _requests;
+    } else {
+      _filteredRequests = _requests.where((request) {
+        final profile = request['profiles'] as Map<String, dynamic>?;
+        final firstName = (profile?['first_name'] as String? ?? '')
+            .toLowerCase();
+        final lastName = (profile?['last_name'] as String? ?? '').toLowerCase();
+        final username = (profile?['username'] as String? ?? '').toLowerCase();
+
+        return firstName.contains(_searchQuery) ||
+            lastName.contains(_searchQuery) ||
+            username.contains(_searchQuery);
+      }).toList();
+    }
+  }
+
   Widget _buildRequestList() {
-    if (_requests.isEmpty) {
+    if (_filteredRequests.isEmpty) {
       return Center(
         child: Padding(
           padding: EdgeInsets.all(40.h),
           child: Text(
-            'İstek bulunamadı',
+            _searchQuery.isEmpty
+                ? 'İstek bulunamadı'
+                : 'Arama sonucu bulunamadı',
             style: TextStyle(fontSize: 16.sp, color: AppTheme.zinc600),
           ),
         ),
@@ -150,11 +182,12 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
     }
 
     return Column(
-      children: _requests.map((request) {
+      children: _filteredRequests.map((request) {
         final profile = request['profiles'] as Map<String, dynamic>?;
         final firstName = profile?['first_name'] as String? ?? '';
         final lastName = profile?['last_name'] as String? ?? '';
         final fullName = '$firstName $lastName'.trim();
+        final username = profile?['username'] as String? ?? ''; // Username'i al
         final avatarUrl = profile?['avatar_url'] as String?;
         final status = request['status'] as String;
         final userId = request['user_id'] as String;
@@ -163,6 +196,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
           onTap: () => _showRequestModal(
             context,
             fullName.isEmpty ? 'Kullanıcı' : fullName,
+            username, // Username'i modal'a gönder
             avatarUrl,
             userId,
             status,
@@ -173,7 +207,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                 ? avatarUrl
                 : '',
             fullName: fullName.isEmpty ? 'Kullanıcı' : fullName,
-            username: '', // Username şimdilik yok
+            username: username, // Username'i göster
             statusText: _getStatusText(status),
             statusType: _getStatusType(status),
           ),
@@ -185,6 +219,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
   void _showRequestModal(
     BuildContext context,
     String fullName,
+    String username, // Username parametresi eklendi
     String? profileImageUrl,
     String userId,
     String currentStatus,
@@ -236,7 +271,7 @@ class _EventManageRequestsScreenState extends State<EventManageRequestsScreen> {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  '-',
+                  username.isNotEmpty ? '@$username' : '-',
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
