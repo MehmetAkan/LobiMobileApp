@@ -5,7 +5,7 @@ class ProfileModel {
   final String? username;
   final String? bio;
   final String? avatarUrl;
-  final DateTime birthDate;
+  final DateTime? birthDate; // Apple Review: opsiyonel
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? instagram;
@@ -22,7 +22,7 @@ class ProfileModel {
     this.username,
     this.bio,
     this.avatarUrl,
-    required this.birthDate,
+    this.birthDate, // Artık required değil
     this.createdAt,
     this.updatedAt,
     this.instagram,
@@ -41,7 +41,9 @@ class ProfileModel {
       username: json['username'] as String?,
       bio: json['bio'] as String?,
       avatarUrl: json['avatar_url'] as String?,
-      birthDate: DateTime.parse(json['birth_date'] as String),
+      birthDate: json['birth_date'] != null
+          ? DateTime.parse(json['birth_date'] as String)
+          : null,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
@@ -70,7 +72,7 @@ class ProfileModel {
       'username': username,
       'bio': bio,
       'avatar_url': avatarUrl,
-      'birth_date': birthDate.toIso8601String(),
+      'birth_date': birthDate?.toIso8601String(),
       'instagram': instagram,
       'twitter': twitter,
       'youtube': youtube,
@@ -84,15 +86,17 @@ class ProfileModel {
   /// Tam isim (UI'da göstermek için)
   String get fullName => '$firstName $lastName';
 
-  /// Yaş hesaplama
-  int get age {
+  /// Yaş hesaplama (birthDate varsa)
+  int? get age {
+    if (birthDate == null) return null;
+
     final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month ||
-        (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
+    int calculatedAge = now.year - birthDate!.year;
+    if (now.month < birthDate!.month ||
+        (now.month == birthDate!.month && now.day < birthDate!.day)) {
+      calculatedAge--;
     }
-    return age;
+    return calculatedAge;
   }
 
   ProfileModel copyWith({

@@ -8,7 +8,8 @@ import 'package:lobi_application/widgets/auth/auth_back_button.dart';
 import 'package:lobi_application/widgets/auth/auth_primary_button.dart';
 import 'package:lobi_application/widgets/auth/auth_text_field.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:lobi_application/widgets/auth/date_picker_field.dart';
+import 'package:lobi_application/core/supabase_client.dart';
+// DatePickerField kaldırıldı - Apple Review
 
 // StatefulWidget → ConsumerStatefulWidget
 class CreateProfileScreen extends ConsumerStatefulWidget {
@@ -21,17 +22,57 @@ class CreateProfileScreen extends ConsumerStatefulWidget {
 
 // State → ConsumerState
 class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
-  final firstNameCtrl = TextEditingController();
-  final lastNameCtrl = TextEditingController();
-
-  DateTime? birthDate;
+  // Tek full name input - Instagram tarzı
+  final fullNameCtrl = TextEditingController();
+  // birthDate kaldırıldı - null gönderilecek
   bool isLoading = false;
   String? errorText;
 
   @override
+  void initState() {
+    super.initState();
+    // Apple Sign In'den gelen bilgileri otomatik doldur
+    _loadAppleUserData();
+  }
+
+  /// Apple Sign In user metadata'dan isim bilgisini oku
+  void _loadAppleUserData() {
+    try {
+      final user = SupabaseManager.instance.client.auth.currentUser;
+
+      if (user?.userMetadata != null) {
+        final metadata = user!.userMetadata!;
+
+        // Farklı key'leri dene
+        final fullName = metadata['full_name'] as String?;
+        final name = metadata['name'] as String?;
+        final firstName = metadata['given_name'] as String?;
+        final lastName = metadata['family_name'] as String?;
+
+        // Öncelik sırası: full_name > name > (given_name + family_name)
+        String? nameToUse;
+        if (fullName != null && fullName.isNotEmpty) {
+          nameToUse = fullName;
+        } else if (name != null && name.isNotEmpty) {
+          nameToUse = name;
+        } else if (firstName != null && firstName.isNotEmpty) {
+          nameToUse = lastName != null && lastName.isNotEmpty
+              ? '$firstName $lastName'
+              : firstName;
+        }
+
+        if (nameToUse != null && nameToUse.isNotEmpty) {
+          fullNameCtrl.text = nameToUse;
+        }
+      }
+    } catch (e) {
+      // Hata olursa sessizce devam et, kullanıcı manuel girecek
+    }
+  }
+
+  @override
   void dispose() {
-    firstNameCtrl.dispose();
-    lastNameCtrl.dispose();
+    fullNameCtrl.dispose();
     super.dispose();
   }
 
@@ -99,33 +140,14 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                       ),
                       const SizedBox(height: 25),
                       AuthTextField(
-                        label: 'İsim',
-                        controller: firstNameCtrl,
-                        hintText: 'Lütfen isminizi giriniz',
+                        label: 'Tam Adınız',
+                        controller: fullNameCtrl,
+                        hintText: 'Örn: Mehmet Akan',
                         keyboardType: TextInputType.name,
                         errorText: null,
                       ),
                       const SizedBox(height: 10),
-                      AuthTextField(
-                        label: 'Soyisim',
-                        controller: lastNameCtrl,
-                        hintText: 'Lütfen soyisminizi giriniz',
-                        keyboardType: TextInputType.name,
-                        errorText: null,
-                      ),
-                      const SizedBox(height: 10),
-                      DatePickerField(
-                        label: 'Doğum Tarihin',
-                        value: birthDate,
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                        onChanged: (date) {
-                          setState(() {
-                            birthDate = date;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 10),
+                      // DatePickerField kaldırıldı
                       if (errorText != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
@@ -149,12 +171,21 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                   onTap: isLoading
                       ? null
                       : () async {
-                          if (birthDate == null) {
+                          // Full name parse et - Instagram tarzı
+                          final fullName = fullNameCtrl.text.trim();
+                          if (fullName.isEmpty) {
                             setState(() {
-                              errorText = 'Lütfen doğum tarihini seçin';
+                              errorText = 'Lütfen en az adınızı giriniz';
                             });
                             return;
                           }
+
+                          // İlk kelime firstName, geri kalanı lastName
+                          final parts = fullName.split(' ');
+                          final firstName = parts.first.trim();
+                          final lastName = parts.length > 1
+                              ? parts.sublist(1).join(' ').trim()
+                              : '';
 
                           setState(() {
                             isLoading = true;
@@ -165,9 +196,9 @@ class _CreateProfileScreenState extends ConsumerState<CreateProfileScreen> {
                             profileControllerProvider.notifier,
                           );
                           final result = await controller.saveProfile(
-                            firstName: firstNameCtrl.text,
-                            lastName: lastNameCtrl.text,
-                            birthDate: birthDate!,
+                            firstName: firstName,
+                            lastName: lastName,
+                            birthDate: null, // Apple Review: null gönder
                           );
 
                           if (!mounted) return;

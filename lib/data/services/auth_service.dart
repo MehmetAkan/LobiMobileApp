@@ -118,6 +118,10 @@ class AuthService {
         ],
       );
 
+      // Name bilgilerini yakala (ilk Sign In'de gelir, sonra gelmez)
+      final givenName = credential.givenName;
+      final familyName = credential.familyName;
+
       final idToken = credential.identityToken;
       if (idToken == null) {
         throw AuthenticationException(
@@ -135,6 +139,26 @@ class AuthService {
         throw AuthenticationException(
           'Apple Sign In başarısız: Kullanıcı oluşturulamadı',
         );
+      }
+
+      // Name bilgileri varsa metadata'ya ekle
+      if (givenName != null || familyName != null) {
+        final fullName = '${givenName ?? ''} ${familyName ?? ''}'.trim();
+        if (fullName.isNotEmpty) {
+          AppLogger.info(
+            '🍎 Apple name bilgisi metadata\'ya ekleniyor: $fullName',
+          );
+
+          await _supabase.auth.updateUser(
+            UserAttributes(
+              data: {
+                'full_name': fullName,
+                'given_name': givenName,
+                'family_name': familyName,
+              },
+            ),
+          );
+        }
       }
 
       AppLogger.logAuthEvent('apple_signin_success');

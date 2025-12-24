@@ -104,28 +104,18 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                       ),
                       const SizedBox(height: 25),
                       Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: AppTheme.zinc300, width: 1),
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.black800.withAlpha(10),
-                              blurRadius: 2,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
                         child: Material(
                           color: AppTheme.black800,
-                          borderRadius: BorderRadius.circular(25),
+                          borderRadius: BorderRadius.circular(28.3),
                           child: InkWell(
+                            borderRadius: BorderRadius.circular(28.3),
                             onTap: () async {
                               final controller = ref.read(
                                 authControllerProvider.notifier,
                               );
                               final error = await controller.signInWithApple();
 
-                              Navigator.of(context).pop();
+                              if (context.mounted) Navigator.of(context).pop();
 
                               if (error != null && context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -137,32 +127,38 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                                 );
                               }
                             },
-                            borderRadius: BorderRadius.circular(25),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/images/system/apple-icon.svg',
-                                    height: 24,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    'Apple ile devam et',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppTheme.white,
-                                      height: 1.2,
+                            child: SizedBox(
+                              height: 58.6,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: SvgPicture.asset(
+                                        'assets/images/system/apple-icon.svg',
+                                        fit: BoxFit.contain,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      'Apple ile Devam Et',
+                                      style: TextStyle(
+                                        fontSize: 19, // 44pt * 0.43 ≈ 19pt
+                                        fontWeight:
+                                            FontWeight.w600, // semibold benzeri
+                                        color: AppTheme.white,
+                                        height: 1.0, // dikey hizayı temiz tutar
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -172,7 +168,7 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: AppTheme.zinc300, width: 1),
-                          borderRadius: BorderRadius.circular(25),
+                          borderRadius: BorderRadius.circular(28.3),
                           boxShadow: [
                             BoxShadow(
                               color: AppTheme.black800.withAlpha(10),
@@ -183,9 +179,9 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                         ),
                         child: Material(
                           color: AppTheme.white,
-                          borderRadius: BorderRadius.circular(25),
+                          borderRadius: BorderRadius.circular(28.3),
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(28.3),
                             onTap: () async {
                               final controller = ref.read(
                                 authControllerProvider.notifier,
@@ -204,31 +200,34 @@ Future<void> showAuthBottomSheet(BuildContext context) {
                                 );
                               }
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/images/system/google-icon.svg',
-                                    height: 24,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  const Text(
-                                    'Google ile devam et',
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppTheme.black800,
-                                      height: 1.2,
+                            child: SizedBox(
+                              height: 58.6,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/images/system/google-icon.svg',
+                                      height: 20,
+                                      fit: BoxFit.contain,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(width: 10),
+                                    const Text(
+                                      'Google ile devam et',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppTheme.black800,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

@@ -16,7 +16,7 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
 final currentUserProfileProvider = FutureProvider<ProfileModel?>((ref) async {
   // Auth state'i dinle - user değişirse profil yeniden yüklensin
   final authState = ref.watch(authStateProvider);
-  
+
   // User yoksa null dön
   if (authState.value == null) {
     return null;
@@ -29,14 +29,15 @@ final currentUserProfileProvider = FutureProvider<ProfileModel?>((ref) async {
 /// Specific User Profile Provider (userId ile)
 /// Neden: Belirli bir kullanıcının profilini getirmek için
 /// Örnek kullanım: Başka kullanıcıların profillerini görmek
-final userProfileProvider = FutureProvider.family<ProfileModel?, String>(
-  (ref, userId) async {
-    final repository = ref.watch(profileRepositoryProvider);
-    // Bu provider için getProfile metodunu ProfileService'e eklemek gerekir
-    // Şimdilik currentUserProfile kullanıyoruz
-    return await repository.getCurrentUserProfile();
-  },
-);
+final userProfileProvider = FutureProvider.family<ProfileModel?, String>((
+  ref,
+  userId,
+) async {
+  final repository = ref.watch(profileRepositoryProvider);
+  // Bu provider için getProfile metodunu ProfileService'e eklemek gerekir
+  // Şimdilik currentUserProfile kullanıyoruz
+  return await repository.getCurrentUserProfile();
+});
 
 /// Profile Controller (State Notifier)
 /// Neden: Profil kaydetme, güncelleme işlemlerini yönetir
@@ -45,11 +46,10 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
 
   ProfileController(this._repository) : super(const AsyncValue.data(null));
 
-  /// Profil kaydet
   Future<ProfileResult?> saveProfile({
     required String firstName,
     required String lastName,
-    required DateTime birthDate,
+    DateTime? birthDate, // Artık opsiyonel
   }) async {
     state = const AsyncValue.loading();
 
@@ -65,10 +65,7 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
         AppLogger.info('✅ Profil kaydedildi: ${result.profile?.fullName}');
         return result;
       } else {
-        state = AsyncValue.error(
-          result.errorMessage!,
-          StackTrace.current,
-        );
+        state = AsyncValue.error(result.errorMessage!, StackTrace.current);
         return result;
       }
     } catch (e, stackTrace) {
@@ -90,10 +87,7 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
         AppLogger.info('✅ Profil güncellendi');
         return null;
       } else {
-        state = AsyncValue.error(
-          result.errorMessage!,
-          StackTrace.current,
-        );
+        state = AsyncValue.error(result.errorMessage!, StackTrace.current);
         return result.errorMessage;
       }
     } catch (e, stackTrace) {
@@ -107,6 +101,6 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
 /// Profile Controller Provider
 final profileControllerProvider =
     StateNotifierProvider<ProfileController, AsyncValue<void>>((ref) {
-  final repository = ref.watch(profileRepositoryProvider);
-  return ProfileController(repository);
-});
+      final repository = ref.watch(profileRepositoryProvider);
+      return ProfileController(repository);
+    });

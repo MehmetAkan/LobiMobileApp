@@ -17,17 +17,11 @@ class ProfileResult {
   });
 
   factory ProfileResult.success(ProfileModel profile) {
-    return ProfileResult._(
-      isSuccess: true,
-      profile: profile,
-    );
+    return ProfileResult._(isSuccess: true, profile: profile);
   }
 
   factory ProfileResult.failure(String errorMessage) {
-    return ProfileResult._(
-      isSuccess: false,
-      errorMessage: errorMessage,
-    );
+    return ProfileResult._(isSuccess: false, errorMessage: errorMessage);
   }
 }
 
@@ -42,7 +36,7 @@ class ProfileRepository {
   Future<ProfileModel?> getCurrentUserProfile() async {
     try {
       final user = _authService.currentUser;
-      
+
       if (user == null) {
         AppLogger.warning('Profil getirilemedi: Kullanıcı giriş yapmamış');
         return null;
@@ -60,13 +54,15 @@ class ProfileRepository {
   Future<ProfileResult> saveProfile({
     required String firstName,
     required String lastName,
-    required DateTime birthDate,
+    DateTime? birthDate, // Artık opsiyonel - Apple Review
   }) async {
     try {
       // Kullanıcı kontrolü
       final user = _authService.currentUser;
       if (user == null) {
-        return ProfileResult.failure('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
+        return ProfileResult.failure(
+          'Oturum bulunamadı. Lütfen tekrar giriş yapın.',
+        );
       }
 
       // Validation
@@ -78,15 +74,7 @@ class ProfileRepository {
         return ProfileResult.failure('Lütfen soyadınızı girin');
       }
 
-      // Yaş kontrolü (örnek: 13 yaşından küçük olamaz)
-      final age = _calculateAge(birthDate);
-      if (age < 13) {
-        return ProfileResult.failure('13 yaşından küçükler kayıt olamaz');
-      }
-
-      if (age > 120) {
-        return ProfileResult.failure('Lütfen geçerli bir doğum tarihi girin');
-      }
+      // Yaş kontrolü kaldırıldı - birthDate artık opsiyonel
 
       AppLogger.info('💾 Profil kaydediliyor: $firstName $lastName');
 
@@ -133,16 +121,5 @@ class ProfileRepository {
       AppLogger.error('Profil güncelleme hatası', e);
       return ProfileResult.failure('Profil güncellenemedi. Tekrar deneyin.');
     }
-  }
-
-  /// Yaş hesaplama (private helper)
-  int _calculateAge(DateTime birthDate) {
-    final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month ||
-        (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
-    }
-    return age;
   }
 }
